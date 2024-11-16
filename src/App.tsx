@@ -11,6 +11,12 @@ import Contact from "./pages/Contact";
 import LoopMethod from "./pages/LoopMethod";
 import Checkout from "./pages/Checkout";
 import ThankYou from "./pages/ThankYou";
+import CryptoBasics from "./pages/guides/CryptoBasics";
+import AITrading from "./pages/guides/AITrading";
+import TradingFundamentals from "./pages/guides/TradingFundamentals";
+import Security from "./pages/guides/Security";
+import CryptoBasicsGuide from "./pages/guides/CryptoBasicsGuide";
+import AdvancedStrategies from "./pages/guides/AdvancedStrategies";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +35,12 @@ const App = () => (
           <Route path="/loop-method" element={<LoopMethod />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/guides/crypto-basics" element={<CryptoBasics />} />
+          <Route path="/guides/ai-trading" element={<AITrading />} />
+          <Route path="/guides/trading-fundamentals" element={<TradingFundamentals />} />
+          <Route path="/guides/security" element={<Security />} />
+          <Route path="/guides/crypto-basics-guide" element={<CryptoBasicsGuide />} />
+          <Route path="/guides/advanced-strategies" element={<AdvancedStrategies />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

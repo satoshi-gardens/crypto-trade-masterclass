@@ -46,12 +46,14 @@ export const RESOURCES_DATA: ResourceCategory[] = [
         title: "Profit Calculator",
         description: "Estimate your potential gains.",
         type: "tool",
+        link: "https://c25.dev.bit2big.com/"
       },
       {
         id: "portfolio-tracker",
         title: "Portfolio Tracker",
         description: "Keep track of your investments.",
         type: "tool",
+        link: "https://c25.dev.bit2big.com/"
       },
     ],
   },
@@ -92,25 +94,29 @@ export const RESOURCES_DATA: ResourceCategory[] = [
         id: "basics",
         title: "Crypto Basics",
         description: "Learn the fundamentals of blockchain and cryptocurrency.",
-        type: "guide"
+        type: "guide",
+        link: "/guides/crypto-basics"
       },
       {
         id: "trading",
         title: "Trading Fundamentals",
         description: "Master the basics of cryptocurrency trading.",
-        type: "guide"
+        type: "guide",
+        link: "/guides/trading-fundamentals"
       },
       {
         id: "security",
         title: "Security Best Practices",
         description: "Learn how to secure your crypto assets.",
-        type: "guide"
+        type: "guide",
+        link: "/guides/security"
       },
       {
         id: "ai-trading",
         title: "AI in Crypto Trading",
         description: "Understanding AI applications in cryptocurrency trading.",
-        type: "guide"
+        type: "guide",
+        link: "/guides/ai-trading"
       },
     ],
   },
@@ -120,36 +126,19 @@ export const RESOURCES_DATA: ResourceCategory[] = [
     description: "Step-by-step written guides to master crypto trading",
     items: [
       {
-        id: "1",
+        id: "crypto-basics-guide",
         title: "Crypto Basics Guide",
         description: "Understand the fundamentals of cryptocurrency.",
         type: "guide",
+        link: "/guides/crypto-basics-guide"
       },
       {
-        id: "2",
+        id: "advanced-strategies",
         title: "Advanced Strategies",
         description: "Techniques for maximizing your profits.",
         type: "guide",
+        link: "/guides/advanced-strategies"
       },
     ],
-  },
-  {
-    id: "videos",
-    title: "Videos",
-    description: "Recorded tutorials and expert sessions",
-    items: [
-      {
-        id: "3",
-        title: "Intro to Trading",
-        description: "Start your trading journey with confidence.",
-        type: "video",
-      },
-      {
-        id: "4",
-        title: "Risk Management",
-        description: "Learn to minimize risks and protect your portfolio.",
-        type: "video",
-      },
-    ],
-  },
+  }
 ];
