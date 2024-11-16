@@ -1,4 +1,4 @@
-import { Clock, BookOpen, HeadphonesIcon, Signal, Tool } from "lucide-react";
+import { Clock, BookOpen, HeadphonesIcon, Signal, Wrench } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const StructureItem = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
@@ -50,7 +50,7 @@ export const CourseStructure = () => {
 
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <div className="flex items-center gap-4 mb-6">
-            <Tool className="w-8 h-8 text-primary" />
+            <Wrench className="w-8 h-8 text-primary" />
             <h3 className="text-2xl font-bold">Tools and Materials</h3>
           </div>
           <div className="space-y-4">
