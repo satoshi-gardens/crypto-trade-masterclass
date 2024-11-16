@@ -7,6 +7,7 @@ import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { CountdownTimer } from "@/components/pricing/CountdownTimer";
 import { TrustSignals } from "@/components/pricing/TrustSignals";
 import { PricingCard } from "@/components/pricing/PricingCard";
+import { CourseStructure } from "@/components/course/CourseStructure";
 
 const Index = () => {
   return (
@@ -96,6 +97,9 @@ const Index = () => {
       </section>
 
       <TrustSignals />
+
+      {/* Course Structure Section */}
+      <CourseStructure />
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
