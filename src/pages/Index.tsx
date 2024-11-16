@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Tools, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Wrench, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -50,7 +50,7 @@ const Index = () => {
                   "From basics to advanced strategies, learn everything you need to succeed in crypto trading.",
               },
               {
-                icon: <Tools className="w-12 h-12 text-primary" />,
+                icon: <Wrench className="w-12 h-12 text-primary" />,
                 title: "Professional Tools",
                 description:
                   "Access premium trading tools and resources used by successful traders.",
