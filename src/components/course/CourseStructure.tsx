@@ -1,5 +1,7 @@
 import { Clock, BookOpen, HeadphonesIcon, Signal, Wrench } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CourseTimeline } from "./CourseTimeline";
+import { CourseFAQ } from "./CourseFAQ";
 
 const StructureItem = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
   <Card className="hover:shadow-lg transition-shadow">
@@ -48,7 +50,9 @@ export const CourseStructure = () => {
           />
         </div>
 
-        <div className="bg-white p-8 rounded-lg shadow-lg">
+        <CourseTimeline />
+
+        <div className="bg-white p-8 rounded-lg shadow-lg mt-12">
           <div className="flex items-center gap-4 mb-6">
             <Wrench className="w-8 h-8 text-primary" />
             <h3 className="text-2xl font-bold">Tools and Materials</h3>
@@ -74,6 +78,16 @@ export const CourseStructure = () => {
               — David R., Chief Investment Officer
             </footer>
           </blockquote>
+        </div>
+
+        <CourseFAQ />
+
+        <div className="text-center mt-12">
+          <p className="text-2xl font-bold mb-4">Don't wait—seize this opportunity to transform your trading journey.</p>
+          <p className="text-lg text-gray-600 mb-8">Book your course now and secure your December discount before spaces fill up!</p>
+          <a href="/contact" className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+            Apply Now
+          </a>
         </div>
       </div>
     </section>
