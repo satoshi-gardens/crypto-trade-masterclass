@@ -1,47 +1,95 @@
 import { Link } from "react-router-dom";
+import { Facebook, Instagram, Linkedin, Twitter, ArrowUp } from "lucide-react";
+import { Button } from "./ui/button";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <footer className="bg-accent text-white py-8 mt-20">
+    <footer className="bg-accent text-white pt-12 pb-6 mt-auto">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          {/* Branding Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold">CT4P</h3>
+            <h3 className="text-xl font-bold">Crypto Trading 4 Profits</h3>
+            <p className="text-sm text-gray-300">Empowering Profitable Trading</p>
             <p className="text-sm text-gray-300">
-              Your trusted partner in cryptocurrency trading education.
+              © {currentYear} Crypto Trading 4 Profits. All rights reserved.
             </p>
           </div>
-          
+
+          {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><Link to="/courses" className="text-sm hover:text-primary transition-colors">Courses</Link></li>
-              <li><Link to="/tools" className="text-sm hover:text-primary transition-colors">Tools</Link></li>
-              <li><Link to="/about" className="text-sm hover:text-primary transition-colors">About Us</Link></li>
-            </ul>
+            <h4 className="text-lg font-semibold">Quick Links</h4>
+            <nav className="flex flex-col space-y-2">
+              <Link to="/" className="text-gray-300 hover:text-primary transition-colors">Home</Link>
+              <Link to="/courses" className="text-gray-300 hover:text-primary transition-colors">Courses</Link>
+              <Link to="/tools" className="text-gray-300 hover:text-primary transition-colors">Tools & Resources</Link>
+              <Link to="/about" className="text-gray-300 hover:text-primary transition-colors">About</Link>
+              <Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Contact</Link>
+            </nav>
           </div>
-          
+
+          {/* Contact Information */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Legal</h4>
-            <ul className="space-y-2">
-              <li><Link to="/privacy" className="text-sm hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="text-sm hover:text-primary transition-colors">Terms of Service</Link></li>
-            </ul>
+            <h4 className="text-lg font-semibold">Contact Us</h4>
+            <div className="space-y-2 text-sm text-gray-300">
+              <p>Email: info@cryptotrading4profits.com</p>
+              <p>Phone: +123 456 7890</p>
+              <p>123 Crypto Lane<br />Zurich, Switzerland</p>
+            </div>
           </div>
-          
+
+          {/* Social Media Links */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Contact</h4>
-            <ul className="space-y-2">
-              <li className="text-sm">support@ct4p.com</li>
-              <li className="text-sm">1-800-CRYPTO</li>
-            </ul>
+            <h4 className="text-lg font-semibold">Follow Us</h4>
+            <div className="flex space-x-4">
+              <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
+                 className="hover:text-primary transition-colors">
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a href="https://linkedin.com/company/crypto4profits" target="_blank" rel="noopener noreferrer"
+                 className="hover:text-primary transition-colors">
+                <Linkedin className="w-6 h-6" />
+              </a>
+              <a href="https://instagram.com/crypto4profits" target="_blank" rel="noopener noreferrer"
+                 className="hover:text-primary transition-colors">
+                <Instagram className="w-6 h-6" />
+              </a>
+              <a href="https://facebook.com/crypto4profits" target="_blank" rel="noopener noreferrer"
+                 className="hover:text-primary transition-colors">
+                <Facebook className="w-6 h-6" />
+              </a>
+            </div>
           </div>
         </div>
-        
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm">
-          <p>&copy; {currentYear} CT4P. All rights reserved.</p>
+
+        {/* Legal Links */}
+        <div className="border-t border-gray-700 pt-8 mt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+              <Link to="/privacy" className="text-sm text-gray-300 hover:text-primary transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="text-sm text-gray-300 hover:text-primary transition-colors">
+                Terms of Service
+              </Link>
+            </div>
+            <Button
+              onClick={scrollToTop}
+              variant="outline"
+              size="sm"
+              className="group border-gray-600 hover:border-primary"
+            >
+              <ArrowUp className="w-4 h-4 mr-2 group-hover:text-primary" />
+              Back to Top
+            </Button>
+          </div>
         </div>
       </div>
     </footer>
