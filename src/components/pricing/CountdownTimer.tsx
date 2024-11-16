@@ -10,8 +10,15 @@ export const CountdownTimer = () => {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const endDate = new Date('2023-11-30T23:59:59');
+      const startDate = new Date('2024-11-15T00:00:00');
+      const endDate = new Date('2024-11-30T23:59:59');
       const now = new Date();
+
+      // Only start countdown if we're within the date range
+      if (now < startDate) {
+        return; // Don't start countdown yet
+      }
+
       const difference = endDate.getTime() - now.getTime();
 
       if (difference > 0) {
