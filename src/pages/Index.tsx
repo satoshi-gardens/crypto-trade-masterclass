@@ -49,42 +49,47 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <PricingCard
               title="Online Training"
-              price={8000}
-              discountedPrice={7200}
+              price={12000}
+              discountedPrice={10800}
               description="Designed for independent learners who value flexibility and small-group dynamics."
               features={[
+                "Group-focused virtual sessions (max 5 participants)",
+                "Coach reachable for inquiries during group time",
                 "Weekly live online sessions",
                 "Interactive assignments and quizzes",
-                "Community access for peer support",
-                "Access to recorded sessions"
+                "Community access for peer support"
               ]}
               maxStudents={5}
             />
             <PricingCard
               title="Premium (In-Person)"
-              price={15000}
-              discountedPrice={13500}
+              price={21600}
+              discountedPrice={19440}
               description="The ultimate personalized experience for those serious about achieving excellence."
               features={[
-                "Personal 1-on-1 sessions with Michael Kiberu",
-                "Customized learning path",
+                "Tailored one-on-one coaching with unlimited session access",
+                "Signals provided from the second month",
+                "Personal support outside regular sessions",
                 "Direct phone access to trainer",
                 "Lifetime access to premium resources"
               ]}
               isPopular={true}
+              additionalHourlyRate={450}
             />
             <PricingCard
               title="Hybrid Training"
-              price={12000}
-              discountedPrice={10800}
+              price={18000}
+              discountedPrice={16200}
               description="A perfect balance of personal coaching and peer collaboration."
               features={[
+                "Small-group in-person and online sessions",
+                "Signals provided from the second month",
                 "Monthly in-person sessions",
                 "Weekly online group discussions",
-                "Access to recorded sessions",
-                "Premium tools access"
+                "Access to premium tools"
               ]}
               maxStudents={5}
+              additionalHourlyRate={450}
             />
           </div>
         </div>

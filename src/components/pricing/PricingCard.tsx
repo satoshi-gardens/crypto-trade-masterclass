@@ -12,6 +12,7 @@ interface PricingCardProps {
   features: string[];
   isPopular?: boolean;
   maxStudents?: number;
+  additionalHourlyRate?: number;
 }
 
 export const PricingCard = ({
@@ -21,7 +22,8 @@ export const PricingCard = ({
   description,
   features,
   isPopular,
-  maxStudents
+  maxStudents,
+  additionalHourlyRate
 }: PricingCardProps) => {
   return (
     <Card className={`relative ${isPopular ? 'border-primary shadow-lg scale-105' : ''}`}>
@@ -36,6 +38,11 @@ export const PricingCard = ({
           <span className="text-3xl font-bold">CHF {discountedPrice.toLocaleString()}</span>
           <span className="text-gray-500 line-through ml-2">CHF {price.toLocaleString()}</span>
           <p className="text-sm text-gray-600 mt-2">6-month program</p>
+          {additionalHourlyRate && (
+            <p className="text-sm text-primary mt-1">
+              Additional hours: CHF {additionalHourlyRate}/hour
+            </p>
+          )}
         </div>
       </CardHeader>
       <CardContent>
