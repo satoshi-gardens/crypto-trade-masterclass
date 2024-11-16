@@ -3,8 +3,83 @@ import PageLayout from "@/components/PageLayout";
 import SearchBar from "@/components/SearchBar";
 import ResourceList from "@/components/ResourceList";
 import { ResourceCategory } from "@/types/resources";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 const RESOURCES_DATA: ResourceCategory[] = [
+  {
+    id: "exchanges",
+    title: "Exchanges",
+    description: "Trusted cryptocurrency exchanges with exclusive benefits",
+    items: [
+      {
+        id: "binance",
+        title: "Binance",
+        description: "World's largest crypto exchange. Get 10% fee discount with our referral.",
+        type: "exchange",
+        link: "https://accounts.binance.com/register?ref=YOUR_REFERRAL_CODE"
+      },
+      {
+        id: "kucoin",
+        title: "KuCoin",
+        description: "Popular exchange with wide variety of cryptocurrencies.",
+        type: "exchange",
+        link: "https://www.kucoin.com/ucenter/signup?rcode=YOUR_REFERRAL_CODE"
+      },
+    ],
+  },
+  {
+    id: "wallets",
+    title: "Wallets",
+    description: "Secure cryptocurrency wallets for storing your assets",
+    items: [
+      {
+        id: "metamask",
+        title: "MetaMask",
+        description: "Popular Web3 wallet for Ethereum and ERC-20 tokens.",
+        type: "wallet",
+        link: "https://metamask.io/"
+      },
+      {
+        id: "trustwallet",
+        title: "Trust Wallet",
+        description: "Multi-chain crypto wallet supporting various networks.",
+        type: "wallet",
+        link: "https://trustwallet.com/"
+      },
+    ],
+  },
+  {
+    id: "knowledge",
+    title: "Knowledge Base",
+    description: "Essential resources to master cryptocurrency trading",
+    items: [
+      {
+        id: "basics",
+        title: "Crypto Basics",
+        description: "Learn the fundamentals of blockchain and cryptocurrency.",
+        type: "guide"
+      },
+      {
+        id: "trading",
+        title: "Trading Fundamentals",
+        description: "Master the basics of cryptocurrency trading.",
+        type: "guide"
+      },
+      {
+        id: "security",
+        title: "Security Best Practices",
+        description: "Learn how to secure your crypto assets.",
+        type: "guide"
+      },
+      {
+        id: "ai-trading",
+        title: "AI in Crypto Trading",
+        description: "Understanding AI applications in cryptocurrency trading.",
+        type: "guide"
+      },
+    ],
+  },
   {
     id: "guides",
     title: "Guides",
@@ -96,6 +171,13 @@ const Tools = () => {
             placeholder="Search resources..."
           />
         </div>
+
+        <Alert variant="warning" className="mb-8">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            The tools and resources listed here are external and are not under our responsibility.
+          </AlertDescription>
+        </Alert>
 
         {filteredResources.length > 0 ? (
           <div className="space-y-16">

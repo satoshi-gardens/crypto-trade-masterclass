@@ -1,7 +1,7 @@
 import { Resource } from "@/types/resources";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
-import { FileText, Video, Wrench } from "lucide-react";
+import { FileText, Video, Wrench, Link2, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 interface ResourceCardProps {
@@ -10,7 +10,11 @@ interface ResourceCardProps {
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
   const handleViewResource = () => {
-    toast.success("Resource access initiated. You will be contacted shortly.");
+    if (resource.link) {
+      window.open(resource.link, "_blank");
+    } else {
+      toast.success("Resource access initiated. You will be contacted shortly.");
+    }
   };
 
   const getIcon = () => {
@@ -21,6 +25,10 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
         return <Video className="h-6 w-6" />;
       case "tool":
         return <Wrench className="h-6 w-6" />;
+      case "exchange":
+        return <Link2 className="h-6 w-6" />;
+      case "wallet":
+        return <Wallet className="h-6 w-6" />;
       default:
         return null;
     }
@@ -39,7 +47,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       </CardContent>
       <CardFooter>
         <Button onClick={handleViewResource} className="w-full">
-          Learn More
+          {resource.link ? "Visit" : "Learn More"}
         </Button>
       </CardFooter>
     </Card>

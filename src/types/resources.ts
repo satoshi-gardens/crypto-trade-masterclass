@@ -1,10 +1,11 @@
-export type ResourceType = "guide" | "video" | "tool";
+export type ResourceType = "guide" | "video" | "tool" | "exchange" | "wallet";
 
 export interface Resource {
   id: string;
   title: string;
   description: string;
   type: ResourceType;
+  link?: string;
 }
 
 export interface ResourceCategory {
