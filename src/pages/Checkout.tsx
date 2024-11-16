@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
@@ -40,6 +40,7 @@ const Checkout = () => {
       country: "",
       agreement: false,
     },
+    mode: "onChange", // Enable real-time validation
   });
 
   const onSubmit = (data: CheckoutFormValues) => {
@@ -88,18 +89,35 @@ const Checkout = () => {
             <PersonalInfoFields form={form} />
             <LocationFields form={form} />
 
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="agreement"
-                checked={form.watch("agreement")}
-                onCheckedChange={(checked) => form.setValue("agreement", checked as boolean)}
-              />
-              <label htmlFor="agreement" className="text-sm">
-                I understand that payment must be completed within 7 days to secure my spot.
-              </label>
-            </div>
+            <FormField
+              control={form.control}
+              name="agreement"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <label
+                      htmlFor="agreement"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I understand that payment must be completed within 7 days to secure my spot.
+                    </label>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
 
-            <Button type="submit" className="w-full">
+            <Button 
+              type="submit" 
+              className="w-full"
+              disabled={!form.formState.isValid}
+            >
               Confirm and Get Payment Instructions
             </Button>
           </form>
