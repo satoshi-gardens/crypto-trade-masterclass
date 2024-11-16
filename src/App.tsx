@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Courses from "./pages/Courses";
 import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
+import LoopMethod from "./pages/LoopMethod";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/courses" element={<Courses />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/loop-method" element={<LoopMethod />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
