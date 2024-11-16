@@ -40,7 +40,7 @@ const Contact = () => {
       phone: "",
       city: "",
       country: "",
-      purpose: "",
+      purpose: "general", // Changed from "" to "general"
       message: "",
     },
   });
