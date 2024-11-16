@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Wrench, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import TestimonialCard from "@/components/TestimonialCard";
 import PageLayout from "@/components/PageLayout";
+import LoopMethod from "@/components/LoopMethod";
+import ModuleCarousel from "@/components/ModuleCarousel";
 
 const Index = () => {
   return (
@@ -36,45 +38,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            Why Choose Us?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <BookOpen className="w-12 h-12 text-primary" />,
-                title: "LOOP Method",
-                description:
-                  "A proven approach to profitable trading.",
-              },
-              {
-                icon: <Users className="w-12 h-12 text-primary" />,
-                title: "Expert Training",
-                description:
-                  "Guidance from experienced traders.",
-              },
-              {
-                icon: <Wrench className="w-12 h-12 text-primary" />,
-                title: "Tools & Resources",
-                description:
-                  "Access premium resources to grow faster.",
-              },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className="p-6 border rounded-lg hover:shadow-lg transition-shadow"
-              >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* LOOP Method Section */}
+      <LoopMethod />
+
+      {/* Modules Section */}
+      <ModuleCarousel />
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
@@ -86,14 +54,14 @@ const Index = () => {
             <TestimonialCard
               name="Michael S."
               role="Full-time Trader"
-              content="This course transformed my trading journey. Highly recommend!"
-              imageUrl="https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
+              content="This course transformed my trading journey. The LOOP method provided me with a clear framework for success."
+              imageUrl="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
             />
             <TestimonialCard
               name="Sarah K."
               role="Investment Analyst"
-              content="I finally understand crypto trading, thanks to this platform."
-              imageUrl="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+              content="The structured approach and expert guidance helped me build a solid foundation in crypto trading."
+              imageUrl="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
             />
           </div>
         </div>
