@@ -3,8 +3,9 @@ import PageLayout from "@/components/PageLayout";
 import ResourceList from "@/components/ResourceList";
 import ToolsSearch from "@/components/tools/ToolsSearch";
 import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
-import Hero from "@/components/Hero";
+import ToolsHeader from "@/components/tools/ToolsHeader";
 import { ResourceCategory } from "@/types/resources";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const RESOURCES_DATA: ResourceCategory[] = [
   {
@@ -17,7 +18,14 @@ const RESOURCES_DATA: ResourceCategory[] = [
         title: "Binance",
         description: "World's largest crypto exchange. Get 10% fee discount with our referral.",
         type: "exchange",
-        link: "https://accounts.binance.com/register?ref=YOUR_REFERRAL_CODE"
+        link: "https://bit.ly/40qDhAQ"
+      },
+      {
+        id: "bybit",
+        title: "Bybit",
+        description: "Professional crypto derivatives exchange platform.",
+        type: "exchange",
+        link: "https://bit.ly/2NAQ2UZ"
       },
       {
         id: "kucoin",
@@ -29,10 +37,43 @@ const RESOURCES_DATA: ResourceCategory[] = [
     ],
   },
   {
+    id: "tools",
+    title: "Trading Tools",
+    description: "Essential tools for successful trading",
+    items: [
+      {
+        id: "tradingview",
+        title: "TradingView",
+        description: "Professional-grade charts and analysis tools.",
+        type: "tool",
+        link: "https://bit.ly/3C8mECf"
+      },
+      {
+        id: "profit-calc",
+        title: "Profit Calculator",
+        description: "Estimate your potential gains.",
+        type: "tool",
+      },
+      {
+        id: "portfolio-tracker",
+        title: "Portfolio Tracker",
+        description: "Keep track of your investments.",
+        type: "tool",
+      },
+    ],
+  },
+  {
     id: "wallets",
     title: "Wallets",
     description: "Secure cryptocurrency wallets for storing your assets",
     items: [
+      {
+        id: "rabby",
+        title: "Rabby Wallet",
+        description: "Modern Web3 wallet with enhanced security features.",
+        type: "wallet",
+        link: "https://rabby.io/"
+      },
       {
         id: "metamask",
         title: "MetaMask",
@@ -153,25 +194,56 @@ const Tools = () => {
 
   return (
     <PageLayout>
-      <Hero
-        title="Tools and Resources for Profitable Trading"
-        subtitle="Explore our curated collection of guides, videos, and tools designed to help you trade smarter and achieve your financial goals"
-      />
+      <ToolsHeader />
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
         <ToolsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <ToolsDisclaimer />
 
-        {filteredResources.length > 0 ? (
-          <div className="space-y-16 animate-fade-in">
-            {filteredResources.map((category) => (
-              <ResourceList key={category.id} category={category} />
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="w-full flex flex-wrap justify-start mb-8 bg-background">
+            <TabsTrigger value="all" className="flex-grow sm:flex-grow-0">All</TabsTrigger>
+            {RESOURCES_DATA.map((category) => (
+              <TabsTrigger 
+                key={category.id} 
+                value={category.id}
+                className="flex-grow sm:flex-grow-0"
+              >
+                {category.title}
+              </TabsTrigger>
             ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 bg-accent/5 rounded-lg">
-            <p className="text-xl text-gray-600">No resources found</p>
-          </div>
-        )}
+          </TabsList>
+
+          <TabsContent value="all">
+            {filteredResources.length > 0 ? (
+              <div className="space-y-16 animate-fade-in">
+                {filteredResources.map((category) => (
+                  <ResourceList key={category.id} category={category} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-accent/5 rounded-lg">
+                <p className="text-xl text-gray-600">No resources found</p>
+              </div>
+            )}
+          </TabsContent>
+
+          {RESOURCES_DATA.map((category) => (
+            <TabsContent key={category.id} value={category.id}>
+              <div className="animate-fade-in">
+                <ResourceList 
+                  category={{
+                    ...category,
+                    items: category.items.filter(
+                      (item) =>
+                        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+                    ),
+                  }} 
+                />
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
     </PageLayout>
   );
