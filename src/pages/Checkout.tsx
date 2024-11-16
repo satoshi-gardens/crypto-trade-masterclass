@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -43,7 +43,6 @@ const Checkout = () => {
   });
 
   const onSubmit = (data: CheckoutFormValues) => {
-    // Here you would typically send the data to your backend
     toast.success("Application submitted successfully!");
     navigate("/thank-you", {
       state: {

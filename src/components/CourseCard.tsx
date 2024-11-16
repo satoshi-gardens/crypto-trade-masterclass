@@ -7,10 +7,11 @@ interface CourseCardProps {
   description: string;
   duration: number;
   price: number;
-  packageType: string;
+  packageType?: string;
+  onBook?: () => void;
 }
 
-const CourseCard = ({ title, description, duration, price, packageType }: CourseCardProps) => {
+const CourseCard = ({ title, description, duration, price, packageType, onBook }: CourseCardProps) => {
   const navigate = useNavigate();
 
   const handleApply = () => {
