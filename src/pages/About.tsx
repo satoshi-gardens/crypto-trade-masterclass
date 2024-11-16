@@ -3,6 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Hero from "@/components/Hero";
 
 const About = () => {
   const navigate = useNavigate();
@@ -31,6 +32,10 @@ const About = () => {
 
   return (
     <PageLayout>
+      <Hero
+        title="About Us"
+        subtitle="Learn about our journey and commitment to crypto education"
+      />
       <div className="container mx-auto px-4 py-12 space-y-16">
         {/* Course Section */}
         <section>

@@ -9,6 +9,7 @@ import { contactFormSchema, type ContactFormValues } from "@/lib/validations/con
 import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
 import InquiryFields from "@/components/contact/InquiryFields";
+import Hero from "@/components/Hero";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +48,10 @@ const Contact = () => {
 
   return (
     <PageLayout>
+      <Hero
+        title="Contact Us"
+        subtitle="Have questions? We're here to help you succeed"
+      />
       <div className="container max-w-2xl mx-auto px-4 py-12">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">

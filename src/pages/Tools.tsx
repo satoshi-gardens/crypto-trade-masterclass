@@ -4,6 +4,7 @@ import ResourceList from "@/components/ResourceList";
 import ToolsHeader from "@/components/tools/ToolsHeader";
 import ToolsSearch from "@/components/tools/ToolsSearch";
 import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
+import Hero from "@/components/Hero";
 import { ResourceCategory } from "@/types/resources";
 
 const RESOURCES_DATA: ResourceCategory[] = [
@@ -153,6 +154,10 @@ const Tools = () => {
 
   return (
     <PageLayout>
+      <Hero
+        title="Tools & Resources"
+        subtitle="Everything you need to succeed in crypto trading"
+      />
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
         <ToolsHeader />
         <ToolsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />

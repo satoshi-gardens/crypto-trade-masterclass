@@ -2,6 +2,7 @@ import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import SearchBar from "@/components/SearchBar";
 import CourseList from "@/components/CourseList";
+import Hero from "@/components/Hero";
 import type { Course } from "@/components/CourseList";
 
 // Placeholder data - will be replaced with API call
@@ -27,6 +28,10 @@ const Courses = () => {
 
   return (
     <PageLayout>
+      <Hero
+        title="Our Courses"
+        subtitle="Comprehensive crypto trading education for all skill levels"
+      />
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Explore Our Courses</h1>
