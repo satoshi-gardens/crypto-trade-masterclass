@@ -1,10 +1,10 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
-import SearchBar from "@/components/SearchBar";
 import ResourceList from "@/components/ResourceList";
+import ToolsHeader from "@/components/tools/ToolsHeader";
+import ToolsSearch from "@/components/tools/ToolsSearch";
+import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
 import { ResourceCategory } from "@/types/resources";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
 
 const RESOURCES_DATA: ResourceCategory[] = [
   {
@@ -153,40 +153,19 @@ const Tools = () => {
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-6 py-12">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
-            Tools and Resources for Profitable Trading
-          </h1>
-          <p className="text-xl text-gray-600">
-            Explore our curated collection of guides, videos, and tools designed to
-            help you trade smarter and achieve your financial goals.
-          </p>
-        </div>
-
-        <div className="max-w-xl mx-auto mb-12">
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search resources..."
-          />
-        </div>
-
-        <Alert variant="destructive" className="mb-8">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            The tools and resources listed here are external and are not under our responsibility.
-          </AlertDescription>
-        </Alert>
+      <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
+        <ToolsHeader />
+        <ToolsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <ToolsDisclaimer />
 
         {filteredResources.length > 0 ? (
-          <div className="space-y-16">
+          <div className="space-y-16 animate-fade-in">
             {filteredResources.map((category) => (
               <ResourceList key={category.id} category={category} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
+          <div className="text-center py-12 bg-accent/5 rounded-lg">
             <p className="text-xl text-gray-600">No resources found</p>
           </div>
         )}
