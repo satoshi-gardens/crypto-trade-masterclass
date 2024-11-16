@@ -4,11 +4,11 @@ export const contactFormSchema = z.object({
   firstName: z
     .string()
     .min(1, "First name is required")
-    .regex(/^[a-zA-Z\s]*$/, "First name must contain only letters"),
+    .regex(/^[a-zA-ZÀ-ÿ\s]*$/, "First name must contain only letters"),
   lastName: z
     .string()
     .min(1, "Last name is required")
-    .regex(/^[a-zA-Z\s]*$/, "Last name must contain only letters"),
+    .regex(/^[a-zA-ZÀ-ÿ\s]*$/, "Last name must contain only letters"),
   email: z
     .string()
     .min(1, "Email is required")
@@ -24,7 +24,7 @@ export const contactFormSchema = z.object({
   city: z
     .string()
     .min(1, "City is required")
-    .regex(/^[a-zA-Z\s]*$/, "City must contain only letters"),
+    .regex(/^[a-zA-ZÀ-ÿ\s]*$/, "City name must contain only letters"),
   country: z.string().min(1, "Country is required"),
   purpose: z.enum(["general", "enrollment", "support", "partnership"], {
     required_error: "Please select a contact purpose",
@@ -35,3 +35,5 @@ export const contactFormSchema = z.object({
     .max(500, "Message must not exceed 500 characters")
     .regex(/^[^<>]*$/, "HTML tags are not allowed"),
 });
+
+export type ContactFormValues = z.infer<typeof contactFormSchema>;
