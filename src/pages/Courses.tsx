@@ -29,17 +29,10 @@ const Courses = () => {
   return (
     <PageLayout>
       <Hero
-        title="Our Courses"
-        subtitle="Comprehensive crypto trading education for all skill levels"
+        title="Explore Our Courses"
+        subtitle="Choose from a range of courses designed to help you master crypto trading"
       />
       <div className="container mx-auto px-6 py-12">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Explore Our Courses</h1>
-          <p className="text-xl text-gray-600">
-            Choose from a range of courses designed to help you master crypto trading.
-          </p>
-        </div>
-
         <div className="max-w-md mx-auto mb-12">
           <SearchBar
             value={searchQuery}

@@ -50,18 +50,9 @@ const Contact = () => {
     <PageLayout>
       <Hero
         title="Contact Us"
-        subtitle="Have questions? We're here to help you succeed"
+        subtitle="Have questions? We'd love to hear from you"
       />
       <div className="container max-w-2xl mx-auto px-4 py-12">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Contact Us
-          </h1>
-          <p className="text-xl text-gray-600">
-            Have questions? We'd love to hear from you.
-          </p>
-        </div>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <PersonalInfoFields form={form} />

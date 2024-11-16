@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import ResourceList from "@/components/ResourceList";
-import ToolsHeader from "@/components/tools/ToolsHeader";
 import ToolsSearch from "@/components/tools/ToolsSearch";
 import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
 import Hero from "@/components/Hero";
@@ -155,11 +154,10 @@ const Tools = () => {
   return (
     <PageLayout>
       <Hero
-        title="Tools & Resources"
-        subtitle="Everything you need to succeed in crypto trading"
+        title="Tools and Resources for Profitable Trading"
+        subtitle="Explore our curated collection of guides, videos, and tools designed to help you trade smarter and achieve your financial goals"
       />
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
-        <ToolsHeader />
         <ToolsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <ToolsDisclaimer />
 
