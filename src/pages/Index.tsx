@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Wrench, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import TestimonialCard from "@/components/TestimonialCard";
+import PageLayout from "@/components/PageLayout";
 
 const Index = () => {
   return (
-    <div className="pt-16">
+    <PageLayout>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-accent to-primary py-20 text-white">
         <div className="container mx-auto px-6 animate-fade-in">
@@ -82,31 +84,18 @@ const Index = () => {
             Success Stories
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
-            {[
-              {
-                name: "Sarah Johnson",
-                role: "Full-time Trader",
-                content:
-                  "The LOOP Method changed my approach to trading. I'm now consistently profitable and have achieved financial freedom.",
-              },
-              {
-                name: "Michael Chen",
-                role: "Investment Analyst",
-                content:
-                  "The course provided me with a solid foundation in crypto trading. The tools and community support are invaluable.",
-              },
-            ].map((testimonial, index) => (
-              <div
-                key={index}
-                className="p-6 bg-white rounded-lg shadow-md"
-              >
-                <p className="text-gray-600 mb-4">"{testimonial.content}"</p>
-                <div>
-                  <p className="font-semibold">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
-                </div>
-              </div>
-            ))}
+            <TestimonialCard
+              name="Sarah Johnson"
+              role="Full-time Trader"
+              content="The LOOP Method changed my approach to trading. I'm now consistently profitable and have achieved financial freedom."
+              imageUrl="https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
+            />
+            <TestimonialCard
+              name="Michael Chen"
+              role="Investment Analyst"
+              content="The course provided me with a solid foundation in crypto trading. The tools and community support are invaluable."
+              imageUrl="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+            />
           </div>
         </div>
       </section>
@@ -132,7 +121,7 @@ const Index = () => {
           </Button>
         </div>
       </section>
-    </div>
+    </PageLayout>
   );
 };
 
