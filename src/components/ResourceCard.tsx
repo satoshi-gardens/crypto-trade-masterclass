@@ -1,7 +1,7 @@
 import { Resource } from "@/types/resources";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
-import { FileText, Video, Tool } from "lucide-react";
+import { FileText, Video, Wrench } from "lucide-react";
 import { toast } from "sonner";
 
 interface ResourceCardProps {
@@ -20,7 +20,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
       case "video":
         return <Video className="h-6 w-6" />;
       case "tool":
-        return <Tool className="h-6 w-6" />;
+        return <Wrench className="h-6 w-6" />;
       default:
         return null;
     }
