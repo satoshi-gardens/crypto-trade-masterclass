@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface PricingCardProps {
   title: string;
@@ -25,6 +25,18 @@ export const PricingCard = ({
   maxStudents,
   additionalHourlyRate
 }: PricingCardProps) => {
+  const navigate = useNavigate();
+
+  const handleApply = () => {
+    navigate("/checkout", {
+      state: {
+        courseTitle: title,
+        packageType: title,
+        price: discountedPrice,
+      },
+    });
+  };
+
   return (
     <Card className={`relative ${isPopular ? 'border-primary shadow-lg scale-105' : ''}`}>
       {isPopular && (
@@ -58,8 +70,8 @@ export const PricingCard = ({
             </li>
           ))}
         </ul>
-        <Button asChild className="w-full">
-          <Link to="/contact">Apply Now</Link>
+        <Button onClick={handleApply} className="w-full">
+          Apply Now
         </Button>
       </CardContent>
     </Card>
