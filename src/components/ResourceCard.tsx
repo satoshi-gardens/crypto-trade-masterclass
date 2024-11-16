@@ -3,17 +3,26 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { FileText, Video, Wrench, Link2, Wallet } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface ResourceCardProps {
   resource: Resource;
 }
 
 const ResourceCard = ({ resource }: ResourceCardProps) => {
+  const navigate = useNavigate();
+
   const handleViewResource = () => {
-    if (resource.link) {
-      window.open(resource.link, "_blank");
-    } else {
+    if (!resource.link) {
       toast.success("Resource access initiated. You will be contacted shortly.");
+      return;
+    }
+
+    // Check if the link is internal (starts with '/')
+    if (resource.link.startsWith('/')) {
+      navigate(resource.link);
+    } else {
+      window.open(resource.link, "_blank");
     }
   };
 
