@@ -12,18 +12,17 @@ const Index = () => {
         <div className="container mx-auto px-6 animate-fade-in">
           <div className="max-w-3xl">
             <h1 className="text-5xl font-bold mb-6">
-              Master Crypto Trading for Sustainable Profits
+              Start Trading Crypto Profitably in 2 Weeks
             </h1>
             <p className="text-xl mb-8">
-              Learn proven strategies, risk management, and the unique LOOP Method
-              to build lasting wealth through cryptocurrency trading.
+              Learn from experts with proven methods
             </p>
             <div className="space-x-4">
               <Button
                 asChild
                 className="bg-secondary hover:bg-secondary/90 text-white"
               >
-                <Link to="/courses">Start Learning</Link>
+                <Link to="/courses">Explore Courses</Link>
               </Button>
               <Button
                 asChild
@@ -41,27 +40,27 @@ const Index = () => {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12">
-            Why Choose Our Program?
+            Why Choose Us?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 icon: <BookOpen className="w-12 h-12 text-primary" />,
-                title: "Comprehensive Curriculum",
+                title: "LOOP Method",
                 description:
-                  "From basics to advanced strategies, learn everything you need to succeed in crypto trading.",
-              },
-              {
-                icon: <Wrench className="w-12 h-12 text-primary" />,
-                title: "Professional Tools",
-                description:
-                  "Access premium trading tools and resources used by successful traders.",
+                  "A proven approach to profitable trading.",
               },
               {
                 icon: <Users className="w-12 h-12 text-primary" />,
-                title: "Expert Mentorship",
+                title: "Expert Training",
                 description:
-                  "Learn from experienced traders who have mastered the markets.",
+                  "Guidance from experienced traders.",
+              },
+              {
+                icon: <Wrench className="w-12 h-12 text-primary" />,
+                title: "Tools & Resources",
+                description:
+                  "Access premium resources to grow faster.",
               },
             ].map((feature, index) => (
               <div
@@ -81,19 +80,19 @@ const Index = () => {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-12">
-            Success Stories
+            What Our Students Say
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <TestimonialCard
-              name="Sarah Johnson"
+              name="Michael S."
               role="Full-time Trader"
-              content="The LOOP Method changed my approach to trading. I'm now consistently profitable and have achieved financial freedom."
+              content="This course transformed my trading journey. Highly recommend!"
               imageUrl="https://images.unsplash.com/photo-1649972904349-6e44c42644a7"
             />
             <TestimonialCard
-              name="Michael Chen"
+              name="Sarah K."
               role="Investment Analyst"
-              content="The course provided me with a solid foundation in crypto trading. The tools and community support are invaluable."
+              content="I finally understand crypto trading, thanks to this platform."
               imageUrl="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
             />
           </div>
@@ -104,7 +103,7 @@ const Index = () => {
       <section className="py-20 bg-primary text-white">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-4xl font-bold mb-6">
-            Ready to Start Your Trading Journey?
+            Ready to Start Trading?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join our community of successful traders and learn the strategies that
@@ -116,7 +115,7 @@ const Index = () => {
             className="bg-white text-primary hover:bg-white/90"
           >
             <Link to="/courses">
-              Explore Courses <ArrowRight className="ml-2" />
+              Get Started Now <ArrowRight className="ml-2" />
             </Link>
           </Button>
         </div>
