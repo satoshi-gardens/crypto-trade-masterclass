@@ -9,6 +9,8 @@ import Courses from "./pages/Courses";
 import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
 import LoopMethod from "./pages/LoopMethod";
+import Checkout from "./pages/Checkout";
+import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/tools" element={<Tools />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/loop-method" element={<LoopMethod />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/thank-you" element={<ThankYou />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

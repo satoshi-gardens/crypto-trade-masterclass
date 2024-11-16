@@ -1,15 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
   title: string;
   description: string;
   duration: number;
   price: number;
-  onBook: () => void;
+  packageType: string;
 }
 
-const CourseCard = ({ title, description, duration, price, onBook }: CourseCardProps) => {
+const CourseCard = ({ title, description, duration, price, packageType }: CourseCardProps) => {
+  const navigate = useNavigate();
+
+  const handleApply = () => {
+    navigate("/checkout", {
+      state: {
+        courseTitle: title,
+        packageType,
+        price,
+      },
+    });
+  };
+
   return (
     <Card className="flex flex-col h-full animate-fade-in">
       <CardHeader>
@@ -23,7 +36,7 @@ const CourseCard = ({ title, description, duration, price, onBook }: CourseCardP
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={onBook} className="w-full">Book Now</Button>
+        <Button onClick={handleApply} className="w-full">Apply Now</Button>
       </CardFooter>
     </Card>
   );
