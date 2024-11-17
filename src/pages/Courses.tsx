@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/Hero";
-import { CourseTimeline } from "@/components/course/CourseTimeline";
 import { CourseStructure } from "@/components/course/CourseStructure";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { Button } from "@/components/ui/button";
@@ -119,9 +118,6 @@ const Courses = () => {
 
       {/* Course Structure */}
       <CourseStructure />
-
-      {/* Course Timeline */}
-      <CourseTimeline />
 
       {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
