@@ -49,22 +49,22 @@ const Courses = () => {
     <PageLayout>
       <Hero
         title="Transform Your Trading Journey"
-        subtitle="Master cryptocurrency trading with our comprehensive program designed for ambitious individuals."
+        subtitle="Master cryptocurrency trading with our comprehensive program"
         backgroundClass="bg-gradient-to-r from-primary/95 to-secondary/95"
       />
 
       {/* Core Benefits */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Why Choose Our Program?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-gray-900">Why Choose Our Program?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {BENEFITS.map((benefit) => (
               <div key={benefit.title} 
-                className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 animate-fade-in">
-                <benefit.icon className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                className="flex items-start space-x-4 p-4 sm:p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 animate-fade-in">
+                <benefit.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{benefit.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
+                  <h3 className="font-semibold text-base sm:text-lg text-gray-900 mb-2">{benefit.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{benefit.description}</p>
                 </div>
               </div>
             ))}
@@ -78,10 +78,10 @@ const Courses = () => {
       </section>
 
       {/* Packages Section */}
-      <section id="packages" className="py-20 bg-gradient-to-b from-accent to-accent/95">
-        <div className="container mx-auto px-6">
+      <section id="packages" className="py-12 sm:py-20 bg-gradient-to-b from-accent to-accent/95">
+        <div className="container mx-auto px-4 sm:px-6">
           <PricingHeader />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mt-8">
             <PricingCard
               title="Online Training"
               price={12000}
@@ -131,25 +131,25 @@ const Courses = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-white">Take the First Step Toward Financial Freedom</h2>
-          <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
+      <section className="py-12 sm:py-16 bg-primary">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-white">Take the First Step Toward Financial Freedom</h2>
+          <p className="text-base sm:text-xl mb-6 sm:mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
             Join a growing community of successful traders who have mastered the art of cryptocurrency trading.
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Button
               onClick={scrollToPackages}
               variant="secondary"
               size="lg"
-              className="animate-fade-in bg-white text-primary hover:bg-white/90"
+              className="w-full sm:w-auto animate-fade-in bg-white text-primary hover:bg-white/90"
             >
               Explore Packages
             </Button>
             <Button
               onClick={() => navigate("/checkout")}
               size="lg"
-              className="bg-accent text-white hover:bg-accent/90 animate-fade-in"
+              className="w-full sm:w-auto bg-accent text-white hover:bg-accent/90 animate-fade-in"
             >
               Apply Now
             </Button>
@@ -157,7 +157,7 @@ const Courses = () => {
         </div>
       </section>
 
-      <div className="container mx-auto px-6 py-4 text-center text-muted-foreground">
+      <div className="container mx-auto px-4 sm:px-6 py-4 text-center text-muted-foreground text-sm">
         <p>Showing {(currentPage - 1) * 6 + 1}-{Math.min(currentPage * 6, 21)} of 21 modules</p>
       </div>
     </PageLayout>

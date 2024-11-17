@@ -1,21 +1,27 @@
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
+  overflow-x: hidden;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 3em;
+  padding: 0.5em;
   will-change: filter;
   transition: filter 300ms;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+@media (min-width: 640px) {
+  .logo {
+    height: 4em;
+    padding: 0.75em;
+  }
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+.logo:hover {
+  filter: drop-shadow(0 0 1em #FFD700);
 }
 
 @keyframes logo-spin {
@@ -34,9 +40,50 @@
 }
 
 .card {
-  padding: 2em;
+  padding: 1em;
 }
 
-.read-the-docs {
-  color: #888;
+@media (min-width: 640px) {
+  .card {
+    padding: 2em;
+  }
+}
+
+/* Ensure text remains readable on mobile */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* Prevent horizontal overflow */
+.container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Improve touch targets on mobile */
+button, 
+a {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  button, 
+  a {
+    min-height: initial;
+    padding: initial;
+  }
 }
