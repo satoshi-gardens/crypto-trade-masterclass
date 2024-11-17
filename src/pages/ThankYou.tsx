@@ -42,8 +42,8 @@ const ThankYou = () => {
 
   const steps = [
     { title: "Payment Received", status: "pending" },
-    { title: "Course Materials Sent", status: "upcoming" },
-    { title: "First Session Scheduled", status: "upcoming" }
+    { title: "Initial Meeting Scheduled", description: "We'll discuss modalities and program instructions", status: "upcoming" },
+    { title: "First Training Session", description: "Module 1 begins after initial meeting", status: "upcoming" }
   ];
 
   return (
@@ -65,17 +65,22 @@ const ThankYou = () => {
         {/* Progress Timeline */}
         <Card className="mb-8">
           <CardContent className="pt-6">
-            <div className="flex justify-between mb-8">
+            <div className="flex flex-col space-y-6">
               {steps.map((step, index) => (
-                <div key={step.title} className="flex flex-col items-center text-center flex-1">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 ${
+                <div key={step.title} className="flex items-start gap-4">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                     step.status === "pending" ? "bg-primary text-white" : "bg-muted"
                   }`}>
                     {index + 1}
                   </div>
-                  <p className="text-sm">{step.title}</p>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold">{step.title}</h3>
+                    {step.description && (
+                      <p className="text-sm text-muted-foreground">{step.description}</p>
+                    )}
+                  </div>
                   {index < steps.length - 1 && (
-                    <ArrowRight className="absolute -right-4 top-1/2 transform -translate-y-1/2" />
+                    <div className="absolute left-4 w-0.5 h-full bg-muted" />
                   )}
                 </div>
               ))}
