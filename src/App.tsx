@@ -17,6 +17,8 @@ import TradingFundamentals from "./pages/guides/TradingFundamentals";
 import Security from "./pages/guides/Security";
 import CryptoBasicsGuide from "./pages/guides/CryptoBasicsGuide";
 import AdvancedStrategies from "./pages/guides/AdvancedStrategies";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +43,8 @@ const App = () => (
           <Route path="/guides/security" element={<Security />} />
           <Route path="/guides/crypto-basics-guide" element={<CryptoBasicsGuide />} />
           <Route path="/guides/advanced-strategies" element={<AdvancedStrategies />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
