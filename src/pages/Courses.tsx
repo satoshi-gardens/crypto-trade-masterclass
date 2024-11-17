@@ -7,7 +7,6 @@ import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { Brain, Shield, BookOpen, Users, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CHALLENGES = [
   {
@@ -126,57 +125,56 @@ const Courses = () => {
           </div>
         </div>
       </section>
+
       <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <PricingHeader />
-          <ScrollArea className="h-[800px] w-full rounded-md">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8 p-4">
-              <PricingCard
-                title="Online Training"
-                price={12000}
-                discountedPrice={10800}
-                description="Designed for independent learners who value flexibility and small-group dynamics."
-                features={[
-                  "Group-focused virtual sessions (max 5 participants)",
-                  "Coach reachable for inquiries during group time",
-                  "Weekly live online sessions",
-                  "Interactive assignments and quizzes",
-                  "Community access for peer support"
-                ]}
-                maxStudents={5}
-              />
-              <PricingCard
-                title="Premium (In-Person)"
-                price={21600}
-                discountedPrice={19440}
-                description="The ultimate personalized experience for those serious about achieving excellence."
-                features={[
-                  "Tailored one-on-one coaching with unlimited session access",
-                  "Signals provided from the second month",
-                  "Personal support outside regular sessions",
-                  "Direct phone access to trainer",
-                  "Lifetime access to premium resources"
-                ]}
-                isPopular={true}
-                additionalHourlyRate={450}
-              />
-              <PricingCard
-                title="Hybrid Training"
-                price={18000}
-                discountedPrice={16200}
-                description="A perfect balance of personal coaching and peer collaboration."
-                features={[
-                  "Small-group in-person and online sessions",
-                  "Signals provided from the second month",
-                  "Monthly in-person sessions",
-                  "Weekly online group discussions",
-                  "Access to premium tools"
-                ]}
-                maxStudents={5}
-                additionalHourlyRate={450}
-              />
-            </div>
-          </ScrollArea>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <PricingCard
+              title="Online Training"
+              price={12000}
+              discountedPrice={10800}
+              description="Designed for independent learners who value flexibility and small-group dynamics."
+              features={[
+                "Group-focused virtual sessions (max 5 participants)",
+                "Coach reachable for inquiries during group time",
+                "Weekly live online sessions",
+                "Interactive assignments and quizzes",
+                "Community access for peer support"
+              ]}
+              maxStudents={5}
+            />
+            <PricingCard
+              title="Premium (In-Person)"
+              price={21600}
+              discountedPrice={19440}
+              description="The ultimate personalized experience for those serious about achieving excellence."
+              features={[
+                "Tailored one-on-one coaching with unlimited session access",
+                "Signals provided from the second month",
+                "Personal support outside regular sessions",
+                "Direct phone access to trainer",
+                "Lifetime access to premium resources"
+              ]}
+              isPopular={true}
+              additionalHourlyRate={450}
+            />
+            <PricingCard
+              title="Hybrid Training"
+              price={18000}
+              discountedPrice={16200}
+              description="A perfect balance of personal coaching and peer collaboration."
+              features={[
+                "Small-group in-person and online sessions",
+                "Signals provided from the second month",
+                "Monthly in-person sessions",
+                "Weekly online group discussions",
+                "Access to premium tools"
+              ]}
+              maxStudents={5}
+              additionalHourlyRate={450}
+            />
+          </div>
         </div>
       </section>
       <ModuleCarousel />
