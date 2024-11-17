@@ -1,7 +1,6 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/Hero";
-import { CourseStructure } from "@/components/course/CourseStructure";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -49,21 +48,23 @@ const Courses = () => {
   return (
     <PageLayout>
       <Hero
-        title="Why Choose Our Crypto Trading Course?"
-        subtitle="A comprehensive program that blends trading expertise, AI integration, and robust cybersecurity practices to prepare you for the future of finance."
-        backgroundClass="bg-gradient-to-r from-primary/90 to-secondary/90"
+        title="Transform Your Trading Journey"
+        subtitle="Master cryptocurrency trading with our comprehensive program designed for ambitious individuals."
+        backgroundClass="bg-gradient-to-r from-primary/95 to-secondary/95"
       />
 
       {/* Core Benefits */}
-      <section className="py-20 bg-background">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Why Choose Our Program?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {BENEFITS.map((benefit) => (
-              <div key={benefit.title} className="flex items-start space-x-4 p-6 bg-card rounded-lg shadow-sm animate-fade-in">
-                <benefit.icon className="w-6 h-6 text-primary flex-shrink-0" />
+              <div key={benefit.title} 
+                className="flex items-start space-x-4 p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 animate-fade-in">
+                <benefit.icon className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                  <p className="text-muted-foreground">{benefit.description}</p>
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{benefit.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
                 </div>
               </div>
             ))}
@@ -71,8 +72,13 @@ const Courses = () => {
         </div>
       </section>
 
+      {/* Featured Modules */}
+      <section className="bg-gray-50">
+        <ModuleCarousel />
+      </section>
+
       {/* Packages Section */}
-      <section id="packages" className="py-20 bg-accent">
+      <section id="packages" className="py-20 bg-gradient-to-b from-accent to-accent/95">
         <div className="container mx-auto px-6">
           <PricingHeader />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -124,32 +130,26 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Modules Section */}
-      <ModuleCarousel />
-
-      {/* Course Structure */}
-      <CourseStructure />
-
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
+      <section className="py-16 bg-primary">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-6">Take the First Step Toward Financial Freedom</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Enroll today and join a growing community of successful traders who have mastered the art of cryptocurrency trading.
+          <h2 className="text-3xl font-bold mb-6 text-white">Take the First Step Toward Financial Freedom</h2>
+          <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
+            Join a growing community of successful traders who have mastered the art of cryptocurrency trading.
           </p>
           <div className="flex justify-center gap-4">
             <Button
               onClick={scrollToPackages}
               variant="secondary"
               size="lg"
-              className="animate-fade-in"
+              className="animate-fade-in bg-white text-primary hover:bg-white/90"
             >
               Explore Packages
             </Button>
             <Button
               onClick={() => navigate("/checkout")}
               size="lg"
-              className="bg-white text-primary hover:bg-white/90 animate-fade-in"
+              className="bg-accent text-white hover:bg-accent/90 animate-fade-in"
             >
               Apply Now
             </Button>
@@ -157,7 +157,6 @@ const Courses = () => {
         </div>
       </section>
 
-      {/* Pagination Info */}
       <div className="container mx-auto px-6 py-4 text-center text-muted-foreground">
         <p>Showing {(currentPage - 1) * 6 + 1}-{Math.min(currentPage * 6, 21)} of 21 modules</p>
       </div>
