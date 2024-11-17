@@ -3,7 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import ResourceList from "@/components/ResourceList";
 import ToolsSearch from "@/components/tools/ToolsSearch";
 import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
-import ToolsHeader from "@/components/tools/ToolsHeader";
+import Hero from "@/components/Hero";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RESOURCES_DATA } from "@/data/resources";
 
@@ -21,7 +21,12 @@ const Tools = () => {
 
   return (
     <PageLayout>
-      <ToolsHeader />
+      <Hero
+        title="Tools and Resources for Profitable Trading"
+        subtitle="Explore our curated collection of guides, videos, and tools designed to help you trade smarter and achieve your financial goals."
+        backgroundClass="bg-accent"
+      />
+      
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
         <ToolsSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <ToolsDisclaimer />
