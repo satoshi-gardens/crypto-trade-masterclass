@@ -2,6 +2,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
@@ -40,8 +41,15 @@ const Checkout = () => {
       country: "",
       agreement: false,
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
+
+  useEffect(() => {
+    if (!courseTitle || !packageType || !price) {
+      toast.error("Please select a course package to proceed to checkout.");
+      navigate("/courses");
+    }
+  }, [courseTitle, packageType, price, navigate]);
 
   const onSubmit = (data: CheckoutFormValues) => {
     toast.success("Application submitted successfully!");
@@ -54,17 +62,7 @@ const Checkout = () => {
   };
 
   if (!courseTitle || !packageType || !price) {
-    return (
-      <PageLayout>
-        <div className="container mx-auto px-6 py-12 text-center">
-          <h1 className="text-2xl font-bold mb-4">Invalid Checkout Session</h1>
-          <p className="mb-4">Please select a course package first.</p>
-          <Button asChild>
-            <Link to="/courses">View Courses</Link>
-          </Button>
-        </div>
-      </PageLayout>
-    );
+    return null;
   }
 
   return (
