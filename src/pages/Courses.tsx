@@ -5,32 +5,9 @@ import { CourseStructure } from "@/components/course/CourseStructure";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import CourseCard from "@/components/CourseCard";
+import { PricingCard } from "@/components/pricing/PricingCard";
+import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { Brain, Shield, BookOpen, Users, Award } from "lucide-react";
-
-const PACKAGES = [
-  {
-    title: "Premium (In-Person Training)",
-    description: "Intensive in-person training with direct mentorship and personalized guidance.",
-    duration: 24,
-    price: 15000,
-    packageType: "premium"
-  },
-  {
-    title: "Hybrid Training",
-    description: "Blend of online learning and in-person sessions for maximum flexibility.",
-    duration: 24,
-    price: 10000,
-    packageType: "hybrid"
-  },
-  {
-    title: "Online Training",
-    description: "Virtual group sessions with expert instructors and community support.",
-    duration: 24,
-    price: 5000,
-    packageType: "online"
-  }
-];
 
 const BENEFITS = [
   {
@@ -97,18 +74,52 @@ const Courses = () => {
       {/* Packages Section */}
       <section id="packages" className="py-20 bg-accent">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12">Choose Your Learning Path</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {PACKAGES.map((pkg) => (
-              <CourseCard
-                key={pkg.title}
-                title={pkg.title}
-                description={pkg.description}
-                duration={pkg.duration}
-                price={pkg.price}
-                packageType={pkg.packageType}
-              />
-            ))}
+          <PricingHeader />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <PricingCard
+              title="Online Training"
+              price={12000}
+              discountedPrice={10800}
+              description="Designed for independent learners who value flexibility and small-group dynamics."
+              features={[
+                "Group-focused virtual sessions (max 5 participants)",
+                "Coach reachable for inquiries during group time",
+                "Weekly live online sessions",
+                "Interactive assignments and quizzes",
+                "Community access for peer support"
+              ]}
+              maxStudents={5}
+            />
+            <PricingCard
+              title="Premium (In-Person)"
+              price={21600}
+              discountedPrice={19440}
+              description="The ultimate personalized experience for those serious about achieving excellence."
+              features={[
+                "Tailored one-on-one coaching with unlimited session access",
+                "Signals provided from the second month",
+                "Personal support outside regular sessions",
+                "Direct phone access to trainer",
+                "Lifetime access to premium resources"
+              ]}
+              isPopular={true}
+              additionalHourlyRate={450}
+            />
+            <PricingCard
+              title="Hybrid Training"
+              price={18000}
+              discountedPrice={16200}
+              description="A perfect balance of personal coaching and peer collaboration."
+              features={[
+                "Small-group in-person and online sessions",
+                "Signals provided from the second month",
+                "Monthly in-person sessions",
+                "Weekly online group discussions",
+                "Access to premium tools"
+              ]}
+              maxStudents={5}
+              additionalHourlyRate={450}
+            />
           </div>
         </div>
       </section>
