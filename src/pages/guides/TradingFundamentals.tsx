@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const TradingFundamentals = () => {
+  const breadcrumbItems = [
+    { label: "Tools", href: "/tools" },
+    { label: "Knowledge Base", href: "/tools#knowledge" },
+    { label: "Trading Fundamentals", href: "/guides/trading-fundamentals" },
+  ];
+
   return (
     <PageLayout>
+      <Breadcrumb items={breadcrumbItems} />
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold mb-6">Trading Fundamentals</h1>
         <div className="prose max-w-none">

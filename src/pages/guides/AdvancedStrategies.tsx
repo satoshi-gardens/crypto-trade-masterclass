@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const AdvancedStrategies = () => {
+  const breadcrumbItems = [
+    { label: "Tools", href: "/tools" },
+    { label: "Guides", href: "/tools#guides" },
+    { label: "Advanced Strategies", href: "/guides/advanced-strategies" },
+  ];
+
   return (
     <PageLayout>
+      <Breadcrumb items={breadcrumbItems} />
       <div className="container mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold mb-6">Advanced Trading Strategies</h1>
         <div className="prose max-w-none">
