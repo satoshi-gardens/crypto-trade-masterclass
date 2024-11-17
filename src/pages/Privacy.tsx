@@ -25,20 +25,40 @@ const Privacy = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">2. Cookie Policy</h2>
+            <h2 className="text-2xl font-semibold mb-4">2. Analytics and Tracking</h2>
+            <p className="mb-4">
+              We use Google Analytics to analyze the use of our website. Google Analytics gathers information about website use by means of cookies. The information gathered relating to our website is used to create reports about the use of our website.
+            </p>
+            <p className="mb-4">
+              Google Analytics collects information such as:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Your IP address (anonymized)</li>
+              <li>The pages you visit on our website</li>
+              <li>How long you spend on each page</li>
+              <li>How you got to the site</li>
+              <li>What you click on while you're visiting the site</li>
+            </ul>
+            <p className="mb-4">
+              You can opt-out of Google Analytics tracking by using the Google Analytics Opt-out Browser Add-on or by managing your cookie preferences in your browser settings.
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">3. Cookie Policy</h2>
             <p className="mb-4">
               Our website uses cookies and similar technologies to enhance your browsing experience. We use:
             </p>
             <ul className="list-disc pl-6 mb-4">
               <li>Essential cookies for website functionality</li>
-              <li>Analytics cookies to understand how visitors use our site</li>
+              <li>Analytics cookies (including Google Analytics) to understand how visitors use our site</li>
               <li>Preference cookies to remember your settings</li>
             </ul>
             <p>You can control cookie settings through your browser preferences.</p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">3. Information We Collect</h2>
+            <h2 className="text-2xl font-semibold mb-4">4. Information We Collect</h2>
             <p className="mb-4">
               We collect information that you provide directly to us, including:
             </p>
@@ -47,11 +67,12 @@ const Privacy = () => {
               <li>Payment information (processed securely through our payment providers)</li>
               <li>Course progress and interaction data</li>
               <li>Communication preferences</li>
+              <li>Usage data through analytics tools</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">4. Your Data Rights</h2>
+            <h2 className="text-2xl font-semibold mb-4">5. Your Data Rights</h2>
             <p className="mb-4">
               Under GDPR, you have the following rights:
             </p>
@@ -66,14 +87,14 @@ const Privacy = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">5. Data Retention</h2>
+            <h2 className="text-2xl font-semibold mb-4">6. Data Retention</h2>
             <p className="mb-4">
               We retain your personal data only for as long as necessary to provide you with our services and as described in this privacy policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our agreements.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">6. Contact Us</h2>
+            <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
             <p>
               For any privacy-related questions or to exercise your data rights, please contact our Data Protection Officer at:
               privacy@cryptotrading4profits.com
