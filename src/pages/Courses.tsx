@@ -62,14 +62,29 @@ const Courses = () => {
 
   return (
     <PageLayout>
-      {/* Hero Section with Problem Statement */}
-      <Hero
-        title="Master Cryptocurrency Trading"
-        subtitle="Transform market complexity into profitable opportunities"
-        backgroundClass="bg-gradient-to-r from-primary/95 to-secondary/95"
-      />
+      {/* Enhanced Hero Section */}
+      <section className="relative bg-gradient-to-r from-primary/95 to-secondary/95 py-24">
+        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.5))] pointer-events-none" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-md">
+              Master Cryptocurrency Trading
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
+              Transform market complexity into profitable opportunities with our comprehensive trading courses
+            </p>
+            <Button 
+              onClick={scrollToPackages}
+              size="lg" 
+              className="bg-white text-primary hover:bg-white/90 font-semibold text-lg px-8 py-6"
+            >
+              Explore Our Courses
+            </Button>
+          </div>
+        </div>
+      </section>
 
-      {/* Challenges Section */}
+      {/* Rest of the sections */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Common Trading Challenges</h2>
@@ -91,8 +106,6 @@ const Courses = () => {
           </div>
         </div>
       </section>
-
-      {/* Solution/Benefits Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -113,8 +126,6 @@ const Courses = () => {
           </div>
         </div>
       </section>
-
-      {/* Pricing Section - Moved above Featured Modules */}
       <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <PricingHeader />
@@ -168,10 +179,7 @@ const Courses = () => {
           </ScrollArea>
         </div>
       </section>
-
-      {/* Featured Modules Carousel */}
       <ModuleCarousel />
-
       <div className="container mx-auto px-4 py-4 text-center text-muted-foreground text-sm">
         <p>Showing {(currentPage - 1) * 6 + 1}-{Math.min(currentPage * 6, 21)} of 21 modules</p>
       </div>
