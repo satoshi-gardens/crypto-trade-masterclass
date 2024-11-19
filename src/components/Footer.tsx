@@ -9,6 +9,32 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Anti-spam email protection
+  const emailParts = {
+    user: "trading4profits",
+    domain: "bit2big.com"
+  };
+
+  const constructEmail = () => {
+    return `${emailParts.user}@${emailParts.domain}`;
+  };
+
+  const handleEmailClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = `mailto:${constructEmail()}`;
+  };
+
+  // Phone number protection
+  const phoneDigits = "+41783095701";
+  const formatPhone = () => {
+    return "+41 78 309 57 01";
+  };
+
+  const handlePhoneClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.location.href = `tel:${phoneDigits}`;
+  };
+
   return (
     <footer className="bg-accent text-white pt-12 pb-6 mt-auto">
       <div className="container mx-auto px-6">
@@ -16,10 +42,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Branding Section */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold">Crypto Trading 4 Profits</h3>
+            <h3 className="text-xl font-bold">KY Connect</h3>
             <p className="text-sm text-gray-300">Empowering Profitable Trading</p>
             <p className="text-sm text-gray-300">
-              © {currentYear} Crypto Trading 4 Profits. All rights reserved.
+              © {currentYear} KY Connect. All rights reserved.
             </p>
           </div>
 
@@ -39,9 +65,30 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold">Contact Us</h4>
             <div className="space-y-2 text-sm text-gray-300">
-              <p>Email: info@cryptotrading4profits.com</p>
-              <p>Phone: +123 456 7890</p>
-              <p>123 Crypto Lane<br />Zurich, Switzerland</p>
+              <p>
+                <a
+                  href="#"
+                  onClick={handleEmailClick}
+                  className="hover:text-primary transition-colors"
+                  data-email="contact"
+                >
+                  Email Us
+                </a>
+              </p>
+              <p>
+                <a
+                  href="#"
+                  onClick={handlePhoneClick}
+                  className="hover:text-primary transition-colors"
+                >
+                  {formatPhone()}
+                </a>
+              </p>
+              <address className="not-italic">
+                Turbinenstrasse 31<br />
+                8005 Zürich<br />
+                Switzerland
+              </address>
             </div>
           </div>
 
@@ -67,6 +114,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
+
         </div>
 
         {/* Legal Links */}
