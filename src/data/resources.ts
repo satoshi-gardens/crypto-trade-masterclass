@@ -55,6 +55,34 @@ export const RESOURCES_DATA: ResourceCategory[] = [
         type: "tool",
         link: "https://c25.dev.bit2big.com/"
       },
+      {
+        id: "sentinel",
+        title: "Sentinel Wallet Guard",
+        description: "Advanced wallet security monitoring and alerts.",
+        type: "tool",
+        link: "https://sentinel.com"
+      },
+      {
+        id: "cryptkeeper",
+        title: "CryptKeeper",
+        description: "Multi-signature wallet security solution.",
+        type: "tool",
+        link: "https://cryptkeeper.com"
+      },
+      {
+        id: "tradingai",
+        title: "TradingAI Pro",
+        description: "AI-powered trading signals and analysis.",
+        type: "tool",
+        link: "https://tradingai.pro"
+      },
+      {
+        id: "marketai",
+        title: "Market AI Scanner",
+        description: "AI market sentiment analysis tool.",
+        type: "tool",
+        link: "https://marketai.com"
+      }
     ],
   },
   {
@@ -139,6 +167,41 @@ export const RESOURCES_DATA: ResourceCategory[] = [
         type: "guide",
         link: "/guides/advanced-strategies"
       },
+    ],
+  },
+  {
+    id: "books",
+    title: "Trading Books",
+    description: "Essential reading for crypto traders",
+    items: [
+      {
+        id: "technical-analysis",
+        title: "Technical Analysis of Financial Markets",
+        description: "By John J. Murphy - The bible of technical analysis.",
+        type: "guide",
+        link: "https://amzn.to/technical-analysis"
+      },
+      {
+        id: "trading-psychology",
+        title: "Trading in the Zone",
+        description: "By Mark Douglas - Master the psychology of trading.",
+        type: "guide",
+        link: "https://amzn.to/trading-zone"
+      },
+      {
+        id: "crypto-assets",
+        title: "Cryptoassets",
+        description: "By Chris Burniske - The innovative investor's guide to Bitcoin and beyond.",
+        type: "guide",
+        link: "https://amzn.to/cryptoassets"
+      },
+      {
+        id: "market-wizards",
+        title: "Market Wizards",
+        description: "By Jack D. Schwager - Interviews with top traders.",
+        type: "guide",
+        link: "https://amzn.to/market-wizards"
+      }
     ],
   }
 ];

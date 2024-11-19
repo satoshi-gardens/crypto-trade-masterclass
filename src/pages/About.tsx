@@ -10,7 +10,7 @@ const About = () => {
 
   const achievements = [
     "Creator of the LOOP (Live On yOur Profits) Method",
-    "Featured speaker at Blockchance, a leading blockchain conference in Europe",
+    "Featured speaker at multiple blockchain conferences in Europe",
     "Profiled in Spiegel Germany",
     "TEDx Speaker on the future of finance and cryptocurrency",
   ];
