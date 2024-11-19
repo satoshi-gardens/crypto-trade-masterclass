@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter, ArrowUp } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -21,7 +22,7 @@ const Footer = () => {
 
   const handleEmailClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.location.href = `mailto:${constructEmail()}`;
+    navigate('/contact');
   };
 
   // Phone number protection
