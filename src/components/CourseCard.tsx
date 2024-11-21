@@ -25,19 +25,24 @@ const CourseCard = ({ title, description, duration, price, packageType, onBook }
   };
 
   return (
-    <Card className="flex flex-col h-full animate-fade-in">
-      <CardHeader>
-        <CardTitle className="text-xl">{title}</CardTitle>
+    <Card className="flex flex-col h-full animate-fade-up glass-card hover:shadow-xl transition-all duration-300">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl text-gray-900">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-gray-600 mb-4">{description}</p>
-        <div className="space-y-2">
-          <p className="text-sm"><span className="font-semibold">Duration:</span> {duration} weeks</p>
-          <p className="text-sm"><span className="font-semibold">Price:</span> CHF {price.toLocaleString()}</p>
+      <CardContent className="flex-grow space-y-4">
+        <p className="text-gray-600 leading-relaxed">{description}</p>
+        <div className="space-y-2 text-sm text-gray-500">
+          <p><span className="font-medium text-gray-900">Duration:</span> {duration} weeks</p>
+          <p><span className="font-medium text-gray-900">Price:</span> CHF {price.toLocaleString()}</p>
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleApply} className="w-full">Apply Now</Button>
+        <Button 
+          onClick={handleApply} 
+          className="w-full bg-primary/90 hover:bg-primary transition-colors duration-300"
+        >
+          Apply Now
+        </Button>
       </CardFooter>
     </Card>
   );

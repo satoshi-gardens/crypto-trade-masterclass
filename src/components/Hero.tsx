@@ -6,15 +6,15 @@ interface HeroProps {
   backgroundClass?: string;
 }
 
-const Hero = ({ title, subtitle, backgroundClass = "bg-accent" }: HeroProps) => {
+const Hero = ({ title, subtitle, backgroundClass = "bg-gradient-to-r from-primary/5 to-secondary/5" }: HeroProps) => {
   return (
-    <div className={`${backgroundClass} text-white py-12 md:py-16`}>
-      <div className="container mx-auto px-6">
-        <div className="max-w-2xl mx-auto text-center animate-fade-in">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+    <div className={`${backgroundClass} section-padding mt-16`}>
+      <div className="container">
+        <div className="max-w-2xl mx-auto text-center animate-fade-up">
+          <h1 className="text-4xl md:text-5xl font-semibold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             {title}
           </h1>
-          <p className="text-lg text-gray-300">
+          <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
             {subtitle}
           </p>
         </div>

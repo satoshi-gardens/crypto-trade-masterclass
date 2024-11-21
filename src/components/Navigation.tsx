@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,55 +18,61 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-accent py-4 px-6 fixed w-full top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-white text-2xl font-bold">
-          CT4P
-        </Link>
+    <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="text-xl font-semibold text-gray-900">
+            CT4P
+          </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-white hover:text-primary transition-colors ${
-                isActive(item.path) ? "border-b-2 border-primary" : ""
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
-
-        {/* Mobile Navigation Button */}
-        <button
-          className="md:hidden text-white"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* Mobile Navigation Menu */}
-        {isOpen && (
-          <div className="absolute top-full left-0 right-0 bg-accent md:hidden animate-slide-in">
-            <div className="flex flex-col space-y-4 p-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`text-white hover:text-primary transition-colors ${
-                    isActive(item.path) ? "border-l-4 border-primary pl-2" : ""
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-sm transition-colors duration-200 ${
+                  isActive(item.path)
+                    ? "text-primary font-medium"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
-        )}
+
+          {/* Mobile Navigation Button */}
+          <button
+            className="md:hidden text-gray-600 hover:text-gray-900"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {isOpen && (
+        <div className="fixed inset-0 top-16 bg-white/95 backdrop-blur-sm md:hidden animate-fade-in">
+          <div className="flex flex-col space-y-4 p-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-lg py-2 px-4 rounded-lg transition-colors duration-200 ${
+                  isActive(item.path)
+                    ? "text-primary font-medium bg-primary/5"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
