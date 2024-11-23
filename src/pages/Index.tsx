@@ -46,8 +46,9 @@ const Index = () => {
               title="Premium (In-Person)"
               price={21600}
               discountedPrice={19440}
-              description="The ultimate personalized experience for those serious about achieving excellence."
+              description="The ultimate personalized experience with Fast Track option to complete in 3.5 months."
               features={[
+                "Fast Track option: Complete in 3.5 months",
                 "Tailored one-on-one coaching with unlimited session access",
                 "Signals provided from the second month",
                 "Personal support outside regular sessions",
