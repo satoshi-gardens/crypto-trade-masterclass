@@ -14,27 +14,37 @@ interface HeroProps {
 const Hero = ({ 
   title, 
   subtitle, 
-  backgroundClass = "bg-[#F8F8F8]",
-  buttonText = "Get Started",
+  backgroundClass = "bg-gradient-to-b from-[#F8F8F8] to-white",
+  buttonText = "Start Your Journey",
   buttonLink = "/courses",
   showButton = true 
 }: HeroProps) => {
   return (
-    <div className={`${backgroundClass} py-16 mt-16`}>
-      <div className="container px-4 sm:px-6 lg:px-8">
+    <div className={`${backgroundClass} py-24 relative overflow-hidden`}>
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
+          alt="Trading background"
+          className="w-full h-full object-cover opacity-10"
+        />
+      </div>
+      <div className="container px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fade-up">
-          <h1 className="text-3xl md:text-[36px] font-bold mb-6 text-[#6A4CFF]" itemScope itemType="https://schema.org/Course">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary-hover bg-clip-text text-transparent" 
+              itemScope itemType="https://schema.org/Course">
             <span itemProp="name">{title}</span>
           </h1>
-          <p className="text-base md:text-lg text-[#4A4A4A] leading-relaxed mb-10 max-w-2xl mx-auto font-medium" itemProp="description">
+          <p className="text-lg md:text-xl text-[#4A4A4A] leading-relaxed mb-10 max-w-2xl mx-auto" 
+             itemProp="description">
             {subtitle}
           </p>
           {showButton && (
             <Button
               asChild
               size="lg"
-              className="bg-[#6A4CFF] hover:bg-[#8C72FF] text-white px-6 py-3 rounded-md 
-                        font-bold shadow-sm hover:shadow-md transition-all duration-300"
+              className="bg-primary hover:bg-primary-hover text-white px-8 py-6 rounded-lg
+                        font-bold shadow-lg hover:shadow-xl transition-all duration-300
+                        text-lg"
             >
               <Link to={buttonLink}>{buttonText}</Link>
             </Button>

@@ -9,6 +9,7 @@ import { TrustSignals } from "@/components/pricing/TrustSignals";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
+import ValueProposition from "@/components/ValueProposition";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
@@ -53,11 +54,13 @@ const Index = () => {
       </Helmet>
 
       <Hero
-        title="Professional Crypto Trading Course in Switzerland"
-        subtitle="Master cryptocurrency trading with Switzerland's leading experts. Comprehensive training in Zürich for beginners to advanced traders."
-        buttonText="Explore Courses"
+        title="Master Crypto Trading: Transform Your Financial Future Today"
+        subtitle="Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability"
+        buttonText="Start Your Journey"
         buttonLink="/courses"
       />
+
+      <ValueProposition />
 
       {/* Pricing Section */}
       <section className="py-20 bg-white">
