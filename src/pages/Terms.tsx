@@ -13,7 +13,7 @@ const Terms = () => {
       <Hero
         title="Terms of Service"
         subtitle="Our commitment to you and what we expect in return"
-        backgroundClass="bg-accent"
+        backgroundClass="bg-[#F8F8F8]"
       />
       <div className="container mx-auto px-6 py-12">
         <div className="prose max-w-none">

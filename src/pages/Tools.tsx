@@ -24,7 +24,7 @@ const Tools = () => {
       <Hero
         title="Tools and Resources for Profitable Trading"
         subtitle="Explore our curated collection of guides, videos, and tools designed to help you trade smarter and achieve your financial goals."
-        backgroundClass="bg-accent"
+        backgroundClass="bg-[#F8F8F8]"
       />
       
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
