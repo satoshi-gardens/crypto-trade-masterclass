@@ -6,7 +6,7 @@ interface HeroProps {
   backgroundClass?: string;
 }
 
-const Hero = ({ title, subtitle, backgroundClass = "bg-gradient-to-r from-primary/5 to-secondary/5" }: HeroProps) => {
+const Hero = ({ title, subtitle, backgroundClass = "bg-gradient-to-r from-primary/95 to-[#E0D6FF]/95" }: HeroProps) => {
   return (
     <div className={`${backgroundClass} section-padding mt-16`}>
       <div className="container">
