@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Twitter, ArrowUp } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Tool, Brain, Info, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
@@ -37,35 +37,56 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-accent text-white pt-12 pb-6 mt-auto">
-      <div className="container mx-auto px-6">
+    <footer className="bg-accent pt-16 pb-8 mt-auto">
+      <div className="container mx-auto px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Branding Section */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold">KY Connect</h3>
-            <p className="text-sm text-gray-300">Empowering Profitable Trading</p>
-            <p className="text-sm text-gray-300">
+          <div className="space-y-6">
+            <h3 className="text-xl font-bold text-gray-800">KY Connect</h3>
+            <p className="text-gray-600">
+              Empowering Profitable Trading
+            </p>
+            <p className="text-gray-600">
               © {currentYear} KY Connect. All rights reserved.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Quick Links</h4>
-            <nav className="flex flex-col space-y-2">
-              <Link to="/" className="text-gray-300 hover:text-primary transition-colors">Home</Link>
-              <Link to="/courses" className="text-gray-300 hover:text-primary transition-colors">Courses</Link>
-              <Link to="/tools" className="text-gray-300 hover:text-primary transition-colors">Tools & Resources</Link>
-              <Link to="/about" className="text-gray-300 hover:text-primary transition-colors">About</Link>
-              <Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Contact</Link>
+          <div className="space-y-6">
+            <h4 className="text-lg font-semibold text-gray-800">Quick Links</h4>
+            <nav className="flex flex-col space-y-4">
+              <Link to="/" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Home size={18} />
+                <span>Home</span>
+              </Link>
+              <Link to="/courses" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <BookOpen size={18} />
+                <span>Courses</span>
+              </Link>
+              <Link to="/tools" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Tool size={18} />
+                <span>Tools & Resources</span>
+              </Link>
+              <Link to="/loop-method" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Brain size={18} />
+                <span>LOOP Method</span>
+              </Link>
+              <Link to="/about" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Info size={18} />
+                <span>About</span>
+              </Link>
+              <Link to="/contact" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Mail size={18} />
+                <span>Contact</span>
+              </Link>
             </nav>
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Contact Us</h4>
-            <div className="space-y-2 text-sm text-gray-300">
+          <div className="space-y-6">
+            <h4 className="text-lg font-semibold text-gray-800">Contact Us</h4>
+            <div className="space-y-4 text-gray-600">
               <p>
                 <a
                   href="#"
@@ -94,38 +115,37 @@ const Footer = () => {
           </div>
 
           {/* Social Media Links */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Follow Us</h4>
-            <div className="flex space-x-4">
+          <div className="space-y-6">
+            <h4 className="text-lg font-semibold text-gray-800">Follow Us</h4>
+            <div className="flex space-x-6">
               <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
-                 className="hover:text-primary transition-colors">
+                 className="text-gray-600 hover:text-primary transition-colors">
                 <Twitter className="w-6 h-6" />
               </a>
               <a href="https://linkedin.com/company/crypto4profits" target="_blank" rel="noopener noreferrer"
-                 className="hover:text-primary transition-colors">
+                 className="text-gray-600 hover:text-primary transition-colors">
                 <Linkedin className="w-6 h-6" />
               </a>
               <a href="https://instagram.com/crypto4profits" target="_blank" rel="noopener noreferrer"
-                 className="hover:text-primary transition-colors">
+                 className="text-gray-600 hover:text-primary transition-colors">
                 <Instagram className="w-6 h-6" />
               </a>
               <a href="https://facebook.com/crypto4profits" target="_blank" rel="noopener noreferrer"
-                 className="hover:text-primary transition-colors">
+                 className="text-gray-600 hover:text-primary transition-colors">
                 <Facebook className="w-6 h-6" />
               </a>
             </div>
           </div>
-
         </div>
 
         {/* Legal Links */}
-        <div className="border-t border-gray-700 pt-8 mt-8">
+        <div className="border-t border-gray-200 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
-              <Link to="/privacy" className="text-sm text-gray-300 hover:text-primary transition-colors">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6">
+              <Link to="/privacy" className="text-sm text-gray-600 hover:text-primary transition-colors">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-sm text-gray-300 hover:text-primary transition-colors">
+              <Link to="/terms" className="text-sm text-gray-600 hover:text-primary transition-colors">
                 Terms of Service
               </Link>
             </div>
@@ -133,7 +153,7 @@ const Footer = () => {
               onClick={scrollToTop}
               variant="outline"
               size="sm"
-              className="group border-gray-600 hover:border-primary"
+              className="group"
             >
               <ArrowUp className="w-4 h-4 mr-2 group-hover:text-primary" />
               Back to Top
