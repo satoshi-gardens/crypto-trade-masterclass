@@ -1,4 +1,4 @@
-import { Clock, BookOpen, HeadphonesIcon, Signal, Wrench } from "lucide-react";
+import { Clock, BookOpen, HeadphonesIcon, Signal } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CourseTimeline } from "./CourseTimeline";
 import { CourseFAQ } from "./CourseFAQ";
@@ -52,24 +52,6 @@ export const CourseStructure = () => {
         </div>
 
         <CourseTimeline />
-
-        <div className="bg-white p-8 rounded-lg shadow-lg mt-12">
-          <div className="flex items-center gap-4 mb-6">
-            <Wrench className="w-8 h-8 text-primary" />
-            <h3 className="text-2xl font-bold">Tools and Materials</h3>
-          </div>
-          <div className="space-y-4">
-            <p className="text-gray-600">
-              All participants receive lifetime access to:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
-              <li>Proprietary trading tools and indicators</li>
-              <li>Comprehensive recorded lessons library</li>
-              <li>Exclusive trading resources and documentation</li>
-              <li>Regular market analysis and insights</li>
-            </ul>
-          </div>
-        </div>
 
         <div className="mt-12 text-center">
           <blockquote className="text-xl italic text-gray-600 max-w-2xl mx-auto">
