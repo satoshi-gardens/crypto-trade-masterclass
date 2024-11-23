@@ -37,12 +37,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-accent pt-16 pb-8 mt-auto">
+    <footer className="bg-accent pt-24 pb-12 mt-auto">
       <div className="container mx-auto px-8">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Branding Section */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <h3 className="text-xl font-bold text-gray-800">KY Connect</h3>
             <p className="text-gray-600">
               Empowering Profitable Trading
@@ -53,9 +53,9 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <h4 className="text-lg font-semibold text-gray-800">Quick Links</h4>
-            <nav className="flex flex-col space-y-4">
+            <nav className="flex flex-col space-y-6">
               <Link to="/" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
                 <Home size={18} />
                 <span>Home</span>
@@ -84,9 +84,9 @@ const Footer = () => {
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <h4 className="text-lg font-semibold text-gray-800">Contact Us</h4>
-            <div className="space-y-4 text-gray-600">
+            <div className="space-y-6 text-gray-600">
               <p>
                 <a
                   href="#"
@@ -115,9 +115,9 @@ const Footer = () => {
           </div>
 
           {/* Social Media Links */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             <h4 className="text-lg font-semibold text-gray-800">Follow Us</h4>
-            <div className="flex space-x-6">
+            <div className="flex space-x-8">
               <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Twitter className="w-6 h-6" />
@@ -139,9 +139,9 @@ const Footer = () => {
         </div>
 
         {/* Legal Links */}
-        <div className="border-t border-gray-200 pt-8 mt-8">
+        <div className="border-t border-gray-200 pt-8 mt-12">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
               <Link to="/privacy" className="text-sm text-gray-600 hover:text-primary transition-colors">
                 Privacy Policy
               </Link>
