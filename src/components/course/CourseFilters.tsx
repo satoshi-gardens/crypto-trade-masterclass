@@ -6,6 +6,8 @@ type Complexity = "Beginner" | "Intermediate" | "Advanced";
 interface CourseFiltersProps {
   selectedComplexity: Complexity | "all";
   onComplexityChange: (complexity: Complexity | "all") => void;
+  showExtraCourses: boolean;
+  onExtraCoursesChange: (show: boolean) => void;
 }
 
 const ComplexityColors = {
@@ -17,6 +19,8 @@ const ComplexityColors = {
 export const CourseFilters = ({
   selectedComplexity,
   onComplexityChange,
+  showExtraCourses,
+  onExtraCoursesChange,
 }: CourseFiltersProps) => {
   return (
     <Card className="p-4 sticky top-0 z-10 bg-white/80 backdrop-blur-sm">
@@ -40,6 +44,15 @@ export const CourseFilters = ({
             {complexity}
           </Button>
         ))}
+        <Button
+          variant={showExtraCourses ? "default" : "outline"}
+          onClick={() => onExtraCoursesChange(!showExtraCourses)}
+          className={`flex-grow sm:flex-grow-0 ${
+            showExtraCourses ? "bg-orange-500" : ""
+          }`}
+        >
+          Extra Courses
+        </Button>
       </div>
     </Card>
   );

@@ -8,6 +8,7 @@ export interface CourseModuleProps {
   outcome: string;
   complexity: "Beginner" | "Intermediate" | "Advanced";
   internalId: string;
+  isExtra?: boolean;
 }
 
 const ComplexityColors = {
@@ -16,15 +17,22 @@ const ComplexityColors = {
   Advanced: "bg-purple-500",
 };
 
-const CourseModule = ({ title, description, outcome, complexity, internalId }: CourseModuleProps) => {
+const CourseModule = ({ title, description, outcome, complexity, internalId, isExtra }: CourseModuleProps) => {
   return (
     <Card className="h-full hover:shadow-lg transition-all duration-300">
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <CardTitle className="text-xl">{title}</CardTitle>
-          <Badge className={`${ComplexityColors[complexity]} text-white`}>
-            {complexity}
-          </Badge>
+          <div className="flex gap-2">
+            {isExtra && (
+              <Badge className="bg-orange-500 text-white">
+                Extra
+              </Badge>
+            )}
+            <Badge className={`${ComplexityColors[complexity]} text-white`}>
+              {complexity}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
