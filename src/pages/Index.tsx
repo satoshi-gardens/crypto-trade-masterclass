@@ -10,8 +10,12 @@ import { PricingCard } from "@/components/pricing/PricingCard";
 import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
 import { Helmet } from "react-helmet";
+import { useState } from "react";
+import { PaymentToggle } from "@/components/pricing/PaymentToggle";
 
 const Index = () => {
+  const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -55,18 +59,18 @@ const Index = () => {
         buttonLink="/courses"
       />
 
-      {/* Rest of the sections */}
       {/* Pricing Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <PricingHeader />
           <CountdownTimer />
+          <PaymentToggle paymentType={paymentType} onToggle={setPaymentType} />
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <PricingCard
               title="Online Training"
-              price={12000}
-              discountedPrice={10800}
+              monthlyPrice={1800}
+              annualPrice={9720}
               description="Designed for independent learners who value flexibility and small-group dynamics."
               features={[
                 "Group-focused virtual sessions (max 5 participants)",
@@ -76,11 +80,12 @@ const Index = () => {
                 "Community access for peer support"
               ]}
               maxStudents={5}
+              paymentType={paymentType}
             />
             <PricingCard
               title="Premium (In-Person)"
-              price={21600}
-              discountedPrice={19440}
+              monthlyPrice={3240}
+              annualPrice={17496}
               description="The ultimate personalized experience with Fast Track option to complete in 3.5 months."
               features={[
                 "Fast Track option: Complete in 3.5 months",
@@ -92,11 +97,12 @@ const Index = () => {
               ]}
               isPopular={true}
               additionalHourlyRate={450}
+              paymentType={paymentType}
             />
             <PricingCard
               title="Hybrid Training"
-              price={18000}
-              discountedPrice={16200}
+              monthlyPrice={2700}
+              annualPrice={14580}
               description="A perfect balance of personal coaching and peer collaboration."
               features={[
                 "Small-group in-person and online sessions",
@@ -107,14 +113,13 @@ const Index = () => {
               ]}
               maxStudents={5}
               additionalHourlyRate={450}
+              paymentType={paymentType}
             />
           </div>
         </div>
       </section>
 
       <TrustSignals />
-
-      {/* Course Structure Section */}
       <CourseStructure />
 
       {/* Testimonials Section */}
