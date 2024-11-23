@@ -23,10 +23,10 @@ const Hero = ({
     <div className={`${backgroundClass} py-16 mt-16`}>
       <div className="container px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto text-center animate-fade-up">
-          <h1 className="text-3xl md:text-[36px] font-bold mb-6 text-[#6A4CFF]">
-            {title}
+          <h1 className="text-3xl md:text-[36px] font-bold mb-6 text-[#6A4CFF]" itemScope itemType="https://schema.org/Course">
+            <span itemProp="name">{title}</span>
           </h1>
-          <p className="text-base md:text-lg text-[#4A4A4A] leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
+          <p className="text-base md:text-lg text-[#4A4A4A] leading-relaxed mb-10 max-w-2xl mx-auto font-medium" itemProp="description">
             {subtitle}
           </p>
           {showButton && (

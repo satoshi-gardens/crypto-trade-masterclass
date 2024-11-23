@@ -9,13 +9,48 @@ import { TrustSignals } from "@/components/pricing/TrustSignals";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
+import { Helmet } from "react-helmet";
 
 const Index = () => {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Cryptocurrency Trading Masterclass",
+    "description": "Professional cryptocurrency trading course in Switzerland. Learn advanced trading strategies, technical analysis, and risk management.",
+    "provider": {
+      "@type": "Organization",
+      "name": "KY Connect",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Zürich",
+        "addressRegion": "ZH",
+        "postalCode": "8005",
+        "streetAddress": "Turbinenstrasse 31",
+        "addressCountry": "CH"
+      }
+    },
+    "courseLanguage": ["de", "en"],
+    "locationCreated": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Zürich",
+        "addressCountry": "Switzerland"
+      }
+    }
+  };
+
   return (
     <PageLayout>
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Helmet>
+
       <Hero
-        title="Start Trading Crypto Profitably in 7 Weeks"
-        subtitle="Learn from experts with proven methods"
+        title="Professional Crypto Trading Course in Switzerland"
+        subtitle="Master cryptocurrency trading with Switzerland's leading experts. Comprehensive training in Zürich for beginners to advanced traders."
         buttonText="Explore Courses"
         buttonLink="/courses"
       />
