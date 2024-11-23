@@ -6,6 +6,7 @@ import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
 import CourseModules from "@/components/course/CourseModules";
+import CourseCurriculumOverview from "@/components/course/CourseCurriculumOverview";
 import { Brain, Shield, BookOpen, Users, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -93,6 +94,7 @@ const Courses = () => {
         </div>
       </section>
 
+      <CourseCurriculumOverview />
       <CourseModules />
 
       <section className="py-16 bg-gray-50">
