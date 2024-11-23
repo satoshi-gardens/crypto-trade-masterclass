@@ -23,8 +23,8 @@ const Hero = ({
     <div className={`${backgroundClass} py-24 relative overflow-hidden`}>
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
-          alt="Trading background"
+          src="https://images.unsplash.com/photo-1640340434855-6084b1f4901c"
+          alt="Crypto trading chart showing profitable upward trend"
           className="w-full h-full object-cover opacity-10"
         />
       </div>
