@@ -39,23 +39,25 @@ export const CountdownTimer = () => {
 
   return (
     <div className="text-center mb-8 animate-fade-in">
-      <p className="text-lg font-semibold mb-2">Limited Time Offer Ends In:</p>
-      <div className="flex justify-center gap-4 text-2xl font-bold">
-        <div>
-          <span>{timeLeft.days}</span>
-          <span className="text-sm font-normal ml-1">days</span>
-        </div>
-        <div>
-          <span>{timeLeft.hours}</span>
-          <span className="text-sm font-normal ml-1">hours</span>
-        </div>
-        <div>
-          <span>{timeLeft.minutes}</span>
-          <span className="text-sm font-normal ml-1">min</span>
-        </div>
-        <div>
-          <span>{timeLeft.seconds}</span>
-          <span className="text-sm font-normal ml-1">sec</span>
+      <p className="text-lg font-semibold mb-4">Limited Time Offer Ends In:</p>
+      <div className="bg-[#F8F8F8] p-6 rounded-lg shadow-sm inline-block">
+        <div className="flex justify-center gap-6 text-3xl font-bold">
+          <div className="flex flex-col items-center">
+            <span className="text-primary">{timeLeft.days}</span>
+            <span className="text-sm font-normal text-gray-600">days</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-primary">{timeLeft.hours}</span>
+            <span className="text-sm font-normal text-gray-600">hours</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-primary">{timeLeft.minutes}</span>
+            <span className="text-sm font-normal text-gray-600">min</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-primary">{timeLeft.seconds}</span>
+            <span className="text-sm font-normal text-gray-600">sec</span>
+          </div>
         </div>
       </div>
     </div>
