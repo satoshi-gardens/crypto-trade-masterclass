@@ -35,6 +35,7 @@ const About = () => {
       <Hero
         title="About Us"
         subtitle="Learn about our journey and commitment to crypto education"
+        showButton={false}
       />
       <div className="container mx-auto px-4 py-12 space-y-16">
         {/* Course Section */}

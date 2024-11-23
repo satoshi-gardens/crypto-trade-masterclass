@@ -8,39 +8,19 @@ import { CountdownTimer } from "@/components/pricing/CountdownTimer";
 import { TrustSignals } from "@/components/pricing/TrustSignals";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { CourseStructure } from "@/components/course/CourseStructure";
+import Hero from "@/components/Hero";
 
 const Index = () => {
   return (
     <PageLayout>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-accent to-primary py-20 text-white">
-        <div className="container mx-auto px-6 animate-fade-in">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-6">
-              Start Trading Crypto Profitably in 2 Weeks
-            </h1>
-            <p className="text-xl mb-8">
-              Learn from experts with proven methods
-            </p>
-            <div className="space-x-4">
-              <Button
-                asChild
-                className="bg-secondary hover:bg-secondary/90 text-white"
-              >
-                <Link to="/courses">Explore Courses</Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="text-white border-white hover:bg-white/10"
-              >
-                <Link to="/about">About Us</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Hero
+        title="Start Trading Crypto Profitably in 2 Weeks"
+        subtitle="Learn from experts with proven methods"
+        buttonText="Explore Courses"
+        buttonLink="/courses"
+      />
 
+      {/* Rest of the sections */}
       {/* Pricing Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-6">

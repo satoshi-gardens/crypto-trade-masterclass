@@ -51,6 +51,7 @@ const Contact = () => {
       <Hero
         title="Contact Us"
         subtitle="Have questions? We'd love to hear from you"
+        showButton={false}
       />
       <div className="container max-w-2xl mx-auto px-4 py-12">
         <Form {...form}>
