@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Tool, Brain, Info, Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Wrench, Brain, Info, Mail } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
@@ -65,7 +65,7 @@ const Footer = () => {
                 <span>Courses</span>
               </Link>
               <Link to="/tools" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Tool size={18} />
+                <Wrench size={18} />
                 <span>Tools & Resources</span>
               </Link>
               <Link to="/loop-method" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
