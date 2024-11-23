@@ -93,7 +93,7 @@ export const PricingCard = ({
           ))}
         </ul>
         <Button onClick={handleApply} className="w-full">
-          Apply Now
+          Start Your Journey
         </Button>
         <p className="text-sm text-gray-500 text-center mt-2">
           {isAnnual ? "One-time payment" : "Monthly installments"}
