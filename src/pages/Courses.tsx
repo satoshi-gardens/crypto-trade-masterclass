@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
+import CourseModules from "@/components/course/CourseModules";
 import { Brain, Shield, BookOpen, Users, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -89,6 +90,9 @@ const Courses = () => {
           </div>
         </div>
       </section>
+
+      <CourseModules />
+
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
