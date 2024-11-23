@@ -166,9 +166,6 @@ const Courses = () => {
         </div>
       </section>
       <ModuleCarousel />
-      <div className="container mx-auto px-4 py-4 text-center text-muted-foreground text-sm">
-        <p>Showing {(currentPage - 1) * 6 + 1}-{Math.min(currentPage * 6, 21)} of 21 modules</p>
-      </div>
     </PageLayout>
   );
 };
