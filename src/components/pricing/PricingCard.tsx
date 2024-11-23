@@ -6,33 +6,41 @@ import { useNavigate } from "react-router-dom";
 
 interface PricingCardProps {
   title: string;
-  price: number;
-  discountedPrice: number;
+  monthlyPrice: number;
+  annualPrice: number;
   description: string;
   features: string[];
   isPopular?: boolean;
   maxStudents?: number;
   additionalHourlyRate?: number;
+  paymentType: "monthly" | "annual";
 }
 
 export const PricingCard = ({
   title,
-  price,
-  discountedPrice,
+  monthlyPrice,
+  annualPrice,
   description,
   features,
   isPopular,
   maxStudents,
-  additionalHourlyRate
+  additionalHourlyRate,
+  paymentType
 }: PricingCardProps) => {
   const navigate = useNavigate();
+  const isAnnual = paymentType === "annual";
+  const currentPrice = isAnnual ? annualPrice : monthlyPrice;
+  const fullPrice = monthlyPrice * 6;
+  const monthlyPayment = monthlyPrice;
+  const annualSavings = fullPrice - annualPrice;
 
   const handleApply = () => {
     navigate("/checkout", {
       state: {
         courseTitle: title,
         packageType: title,
-        price: discountedPrice,
+        price: currentPrice,
+        paymentType,
       },
     });
   };
@@ -46,12 +54,26 @@ export const PricingCard = ({
       )}
       <CardHeader>
         <CardTitle className="text-2xl">{title}</CardTitle>
-        <div className="mt-4">
-          <span className="text-3xl font-bold">CHF {discountedPrice.toLocaleString()}</span>
-          <span className="text-gray-500 line-through ml-2">CHF {price.toLocaleString()}</span>
-          <p className="text-sm text-gray-600 mt-2">6-month program</p>
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-center space-x-2">
+            <span className="text-3xl font-bold">
+              CHF {currentPrice.toLocaleString()}
+            </span>
+            {isAnnual && (
+              <Badge variant="secondary" className="text-primary">
+                Save {Math.round((annualSavings / fullPrice) * 100)}%
+              </Badge>
+            )}
+          </div>
+          <p className="text-sm text-gray-600">
+            {isAnnual ? (
+              <span>One-time payment (save CHF {annualSavings.toLocaleString()})</span>
+            ) : (
+              <span>6 monthly payments of CHF {monthlyPayment.toLocaleString()}</span>
+            )}
+          </p>
           {additionalHourlyRate && (
-            <p className="text-sm text-primary mt-1">
+            <p className="text-sm text-primary">
               Additional hours: CHF {additionalHourlyRate}/hour
             </p>
           )}
@@ -73,6 +95,9 @@ export const PricingCard = ({
         <Button onClick={handleApply} className="w-full">
           Apply Now
         </Button>
+        <p className="text-sm text-gray-500 text-center mt-2">
+          {isAnnual ? "One-time payment" : "Monthly installments"}
+        </p>
       </CardContent>
     </Card>
   );

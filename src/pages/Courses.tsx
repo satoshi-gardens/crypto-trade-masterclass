@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
+import { PaymentToggle } from "@/components/pricing/PaymentToggle";
 import CourseModules from "@/components/course/CourseModules";
 import { Brain, Shield, BookOpen, Users, Award, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ const BENEFITS = [
 
 const Courses = () => {
   const [currentPage] = useState(1);
+  const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
 
   const scrollToPackages = () => {
     const packagesSection = document.getElementById('packages');
@@ -117,11 +119,15 @@ const Courses = () => {
       <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <PricingHeader />
+          <PaymentToggle 
+            paymentType={paymentType} 
+            onToggle={setPaymentType} 
+          />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
             <PricingCard
               title="Online Training"
-              price={12000}
-              discountedPrice={10800}
+              monthlyPrice={1800}
+              annualPrice={9720}
               description="Designed for independent learners who value flexibility and small-group dynamics."
               features={[
                 "Group-focused virtual sessions (max 5 participants)",
@@ -131,11 +137,12 @@ const Courses = () => {
                 "Community access for peer support"
               ]}
               maxStudents={5}
+              paymentType={paymentType}
             />
             <PricingCard
               title="Premium (In-Person)"
-              price={21600}
-              discountedPrice={19440}
+              monthlyPrice={3240}
+              annualPrice={17496}
               description="The ultimate personalized experience for those serious about achieving excellence."
               features={[
                 "Tailored one-on-one coaching with unlimited session access",
@@ -146,11 +153,12 @@ const Courses = () => {
               ]}
               isPopular={true}
               additionalHourlyRate={450}
+              paymentType={paymentType}
             />
             <PricingCard
               title="Hybrid Training"
-              price={18000}
-              discountedPrice={16200}
+              monthlyPrice={2700}
+              annualPrice={14580}
               description="A perfect balance of personal coaching and peer collaboration."
               features={[
                 "Small-group in-person and online sessions",
@@ -161,6 +169,7 @@ const Courses = () => {
               ]}
               maxStudents={5}
               additionalHourlyRate={450}
+              paymentType={paymentType}
             />
           </div>
         </div>
