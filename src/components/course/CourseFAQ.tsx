@@ -32,7 +32,7 @@ export const CourseFAQ = () => {
           <AccordionItem value="item-4">
             <AccordionTrigger>What tools and resources are provided?</AccordionTrigger>
             <AccordionContent>
-              You'll receive access to our curated collection of trading tools, educational materials, and market analysis resources. This includes proprietary trading tools, indicators, and comprehensive documentation to support your learning journey.
+              We guide you through selecting and setting up the best market analysis tools and platforms. Our experienced coaches will help you understand and effectively use these tools to support your trading journey.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-5">
