@@ -41,7 +41,7 @@ const CourseCard = ({ title, description, duration, price, packageType, onBook }
           onClick={handleApply} 
           className="w-full bg-primary/90 hover:bg-primary transition-colors duration-300"
         >
-          Apply Now
+          Start Your Journey
         </Button>
       </CardFooter>
     </Card>
