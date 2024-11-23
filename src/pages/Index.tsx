@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 import TestimonialCard from "@/components/TestimonialCard";
 import PageLayout from "@/components/PageLayout";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
@@ -57,13 +56,13 @@ const Index = () => {
         title="Master Crypto Trading: Transform Your Financial Future Today"
         subtitle="Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability"
         buttonText="Start Your Journey"
-        buttonLink="/courses"
+        buttonLink="#packages"
       />
 
       <ValueProposition />
 
       {/* Pricing Section */}
-      <section className="py-20 bg-white">
+      <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <PricingHeader />
           <CountdownTimer />
@@ -163,9 +162,9 @@ const Index = () => {
             size="lg"
             className="bg-white text-primary hover:bg-white/90"
           >
-            <Link to="/courses">
-              Get Started Now <ArrowRight className="ml-2" />
-            </Link>
+            <a href="#packages">
+              Start Your Journey <ArrowRight className="ml-2" />
+            </a>
           </Button>
         </div>
       </section>

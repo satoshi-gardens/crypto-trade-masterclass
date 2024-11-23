@@ -16,7 +16,7 @@ const Hero = ({
   subtitle, 
   backgroundClass = "bg-gradient-to-b from-[#F8F8F8] to-white",
   buttonText = "Start Your Journey",
-  buttonLink = "/courses",
+  buttonLink = "#packages",
   showButton = true 
 }: HeroProps) => {
   return (
@@ -46,7 +46,7 @@ const Hero = ({
                         font-bold shadow-lg hover:shadow-xl transition-all duration-300
                         text-lg"
             >
-              <Link to={buttonLink}>{buttonText}</Link>
+              <a href={buttonLink}>{buttonText}</a>
             </Button>
           )}
         </div>
