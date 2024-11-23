@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <PageLayout>
       <Hero
-        title="Start Trading Crypto Profitably in 2 Weeks"
+        title="Start Trading Crypto Profitably in 7 Weeks"
         subtitle="Learn from experts with proven methods"
         buttonText="Explore Courses"
         buttonLink="/courses"
