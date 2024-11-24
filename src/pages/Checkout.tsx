@@ -5,7 +5,7 @@ import * as z from "zod";
 import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
