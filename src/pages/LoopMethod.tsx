@@ -6,7 +6,7 @@ import {
   Eye, 
   DollarSign,
   Infinity,
-  Exchange,
+  ArrowLeftRight,
   TrendingUp,
   Lock,
   Sprout,
@@ -21,7 +21,7 @@ const LoopMethod = () => {
   const incomeStreams = {
     traditional: [
       {
-        icon: <Exchange className="w-6 h-6" />,
+        icon: <ArrowLeftRight className="w-6 h-6" />,
         title: "Spot Trading",
         description: "Buy and sell cryptocurrencies directly on centralized or decentralized exchanges (CEX/DEX)."
       },
