@@ -16,7 +16,7 @@ const About = () => {
   ];
 
   const courseFeatures = [
-    "One-on-one sessions with Michael Kiberu",
+    "One-on-one sessions with Dr. Michael Kiberu",
     "Customized learning path based on your goals and experience",
     "Real-time market analysis and trading practice",
     "Access to proprietary trading tools and resources",
@@ -88,14 +88,14 @@ const About = () => {
             <div className="md:col-span-1">
               <img
                 src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
-                alt="Michael Kiberu"
+                alt="Dr. Michael Kiberu"
                 className="rounded-lg w-full object-cover aspect-square"
               />
             </div>
             <div className="md:col-span-2 space-y-6">
-              <h3 className="text-2xl font-semibold">Michael Kiberu</h3>
+              <h3 className="text-2xl font-semibold">Dr. Michael Kiberu</h3>
               <p className="text-muted-foreground">
-                Michael Kiberu is a seasoned cryptocurrency trader and educator with over a decade
+                Dr. Michael Kiberu is a seasoned cryptocurrency trader and educator with over a decade
                 of experience in the financial markets. His journey in the crypto space began in
                 the early days of Bitcoin, and he has since become a respected voice in the
                 industry.
@@ -116,7 +116,7 @@ const About = () => {
               <div className="space-y-4">
                 <h4 className="text-xl font-semibold">Background and Expertise</h4>
                 <p className="text-muted-foreground">
-                  With a background in finance and computer science, Michael brings a unique
+                  With a background in finance and computer science, Dr. Michael brings a unique
                   perspective to cryptocurrency trading. He has successfully navigated multiple
                   market cycles, developing robust strategies that have stood the test of time.
                 </p>
@@ -125,7 +125,7 @@ const About = () => {
               <div className="space-y-4">
                 <h4 className="text-xl font-semibold">Teaching Philosophy</h4>
                 <p className="text-muted-foreground">
-                  Michael's teaching philosophy centers on empowering his students with knowledge
+                  Dr. Michael's teaching philosophy centers on empowering his students with knowledge
                   and practical skills. He believes in a hands-on approach, combining theoretical
                   understanding with real-world application.
                 </p>
