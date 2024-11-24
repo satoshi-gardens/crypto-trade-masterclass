@@ -1,10 +1,8 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+import { Json } from "./json";
+import { CountriesTable } from "./countries";
+import { CourseApplicationsTable } from "./course-applications";
+import { CoursesTable } from "./courses";
+import { GeneralInquiriesTable } from "./general-inquiries";
 
 export interface Database {
   public: {
