@@ -1,11 +1,11 @@
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
@@ -56,10 +56,10 @@ const Checkout = () => {
   const onSubmit = async (data: CheckoutFormValues) => {
     setIsSubmitting(true);
     try {
-      // Store application in database
+      // Store application in database using the correct method
       const { error: dbError } = await supabase
         .from("course_applications")
-        .insert({
+        .insert([{
           first_name: data.firstName,
           last_name: data.lastName,
           email: data.email,
@@ -70,7 +70,9 @@ const Checkout = () => {
           package: packageType,
           price: price,
           payment_understanding: data.agreement,
-        });
+        }])
+        .select()
+        .single();
 
       if (dbError) throw dbError;
 
