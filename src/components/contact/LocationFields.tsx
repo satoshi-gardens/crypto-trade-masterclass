@@ -15,13 +15,38 @@ import {
 } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ContactFormValues } from "@/lib/validations/contact";
-import { countries } from "@/lib/constants";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LocationFieldsProps {
   form: UseFormReturn<ContactFormValues>;
 }
 
 const LocationFields = ({ form }: LocationFieldsProps) => {
+  const { data: countries, isLoading } = useQuery({
+    queryKey: ['countries'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('countries')
+        .select('*')
+        .eq('is_active', true)
+        .order('priority', { ascending: true })
+        .order('name', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const groupedCountries = countries?.reduce((acc, country) => {
+    const region = country.region || 'Other';
+    if (!acc[region]) {
+      acc[region] = [];
+    }
+    acc[region].push(country);
+    return acc;
+  }, {} as Record<string, typeof countries>);
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold text-primary">Location</h2>
@@ -53,29 +78,24 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {/* Swiss and surrounding countries first */}
-                  <SelectItem value="CH">Switzerland</SelectItem>
-                  <SelectItem value="DE">Germany</SelectItem>
-                  <SelectItem value="FR">France</SelectItem>
-                  <SelectItem value="IT">Italy</SelectItem>
-                  <SelectItem value="AT">Austria</SelectItem>
-                  <SelectItem value="LI">Liechtenstein</SelectItem>
-                  
-                  {/* East African countries */}
-                  <SelectItem value="UG">Uganda</SelectItem>
-                  <SelectItem value="NG">Nigeria</SelectItem>
-                  <SelectItem value="GH">Ghana</SelectItem>
-                  
-                  {/* Other countries */}
-                  {countries
-                    .filter(country => 
-                      !['CH', 'DE', 'FR', 'IT', 'AT', 'LI', 'UG', 'NG', 'GH']
-                        .includes(country.code))
-                    .map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
+                  {isLoading ? (
+                    <SelectItem value="loading" disabled>
+                      Loading countries...
+                    </SelectItem>
+                  ) : (
+                    groupedCountries && Object.entries(groupedCountries).map(([region, countries]) => (
+                      <div key={region}>
+                        <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
+                          {region}
+                        </div>
+                        {countries?.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </div>
+                    ))
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />
