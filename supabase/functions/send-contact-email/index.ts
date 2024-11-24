@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    // Send notification email to admin
+    // Send detailed notification email to admin
     const adminEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -79,18 +79,29 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "ct4p@bit2big.com",
-        to: ["ct4p@bit2big.com"],
+        to: ["mail@bit2big.com"],
         subject: `New Contact Form Submission - ${contactData.purpose}`,
         html: `
           <h2>New Contact Form Submission</h2>
-          <p><strong>Name:</strong> ${contactData.firstName} ${contactData.lastName}</p>
-          <p><strong>Email:</strong> ${contactData.email}</p>
-          <p><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</p>
-          <p><strong>Location:</strong> ${contactData.city || 'Not provided'}, ${contactData.country || 'Not provided'}</p>
-          <p><strong>Purpose:</strong> ${contactData.purpose}</p>
-          <p><strong>Message:</strong></p>
+          <h3>Contact Information</h3>
+          <ul>
+            <li><strong>Name:</strong> ${contactData.firstName} ${contactData.lastName}</li>
+            <li><strong>Email:</strong> ${contactData.email}</li>
+            <li><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</li>
+            <li><strong>Location:</strong> ${contactData.city || 'Not provided'}, ${contactData.country || 'Not provided'}</li>
+          </ul>
+          
+          <h3>Inquiry Details</h3>
+          <ul>
+            <li><strong>Purpose:</strong> ${contactData.purpose}</li>
+          </ul>
+          
+          <h3>Message</h3>
           <p>${contactData.message}</p>
+          
+          <p><em>To reply, simply respond to this email.</em></p>
         `,
+        reply_to: contactData.email,
       }),
     });
 
