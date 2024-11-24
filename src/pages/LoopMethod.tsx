@@ -16,6 +16,7 @@ import {
   Server
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const LoopMethod = () => {
   const incomeStreams = {
@@ -174,7 +175,7 @@ const LoopMethod = () => {
             className="bg-white text-primary hover:bg-white/90"
             asChild
           >
-            <a href="#packages">Start Learning Now</a>
+            <Link to="/courses#packages">Start Learning Now</Link>
           </Button>
         </section>
       </div>
