@@ -2,7 +2,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const checkoutFormSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -28,6 +29,7 @@ type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { courseTitle, packageType, price } = location.state || {};
 
   const form = useForm<CheckoutFormValues>({
@@ -51,14 +53,58 @@ const Checkout = () => {
     }
   }, [courseTitle, packageType, price, navigate]);
 
-  const onSubmit = (data: CheckoutFormValues) => {
-    toast.success("Application submitted successfully!");
-    navigate("/thank-you", {
-      state: {
-        courseTitle,
-        email: data.email,
-      },
-    });
+  const onSubmit = async (data: CheckoutFormValues) => {
+    setIsSubmitting(true);
+    try {
+      // Store application in database
+      const { error: dbError } = await supabase
+        .from("course_applications")
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          city: data.city,
+          country: data.country,
+          selected_course: courseTitle,
+          package: packageType,
+          price: price,
+          payment_understanding: data.agreement,
+        });
+
+      if (dbError) throw dbError;
+
+      // Send confirmation emails
+      const { error: emailError } = await supabase.functions.invoke("send-application-email", {
+        body: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          city: data.city,
+          country: data.country,
+          selectedCourse: courseTitle,
+          package: packageType,
+          price: price,
+        },
+      });
+
+      if (emailError) throw emailError;
+
+      toast.success("Application submitted successfully!");
+      navigate("/thank-you", {
+        state: {
+          courseTitle,
+          email: data.email,
+          firstName: data.firstName,
+        },
+      });
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!courseTitle || !packageType || !price) {
@@ -114,9 +160,9 @@ const Checkout = () => {
             <Button 
               type="submit" 
               className="w-full"
-              disabled={!form.formState.isValid}
+              disabled={!form.formState.isValid || isSubmitting}
             >
-              Confirm and Get Payment Instructions
+              {isSubmitting ? "Submitting..." : "Confirm and Get Payment Instructions"}
             </Button>
           </form>
         </Form>
