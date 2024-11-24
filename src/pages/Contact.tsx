@@ -10,6 +10,7 @@ import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
 import LocationFields from "@/components/contact/LocationFields";
 import InquiryFields from "@/components/contact/InquiryFields";
 import Hero from "@/components/Hero";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,15 +32,16 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     try {
-      // Here you would typically send the data to your backend
-      console.log("Form data:", data);
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: data,
+      });
+
+      if (error) throw error;
+
       toast.success("Thank you for reaching out! We'll get back to you shortly.");
       form.reset();
     } catch (error) {
+      console.error('Error submitting form:', error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
