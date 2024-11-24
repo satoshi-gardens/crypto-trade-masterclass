@@ -27,7 +27,7 @@ const Terms = () => {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">2. Privacy and Data Protection</h2>
             <p className="mb-4">
-              Your privacy is important to us. Our services comply with GDPR and other applicable data protection laws. By using our services, you consent to our collection and use of your data as described in our Privacy Policy.
+              Your privacy is important to us. Our services comply with GDPR, Swiss Federal Act on Data Protection (FADP), and other applicable data protection laws. By using our services, you consent to our collection and use of your data as described in our Privacy Policy.
             </p>
             <p className="mb-4">
               We use cookies and similar tracking technologies to enhance your experience. You can manage your cookie preferences through your browser settings.
@@ -35,7 +35,24 @@ const Terms = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">3. Use License</h2>
+            <h2 className="text-2xl font-semibold mb-4">3. Special Offers and Discounts</h2>
+            <p className="mb-4">
+              All special offers, promotions, and discounts are:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Subject to availability and offered on a first-come, first-served basis</li>
+              <li>Valid only for the specified time period</li>
+              <li>Non-transferable and cannot be combined with other offers unless explicitly stated</li>
+              <li>Subject to change or withdrawal without prior notice</li>
+              <li>Applicable only to new registrations during the promotional period</li>
+            </ul>
+            <p className="mb-4">
+              In accordance with Swiss and German consumer protection laws, all prices are displayed including VAT where applicable. The right of withdrawal (Widerrufsrecht) applies as per Art. 40a et seq. OR (Swiss Code of Obligations) and § 312g BGB (German Civil Code).
+            </p>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">4. Use License</h2>
             <p className="mb-4">
               Upon purchasing our courses, we grant you a limited, non-exclusive, non-transferable license to access and use the course materials for personal, non-commercial purposes.
             </p>
@@ -51,23 +68,26 @@ const Terms = () => {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">4. Disclaimer</h2>
+            <h2 className="text-2xl font-semibold mb-4">5. Disclaimer</h2>
             <p className="mb-4">
               Our materials are provided "as is". We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties, including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">5. Limitations</h2>
+            <h2 className="text-2xl font-semibold mb-4">6. Limitations</h2>
             <p className="mb-4">
               In no event shall we be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use our materials.
             </p>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-4">6. Governing Law</h2>
+            <h2 className="text-2xl font-semibold mb-4">7. Governing Law</h2>
             <p className="mb-4">
-              These terms and conditions are governed by and construed in accordance with the laws of Switzerland, and you irrevocably submit to the exclusive jurisdiction of the courts in that location.
+              These terms and conditions are governed by and construed in accordance with the laws of Switzerland, and you irrevocably submit to the exclusive jurisdiction of the courts in that location. For customers in Germany, mandatory consumer protection laws may provide additional rights.
+            </p>
+            <p className="mb-4">
+              For EU consumers: According to EU consumer protection law, you have the right to cancel your purchase within 14 days without giving any reason (cooling-off period). However, this right expires once the service has been fully performed if you expressly consented to the performance beginning during the cooling-off period and acknowledged that you would lose your right to cancel once the service was fully performed.
             </p>
           </section>
         </div>
