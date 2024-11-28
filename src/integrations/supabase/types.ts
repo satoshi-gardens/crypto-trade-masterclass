@@ -252,28 +252,34 @@ export type Database = {
           created_at: string | null
           id: number
           is_active: boolean | null
+          is_verified: boolean | null
           referral_code: string
           total_earnings: number | null
           updated_at: string | null
           user_email: string
+          verification_token: string | null
         }
         Insert: {
           created_at?: string | null
           id?: number
           is_active?: boolean | null
+          is_verified?: boolean | null
           referral_code: string
           total_earnings?: number | null
           updated_at?: string | null
           user_email: string
+          verification_token?: string | null
         }
         Update: {
           created_at?: string | null
           id?: number
           is_active?: boolean | null
+          is_verified?: boolean | null
           referral_code?: string
           total_earnings?: number | null
           updated_at?: string | null
           user_email?: string
+          verification_token?: string | null
         }
         Relationships: []
       }

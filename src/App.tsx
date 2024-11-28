@@ -52,6 +52,7 @@ const App = () => {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
+              <Route path="/verify-referral" element={<VerifyReferral />} />
               <Route path="/referral" element={<ReferralIndex />} />
               <Route path="/referral/stats" element={<ReferralStats />} />
             </Routes>
