@@ -4,8 +4,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 interface EmailRequest {
@@ -25,6 +24,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
+
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -50,6 +53,9 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Resend API error:", error);
       throw new Error(`Failed to send email: ${error}`);
     }
+
+    const data = await res.json();
+    console.log("Email sent successfully:", data);
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -26,14 +26,14 @@ const ReferralRegistration = () => {
 
       if (existingReferrer) {
         // Send verification email with existing referral code
-        const response = await supabase.functions.invoke("send-referral-verification", {
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
           body: { 
             email, 
             verificationToken: existingReferrer.verification_token 
           },
         });
 
-        if (response.error) throw new Error(response.error.message);
+        if (emailError) throw new Error(emailError.message);
 
         toast({
           title: "Email Sent!",
@@ -58,11 +58,11 @@ const ReferralRegistration = () => {
         if (dbError) throw dbError;
 
         // Send verification email
-        const response = await supabase.functions.invoke("send-referral-verification", {
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
           body: { email, verificationToken },
         });
 
-        if (response.error) throw new Error(response.error.message);
+        if (emailError) throw new Error(emailError.message);
 
         toast({
           title: "Registration successful!",
