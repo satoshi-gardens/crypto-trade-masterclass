@@ -28,9 +28,11 @@ serve(async (req) => {
     );
 
     const { referralCode, courseApplicationId, price }: ReferralRequest = await req.json();
+    console.log(`Processing referral for code: ${referralCode}, application: ${courseApplicationId}`);
 
     // Calculate commission
     const commissionAmount = calculateCommission(price);
+    console.log(`Calculated commission amount: ${commissionAmount}`);
 
     // Create conversion record
     const { error: conversionError } = await supabase
@@ -41,15 +43,33 @@ serve(async (req) => {
         commission_amount: commissionAmount,
       });
 
-    if (conversionError) throw conversionError;
+    if (conversionError) {
+      console.error("Error creating conversion record:", conversionError);
+      throw conversionError;
+    }
 
     // Update referrer's total earnings
-    const { error: updateError } = await supabase.rpc("update_referrer_earnings", {
-      p_referral_code: referralCode,
-      p_amount: commissionAmount,
-    });
+    const { data: referrer, error: referrerError } = await supabase
+      .from("referrers")
+      .select("total_earnings")
+      .eq("referral_code", referralCode)
+      .single();
 
-    if (updateError) throw updateError;
+    if (referrerError) {
+      console.error("Error fetching referrer:", referrerError);
+      throw referrerError;
+    }
+
+    const newTotalEarnings = (referrer.total_earnings || 0) + commissionAmount;
+    const { error: updateError } = await supabase
+      .from("referrers")
+      .update({ total_earnings: newTotalEarnings })
+      .eq("referral_code", referralCode);
+
+    if (updateError) {
+      console.error("Error updating referrer earnings:", updateError);
+      throw updateError;
+    }
 
     // Update referral click as converted
     await supabase
@@ -57,6 +77,8 @@ serve(async (req) => {
       .update({ converted: true })
       .eq("referral_code", referralCode)
       .is("converted", null);
+
+    console.log("Referral processing completed successfully");
 
     return new Response(
       JSON.stringify({ success: true, commission: commissionAmount }),
