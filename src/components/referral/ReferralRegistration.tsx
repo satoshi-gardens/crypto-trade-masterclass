@@ -21,6 +21,8 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
     setIsLoading(true);
 
     try {
+      console.log("Starting registration process for email:", email);
+
       // Check if user already exists
       const { data: existingReferrer, error: fetchError } = await supabase
         .from("referrers")
@@ -29,21 +31,29 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
         .single();
 
       if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error("Error checking existing referrer:", fetchError);
         throw new Error("Failed to check existing referrer");
       }
 
       const verificationToken = Math.random().toString(36).substring(2, 15) + 
                               Math.random().toString(36).substring(2, 15);
 
+      console.log("Generated verification token:", verificationToken);
+
       if (existingReferrer) {
+        console.log("Updating existing referrer:", existingReferrer);
         // Update verification token for existing referrer
         const { error: updateError } = await supabase
           .from("referrers")
           .update({ verification_token: verificationToken })
           .eq("user_email", email);
 
-        if (updateError) throw new Error("Failed to update verification token");
+        if (updateError) {
+          console.error("Error updating verification token:", updateError);
+          throw new Error("Failed to update verification token");
+        }
       } else {
+        console.log("Creating new referrer record");
         // Generate new referral code for new user
         const referralCode = `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
@@ -57,11 +67,15 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
             },
           ]);
 
-        if (dbError) throw new Error("Failed to create referrer record");
+        if (dbError) {
+          console.error("Error creating referrer record:", dbError);
+          throw new Error("Failed to create referrer record");
+        }
       }
 
+      console.log("Sending verification email");
       // Send verification email
-      const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke("send-referral-verification", {
         body: { 
           email,
           verificationToken,
@@ -69,7 +83,12 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
         },
       });
 
-      if (emailError) throw new Error("Failed to send verification email");
+      if (emailError) {
+        console.error("Error sending verification email:", emailError);
+        throw new Error("Failed to send verification email");
+      }
+
+      console.log("Email response:", emailResponse);
 
       toast({
         title: "Registration successful!",
