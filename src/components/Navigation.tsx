@@ -19,6 +19,9 @@ const Navigation = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
+            <Link to="/" className="text-gray-600 hover:text-primary">
+              Home
+            </Link>
             <Link to="/courses" className="text-gray-600 hover:text-primary">
               Courses
             </Link>
@@ -50,6 +53,13 @@ const Navigation = () => {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-4 mt-4">
+                <Link
+                  to="/"
+                  className="text-gray-600 hover:text-primary"
+                  onClick={handleSheetClose}
+                >
+                  Home
+                </Link>
                 <Link
                   to="/courses"
                   className="text-gray-600 hover:text-primary"
