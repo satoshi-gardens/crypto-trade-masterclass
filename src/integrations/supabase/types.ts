@@ -54,6 +54,7 @@ export type Database = {
           payment_understanding: boolean | null
           phone: string | null
           price: number
+          referral_code: string | null
           selected_course: string
           submitted_at: string | null
         }
@@ -68,6 +69,7 @@ export type Database = {
           payment_understanding?: boolean | null
           phone?: string | null
           price: number
+          referral_code?: string | null
           selected_course: string
           submitted_at?: string | null
         }
@@ -82,10 +84,19 @@ export type Database = {
           payment_understanding?: boolean | null
           phone?: string | null
           price?: number
+          referral_code?: string | null
           selected_course?: string
           submitted_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "course_applications_referral_code_fkey"
+            columns: ["referral_code"]
+            isOneToOne: false
+            referencedRelation: "referrers"
+            referencedColumns: ["referral_code"]
+          },
+        ]
       }
       courses: {
         Row: {
@@ -153,6 +164,116 @@ export type Database = {
           message?: string
           phone?: string | null
           submitted_at?: string | null
+        }
+        Relationships: []
+      }
+      referral_clicks: {
+        Row: {
+          converted: boolean | null
+          created_at: string | null
+          id: number
+          ip_address: string | null
+          page_url: string | null
+          referral_code: string
+        }
+        Insert: {
+          converted?: boolean | null
+          created_at?: string | null
+          id?: number
+          ip_address?: string | null
+          page_url?: string | null
+          referral_code: string
+        }
+        Update: {
+          converted?: boolean | null
+          created_at?: string | null
+          id?: number
+          ip_address?: string | null
+          page_url?: string | null
+          referral_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_clicks_referral_code_fkey"
+            columns: ["referral_code"]
+            isOneToOne: false
+            referencedRelation: "referrers"
+            referencedColumns: ["referral_code"]
+          },
+        ]
+      }
+      referral_conversions: {
+        Row: {
+          commission_amount: number
+          course_application_id: number | null
+          created_at: string | null
+          id: number
+          paid: boolean | null
+          referral_code: string
+          updated_at: string | null
+        }
+        Insert: {
+          commission_amount: number
+          course_application_id?: number | null
+          created_at?: string | null
+          id?: number
+          paid?: boolean | null
+          referral_code: string
+          updated_at?: string | null
+        }
+        Update: {
+          commission_amount?: number
+          course_application_id?: number | null
+          created_at?: string | null
+          id?: number
+          paid?: boolean | null
+          referral_code?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_course_application_id_fkey"
+            columns: ["course_application_id"]
+            isOneToOne: false
+            referencedRelation: "course_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_conversions_referral_code_fkey"
+            columns: ["referral_code"]
+            isOneToOne: false
+            referencedRelation: "referrers"
+            referencedColumns: ["referral_code"]
+          },
+        ]
+      }
+      referrers: {
+        Row: {
+          created_at: string | null
+          id: number
+          is_active: boolean | null
+          referral_code: string
+          total_earnings: number | null
+          updated_at: string | null
+          user_email: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          referral_code: string
+          total_earnings?: number | null
+          updated_at?: string | null
+          user_email: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          is_active?: boolean | null
+          referral_code?: string
+          total_earnings?: number | null
+          updated_at?: string | null
+          user_email?: string
         }
         Relationships: []
       }

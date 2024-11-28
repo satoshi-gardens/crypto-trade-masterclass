@@ -14,6 +14,7 @@ interface PricingCardProps {
   maxStudents?: number;
   additionalHourlyRate?: number;
   paymentType: "monthly" | "annual";
+  referralCode?: string | null;
 }
 
 export const PricingCard = ({
@@ -25,7 +26,8 @@ export const PricingCard = ({
   isPopular,
   maxStudents,
   additionalHourlyRate,
-  paymentType
+  paymentType,
+  referralCode
 }: PricingCardProps) => {
   const navigate = useNavigate();
   const isAnnual = paymentType === "annual";
@@ -41,6 +43,7 @@ export const PricingCard = ({
         packageType: title,
         price: currentPrice,
         paymentType,
+        referralCode,
       },
     });
   };
