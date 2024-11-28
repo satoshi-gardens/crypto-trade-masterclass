@@ -13,17 +13,22 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { email, verificationToken }: EmailRequest = await req.json();
-    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
+
+    if (!verificationToken) {
+      throw new Error("Verification token is required");
+    }
+
+    const verificationUrl = `${Deno.env.get("VITE_WEBSITE_URL")}/verify-referral?token=${verificationToken}`;
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
+    console.log("Verification Token:", verificationToken);
 
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
