@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -89,27 +86,12 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email service is not configured");
     }
 
-    const supabase = createClient(supabaseUrl!, supabaseKey!);
     const notification: EmailNotificationRequest = await req.json();
     console.log("Notification request:", notification);
 
-    // Get referrer details if needed
-    const { data: referrer, error: referrerError } = await supabase
-      .from("referrers")
-      .select("*")
-      .eq("user_email", notification.referrerEmail)
-      .single();
-
-    if (referrerError) {
-      console.error("Error fetching referrer:", referrerError);
-      throw new Error("Failed to fetch referrer details");
-    }
-
-    // Prepare email content
     const template = emailTemplates[notification.type]({
       ...notification.data,
-      referralCode: referrer.referral_code,
-      referralLink: `${req.headers.get("origin")}/referral?ref=${referrer.referral_code}`,
+      referralLink: `${req.headers.get("origin")}/referral?ref=${notification.data?.referralCode}`,
     });
 
     // Send email using Resend
