@@ -20,6 +20,7 @@ import AdvancedStrategies from "./pages/guides/AdvancedStrategies";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import VerifyTestimonial from "./pages/verify-testimonial";
+import VerifyReferral from "./pages/verify-referral";
 import ReferralIndex from "./pages/referral/Index";
 import ReferralStats from "./pages/referral/Stats";
 import React from 'react';
