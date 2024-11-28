@@ -156,6 +156,51 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          attachment_url: string | null
+          created_at: string | null
+          display_name: string
+          email: string
+          full_name: string
+          id: number
+          is_student: boolean
+          is_verified: boolean
+          photo_url: string | null
+          testimony_text: string
+          updated_at: string | null
+          verification_token: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string | null
+          display_name: string
+          email: string
+          full_name: string
+          id?: number
+          is_student?: boolean
+          is_verified?: boolean
+          photo_url?: string | null
+          testimony_text: string
+          updated_at?: string | null
+          verification_token: string
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string | null
+          display_name?: string
+          email?: string
+          full_name?: string
+          id?: number
+          is_student?: boolean
+          is_verified?: boolean
+          photo_url?: string | null
+          testimony_text?: string
+          updated_at?: string | null
+          verification_token?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
