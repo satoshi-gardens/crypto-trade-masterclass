@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +14,7 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -24,6 +22,9 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { email, verificationToken }: EmailRequest = await req.json();
     const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
+
+    console.log("Sending verification email to:", email);
+    console.log("Verification URL:", verificationUrl);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -45,13 +46,16 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to send email");
+      const error = await res.text();
+      console.error("Resend API error:", error);
+      throw new Error(`Failed to send email: ${error}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error in send-referral-verification function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

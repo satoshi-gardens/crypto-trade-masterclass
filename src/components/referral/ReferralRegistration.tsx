@@ -26,16 +26,14 @@ const ReferralRegistration = () => {
 
       if (existingReferrer) {
         // Send verification email with existing referral code
-        const response = await fetch("/functions/v1/send-referral-verification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
+        const response = await supabase.functions.invoke("send-referral-verification", {
+          body: { 
             email, 
             verificationToken: existingReferrer.verification_token 
-          }),
+          },
         });
 
-        if (!response.ok) throw new Error("Failed to send verification email");
+        if (response.error) throw new Error(response.error.message);
 
         toast({
           title: "Email Sent!",
@@ -60,13 +58,11 @@ const ReferralRegistration = () => {
         if (dbError) throw dbError;
 
         // Send verification email
-        const response = await fetch("/functions/v1/send-referral-verification", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, verificationToken }),
+        const response = await supabase.functions.invoke("send-referral-verification", {
+          body: { email, verificationToken },
         });
 
-        if (!response.ok) throw new Error("Failed to send verification email");
+        if (response.error) throw new Error(response.error.message);
 
         toast({
           title: "Registration successful!",
@@ -76,6 +72,7 @@ const ReferralRegistration = () => {
       
       setEmail("");
     } catch (error: any) {
+      console.error("Error in handleSubmit:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to process request. Please try again.",
