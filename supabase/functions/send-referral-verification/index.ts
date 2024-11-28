@@ -4,37 +4,22 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 interface EmailRequest {
   email: string;
   verificationToken: string;
+  from: string;
 }
-
-const validateRequest = (data: any): { isValid: boolean; error?: string } => {
-  if (!data) return { isValid: false, error: "No data provided" };
-  if (!data.email) return { isValid: false, error: "Email is required" };
-  if (!data.verificationToken) return { isValid: false, error: "Verification token is required" };
-  
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(data.email)) return { isValid: false, error: "Invalid email format" };
-  
-  return { isValid: true };
-};
 
 const handler = async (req: Request): Promise<Response> => {
   console.log("Received request:", req.method);
 
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response(null, { 
-      headers: { 
-        ...corsHeaders,
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-      }
-    });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -44,25 +29,13 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const requestData: EmailRequest = await req.json();
-    console.log("Request data:", JSON.stringify(requestData, null, 2));
+    console.log("Request data:", JSON.stringify(requestData));
 
-    // Validate request data
-    const validation = validateRequest(requestData);
-    if (!validation.isValid) {
-      console.error("Validation error:", validation.error);
-      return new Response(
-        JSON.stringify({ error: validation.error }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
+    if (!requestData.email || !requestData.verificationToken || !requestData.from) {
+      throw new Error("Missing required fields");
     }
 
-    const { email, verificationToken } = requestData;
-    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
-    
-    console.log("Sending verification email to:", email);
+    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${requestData.verificationToken}`;
     console.log("Verification URL:", verificationUrl);
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -72,8 +45,8 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
-        to: [email],
+        from: requestData.from,
+        to: [requestData.email],
         subject: "Verify your referral program registration",
         html: `
           <h2>Welcome to our Referral Program!</h2>
@@ -85,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     const emailResult = await emailResponse.json();
-    console.log("Email API response:", JSON.stringify(emailResult, null, 2));
+    console.log("Email API response:", JSON.stringify(emailResult));
 
     if (!emailResponse.ok) {
       throw new Error(`Failed to send email: ${JSON.stringify(emailResult)}`);
@@ -102,16 +75,12 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-referral-verification function:", error);
     
-    // Determine if it's a client error (4xx) or server error (5xx)
-    const status = error.status || 500;
-    
     return new Response(
       JSON.stringify({ 
         error: error.message || "An unexpected error occurred",
-        status 
       }),
       {
-        status,
+        status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
