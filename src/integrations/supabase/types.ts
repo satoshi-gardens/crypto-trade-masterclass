@@ -292,6 +292,7 @@ export type Database = {
           min_referrals_for_tokens: number | null
           referral_benefits: Json | null
           referral_code: string
+          token_expiry: string | null
           tokens_per_referral: number | null
           total_earnings: number | null
           updated_at: string | null
@@ -306,6 +307,7 @@ export type Database = {
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code: string
+          token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null
@@ -320,6 +322,7 @@ export type Database = {
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code?: string
+          token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null

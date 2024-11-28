@@ -21,8 +21,6 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
     setIsLoading(true);
 
     try {
-      console.log("Starting registration process for email:", email);
-
       // Check if user already exists
       const { data: existingReferrer, error: fetchError } = await supabase
         .from("referrers")
@@ -30,30 +28,42 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
         .eq("user_email", email)
         .single();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error("Error checking existing referrer:", fetchError);
-        throw new Error("Failed to check existing referrer");
-      }
-
       const verificationToken = Math.random().toString(36).substring(2, 15) + 
                               Math.random().toString(36).substring(2, 15);
-
-      console.log("Generated verification token:", verificationToken);
+      
+      // Set token expiry to 48 hours from now
+      const tokenExpiry = new Date();
+      tokenExpiry.setHours(tokenExpiry.getHours() + 48);
 
       if (existingReferrer) {
-        console.log("Updating existing referrer:", existingReferrer);
         // Update verification token for existing referrer
         const { error: updateError } = await supabase
           .from("referrers")
-          .update({ verification_token: verificationToken })
+          .update({ 
+            verification_token: verificationToken,
+            token_expiry: tokenExpiry.toISOString()
+          })
           .eq("user_email", email);
 
-        if (updateError) {
-          console.error("Error updating verification token:", updateError);
-          throw new Error("Failed to update verification token");
-        }
+        if (updateError) throw new Error("Failed to update verification token");
+
+        // Send existing user email
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+          body: { 
+            email,
+            verificationToken,
+            isExisting: true,
+            from: "ct4p@bit2big.com"
+          },
+        });
+
+        if (emailError) throw new Error("Failed to send access email");
+
+        toast({
+          title: "Email Sent!",
+          description: "We've sent you a link to access your referral dashboard.",
+        });
       } else {
-        console.log("Creating new referrer record");
         // Generate new referral code for new user
         const referralCode = `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
@@ -64,36 +74,29 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
               user_email: email,
               referral_code: referralCode,
               verification_token: verificationToken,
+              token_expiry: tokenExpiry.toISOString(),
             },
           ]);
 
-        if (dbError) {
-          console.error("Error creating referrer record:", dbError);
-          throw new Error("Failed to create referrer record");
-        }
+        if (dbError) throw new Error("Failed to create referrer record");
+
+        // Send new user verification email
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+          body: { 
+            email,
+            verificationToken,
+            isExisting: false,
+            from: "ct4p@bit2big.com"
+          },
+        });
+
+        if (emailError) throw new Error("Failed to send verification email");
+
+        toast({
+          title: "Registration successful!",
+          description: "Please check your email to verify your account.",
+        });
       }
-
-      console.log("Sending verification email");
-      // Send verification email
-      const { data: emailResponse, error: emailError } = await supabase.functions.invoke("send-referral-verification", {
-        body: { 
-          email,
-          verificationToken,
-          from: "ct4p@bit2big.com"
-        },
-      });
-
-      if (emailError) {
-        console.error("Error sending verification email:", emailError);
-        throw new Error("Failed to send verification email");
-      }
-
-      console.log("Email response:", emailResponse);
-
-      toast({
-        title: "Registration successful!",
-        description: "Please check your email to verify your account.",
-      });
       
       onEmailSet(email);
     } catch (error: any) {
@@ -109,62 +112,34 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="grid gap-6">
-        <Card className="bg-primary/5 border-none">
-          <CardHeader>
-            <CardTitle className="text-2xl">Referral Program Benefits</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4">
+    <div className="max-w-md mx-auto space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Join Our Referral Program</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
               <Alert>
                 <InfoIcon className="h-4 w-4" />
                 <AlertDescription>
-                  Get 10% off your course fee when you refer a friend who enrolls!
+                  Enter your email to join our referral program or access your dashboard.
                 </AlertDescription>
               </Alert>
-              <div className="grid gap-2">
-                <h3 className="font-semibold">🎓 Course Benefits</h3>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>10% discount on course fees for both you and your referral</li>
-                  <li>Unlock exclusive extra courses after 3 successful referrals</li>
-                  <li>Earn tokens for each successful referral (after reaching 5 referrals)</li>
-                </ul>
-              </div>
-              <div className="grid gap-2">
-                <h3 className="font-semibold">💰 Commission Structure</h3>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>One-time payment: 15% commission paid immediately</li>
-                  <li>Installment plans: 10% commission paid monthly</li>
-                  <li>Minimum payout threshold: 100 CHF</li>
-                </ul>
-              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Join Our Referral Program</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? "Processing..." : "Register"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? "Processing..." : "Register / Login"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

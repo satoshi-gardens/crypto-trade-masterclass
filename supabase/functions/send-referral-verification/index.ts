@@ -11,13 +11,13 @@ const corsHeaders = {
 interface EmailRequest {
   email: string;
   verificationToken: string;
+  isExisting: boolean;
   from: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
   console.log("Received request:", req.method);
 
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -36,7 +36,28 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${requestData.verificationToken}`;
-    console.log("Verification URL:", verificationUrl);
+    
+    let emailSubject, emailContent;
+    
+    if (requestData.isExisting) {
+      emailSubject = "Access Your Referral Dashboard";
+      emailContent = `
+        <h2>Welcome Back!</h2>
+        <p>You requested access to your referral dashboard. Click the link below to access it:</p>
+        <p><a href="${verificationUrl}">Access Dashboard</a></p>
+        <p>This link is valid for 48 hours.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `;
+    } else {
+      emailSubject = "Verify Your Email to Activate Your Referral Account";
+      emailContent = `
+        <h2>Welcome to our Referral Program!</h2>
+        <p>Thank you for registering! Please click the link below to verify your email and activate your referral account:</p>
+        <p><a href="${verificationUrl}">Verify Email</a></p>
+        <p>This verification link is valid for 48 hours.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `;
+    }
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -47,13 +68,8 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: requestData.from,
         to: [requestData.email],
-        subject: "Verify your referral program registration",
-        html: `
-          <h2>Welcome to our Referral Program!</h2>
-          <p>Please click the link below to verify your email and activate your referral account:</p>
-          <p><a href="${verificationUrl}">Verify Email</a></p>
-          <p>If you didn't request this, please ignore this email.</p>
-        `,
+        subject: emailSubject,
+        html: emailContent,
       }),
     });
 
@@ -65,7 +81,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Verification email sent successfully" }),
+      JSON.stringify({ success: true, message: "Email sent successfully" }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" }

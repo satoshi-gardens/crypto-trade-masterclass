@@ -14,7 +14,6 @@ const VerifyReferral = () => {
   useEffect(() => {
     const verifyToken = async () => {
       const token = searchParams.get("token");
-      console.log("Verifying token:", token);
       
       if (!token) {
         console.error("No token provided in URL");
@@ -28,29 +27,30 @@ const VerifyReferral = () => {
       }
 
       try {
-        // First, check if the token exists and is valid
+        // Check if the token exists and is valid
         const { data: referrer, error: fetchError } = await supabase
           .from("referrers")
           .select("*")
           .eq("verification_token", token)
           .single();
 
-        if (fetchError) {
+        if (fetchError || !referrer) {
           console.error("Error fetching referrer:", fetchError);
           throw new Error("Invalid verification token");
         }
 
-        if (!referrer) {
-          console.error("No referrer found with token:", token);
-          throw new Error("Invalid or expired verification token");
+        // Check if token has expired
+        if (referrer.token_expiry && new Date(referrer.token_expiry) < new Date()) {
+          throw new Error("Verification link has expired. Please request a new one.");
         }
 
         // Update the referrer record
         const { error: updateError } = await supabase
           .from("referrers")
           .update({ 
-            is_verified: true, 
-            verification_token: null 
+            is_verified: true,
+            verification_token: null,
+            token_expiry: null
           })
           .eq("verification_token", token);
 
