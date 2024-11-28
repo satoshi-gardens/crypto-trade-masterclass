@@ -25,6 +25,23 @@ export const ReferralRegistration = ({ onSuccess }: ReferralRegistrationProps) =
     setIsLoading(true);
 
     try {
+      // First check if the email already exists
+      const { data: existingReferrer } = await supabase
+        .from("referrers")
+        .select("user_email, referral_code")
+        .eq("user_email", email)
+        .single();
+
+      if (existingReferrer) {
+        toast({
+          title: "Already registered",
+          description: "This email is already registered in our referral program.",
+          variant: "default",
+        });
+        onSuccess?.(email);
+        return;
+      }
+
       const referralCode = generateReferralCode(email);
       
       const { error } = await supabase
