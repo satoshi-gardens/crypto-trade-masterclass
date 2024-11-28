@@ -23,6 +23,7 @@ import VerifyTestimonial from "./pages/verify-testimonial";
 import VerifyReferral from "./pages/verify-referral";
 import ReferralIndex from "./pages/referral/Index";
 import ReferralStats from "./pages/referral/Stats";
+import Dashboard from "./pages/admin/Dashboard";
 import React from 'react';
 
 const queryClient = new QueryClient();
@@ -56,6 +57,7 @@ const App = () => {
               <Route path="/verify-referral" element={<VerifyReferral />} />
               <Route path="/referral" element={<ReferralIndex />} />
               <Route path="/referral/stats" element={<ReferralStats />} />
+              <Route path="/admin/dashboard" element={<Dashboard />} />
             </Routes>
           </TooltipProvider>
         </QueryClientProvider>
