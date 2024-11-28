@@ -20,6 +20,8 @@ import AdvancedStrategies from "./pages/guides/AdvancedStrategies";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import VerifyTestimonial from "./pages/verify-testimonial";
+import ReferralIndex from "./pages/referral/Index";
+import ReferralStats from "./pages/referral/Stats";
 import React from 'react';
 
 const queryClient = new QueryClient();
@@ -50,6 +52,8 @@ const App = () => {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
+              <Route path="/referral" element={<ReferralIndex />} />
+              <Route path="/referral/stats" element={<ReferralStats />} />
             </Routes>
           </TooltipProvider>
         </QueryClientProvider>
