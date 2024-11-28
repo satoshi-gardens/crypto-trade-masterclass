@@ -7,7 +7,6 @@ import ActivityLogs from "@/components/admin/ActivityLogs";
 import PayoutManagement from "@/components/admin/PayoutManagement";
 import FraudMonitoring from "@/components/admin/FraudMonitoring";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
@@ -48,14 +47,16 @@ const Dashboard = () => {
       };
     },
     retry: false,
-    onError: (error) => {
-      toast({
-        title: "Access Denied",
-        description: "You don't have permission to access the admin dashboard.",
-        variant: "destructive",
-      });
-      navigate("/");
-    },
+    meta: {
+      onError: () => {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access the admin dashboard.",
+          variant: "destructive",
+        });
+        navigate("/");
+      }
+    }
   });
 
   if (statsLoading) {
