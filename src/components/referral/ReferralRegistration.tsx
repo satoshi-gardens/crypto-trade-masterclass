@@ -7,7 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 
-const ReferralRegistration = () => {
+interface ReferralRegistrationProps {
+  onEmailSet: (email: string) => void;
+}
+
+const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -70,7 +74,7 @@ const ReferralRegistration = () => {
         });
       }
       
-      setEmail("");
+      onEmailSet(email); // Set the email in parent component
     } catch (error: any) {
       console.error("Error in handleSubmit:", error);
       toast({

@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import ReferralRegistration from "@/components/referral/ReferralRegistration";
 import ReferralDashboard from "@/components/referral/ReferralDashboard";
 
 const ReferralIndex = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => {
+    // Initialize from localStorage on component mount
+    return localStorage.getItem("referralEmail") || "";
+  });
+
+  useEffect(() => {
+    // Update localStorage when email changes
+    if (email) {
+      localStorage.setItem("referralEmail", email);
+    } else {
+      localStorage.removeItem("referralEmail");
+    }
+  }, [email]);
 
   return (
     <PageLayout>
@@ -20,7 +32,7 @@ const ReferralIndex = () => {
           {email ? (
             <ReferralDashboard email={email} />
           ) : (
-            <ReferralRegistration />
+            <ReferralRegistration onEmailSet={setEmail} />
           )}
         </div>
       </div>
