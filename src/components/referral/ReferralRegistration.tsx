@@ -12,6 +12,7 @@ export const ReferralRegistration = ({ onSuccess }: ReferralRegistrationProps) =
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
 
   const generateReferralCode = (email: string) => {
     const prefix = email.split("@")[0].slice(0, 5).toUpperCase();
@@ -32,10 +33,31 @@ export const ReferralRegistration = ({ onSuccess }: ReferralRegistrationProps) =
 
       if (error) throw error;
 
-      toast({
-        title: "Success!",
-        description: "You've been registered as a referrer. Check your email for your referral link.",
-      });
+      // Send welcome email
+      const { error: emailError } = await supabase.functions.invoke(
+        "send-referral-registration-email",
+        {
+          body: {
+            to: email,
+            referralCode,
+            websiteUrl,
+          },
+        }
+      );
+
+      if (emailError) {
+        console.error("Error sending welcome email:", emailError);
+        toast({
+          title: "Registration successful",
+          description: "You've been registered, but we couldn't send the welcome email. Please contact support.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success!",
+          description: "You've been registered as a referrer. Check your email for your referral details.",
+        });
+      }
 
       onSuccess?.(email);
       setEmail("");
