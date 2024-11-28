@@ -6,6 +6,7 @@ import { ReferralRegistration } from "@/components/referral/ReferralRegistration
 import { ReferralStats } from "@/components/referral/ReferralStats";
 import ReferralAdmin from "@/pages/ReferralAdmin";
 import ReferralProgram from "@/pages/ReferralProgram";
+import Index from "@/pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<PageLayout><div>Welcome to the homepage</div></PageLayout>} />
+          <Route path="/" element={<Index />} />
           <Route path="/referral-program" element={<ReferralProgram />} />
           <Route path="/referral-admin" element={<ReferralAdmin />} />
         </Routes>
