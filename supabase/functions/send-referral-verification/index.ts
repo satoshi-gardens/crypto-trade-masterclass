@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const WEBSITE_URL = Deno.env.get("VITE_WEBSITE_URL");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,22 +14,38 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { email, verificationToken }: EmailRequest = await req.json();
+    console.log("Received request to send verification email");
+    const requestData = await req.json();
+    console.log("Request data:", requestData);
+
+    const { email, verificationToken } = requestData as EmailRequest;
+
+    if (!email) {
+      throw new Error("Email is required");
+    }
 
     if (!verificationToken) {
+      console.error("Missing verification token for email:", email);
       throw new Error("Verification token is required");
     }
 
     if (!RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not configured");
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const verificationUrl = `${Deno.env.get("VITE_WEBSITE_URL")}/verify-referral?token=${verificationToken}`;
+    if (!WEBSITE_URL) {
+      console.error("WEBSITE_URL is not configured");
+      throw new Error("WEBSITE_URL is not configured");
+    }
+
+    const verificationUrl = `${WEBSITE_URL}/verify-referral?token=${verificationToken}`;
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
