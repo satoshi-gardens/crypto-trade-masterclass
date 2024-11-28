@@ -49,8 +49,10 @@ export type Database = {
           email: string
           first_name: string
           id: number
+          installment_status: Json | null
           last_name: string
           package: string
+          payment_type: string | null
           payment_understanding: boolean | null
           phone: string | null
           price: number
@@ -64,8 +66,10 @@ export type Database = {
           email: string
           first_name: string
           id?: number
+          installment_status?: Json | null
           last_name: string
           package: string
+          payment_type?: string | null
           payment_understanding?: boolean | null
           phone?: string | null
           price: number
@@ -79,8 +83,10 @@ export type Database = {
           email?: string
           first_name?: string
           id?: number
+          installment_status?: Json | null
           last_name?: string
           package?: string
+          payment_type?: string | null
           payment_understanding?: boolean | null
           phone?: string | null
           price?: number
@@ -202,6 +208,36 @@ export type Database = {
           },
         ]
       }
+      referral_commission_rules: {
+        Row: {
+          commission_percentage: number
+          created_at: string | null
+          id: number
+          min_payment_threshold: number | null
+          payment_type: string
+          payout_schedule: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          commission_percentage: number
+          created_at?: string | null
+          id?: number
+          min_payment_threshold?: number | null
+          payment_type: string
+          payout_schedule?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          commission_percentage?: number
+          created_at?: string | null
+          id?: number
+          min_payment_threshold?: number | null
+          payment_type?: string
+          payout_schedule?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       referral_conversions: {
         Row: {
           commission_amount: number
@@ -253,7 +289,10 @@ export type Database = {
           id: number
           is_active: boolean | null
           is_verified: boolean | null
+          min_referrals_for_tokens: number | null
+          referral_benefits: Json | null
           referral_code: string
+          tokens_per_referral: number | null
           total_earnings: number | null
           updated_at: string | null
           user_email: string
@@ -264,7 +303,10 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          min_referrals_for_tokens?: number | null
+          referral_benefits?: Json | null
           referral_code: string
+          tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null
           user_email: string
@@ -275,7 +317,10 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          min_referrals_for_tokens?: number | null
+          referral_benefits?: Json | null
           referral_code?: string
+          tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null
           user_email?: string
