@@ -12,24 +12,60 @@ interface EmailRequest {
   verificationToken: string;
 }
 
+const validateRequest = (data: any): { isValid: boolean; error?: string } => {
+  if (!data) return { isValid: false, error: "No data provided" };
+  if (!data.email) return { isValid: false, error: "Email is required" };
+  if (!data.verificationToken) return { isValid: false, error: "Verification token is required" };
+  
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(data.email)) return { isValid: false, error: "Invalid email format" };
+  
+  return { isValid: true };
+};
+
 const handler = async (req: Request): Promise<Response> => {
+  console.log("Received request:", req.method);
+
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { 
+      headers: { 
+        ...corsHeaders,
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      }
+    });
   }
 
   try {
-    const { email, verificationToken }: EmailRequest = await req.json();
-    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
+    if (!RESEND_API_KEY) {
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("Email service is not configured");
+    }
 
+    const requestData: EmailRequest = await req.json();
+    console.log("Request data:", JSON.stringify(requestData, null, 2));
+
+    // Validate request data
+    const validation = validateRequest(requestData);
+    if (!validation.isValid) {
+      console.error("Validation error:", validation.error);
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        }
+      );
+    }
+
+    const { email, verificationToken } = requestData;
+    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
+    
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
 
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
-    }
-
-    const res = await fetch("https://api.resend.com/emails", {
+    const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,25 +84,35 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    if (!res.ok) {
-      const error = await res.text();
-      console.error("Resend API error:", error);
-      throw new Error(`Failed to send email: ${error}`);
+    const emailResult = await emailResponse.json();
+    console.log("Email API response:", JSON.stringify(emailResult, null, 2));
+
+    if (!emailResponse.ok) {
+      throw new Error(`Failed to send email: ${JSON.stringify(emailResult)}`);
     }
 
-    const data = await res.json();
-    console.log("Email sent successfully:", data);
+    return new Response(
+      JSON.stringify({ success: true, message: "Verification email sent successfully" }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      }
+    );
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   } catch (error: any) {
     console.error("Error in send-referral-verification function:", error);
+    
+    // Determine if it's a client error (4xx) or server error (5xx)
+    const status = error.status || 500;
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message || "An unexpected error occurred",
+        status 
+      }),
       {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );
   }
