@@ -21,8 +21,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
     setIsLoading(true);
 
     try {
-      // Check if user already exists
-      const { data: existingReferrer, error: fetchError } = await supabase
+      const { data: existingReferrer } = await supabase
         .from("referrers")
         .select("*")
         .eq("user_email", email)
@@ -31,13 +30,11 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
       const verificationToken = Math.random().toString(36).substring(2, 15) + 
                               Math.random().toString(36).substring(2, 15);
       
-      // Set token expiry to 48 hours from now
       const tokenExpiry = new Date();
       tokenExpiry.setHours(tokenExpiry.getHours() + 48);
 
       if (existingReferrer) {
-        // Update verification token for existing referrer
-        const { error: updateError } = await supabase
+        await supabase
           .from("referrers")
           .update({ 
             verification_token: verificationToken,
@@ -45,10 +42,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
           })
           .eq("user_email", email);
 
-        if (updateError) throw new Error("Failed to update verification token");
-
-        // Send existing user email
-        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+        await supabase.functions.invoke("send-referral-verification", {
           body: { 
             email,
             verificationToken,
@@ -57,17 +51,14 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
           },
         });
 
-        if (emailError) throw new Error("Failed to send access email");
-
         toast({
-          title: "Email Sent!",
-          description: "We've sent you a link to access your referral dashboard.",
+          title: "Access Link Sent!",
+          description: "Check your email for a secure link to access your referral dashboard. The link is valid for 48 hours.",
         });
       } else {
-        // Generate new referral code for new user
         const referralCode = `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
-        const { error: dbError } = await supabase
+        await supabase
           .from("referrers")
           .insert([
             {
@@ -78,10 +69,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
             },
           ]);
 
-        if (dbError) throw new Error("Failed to create referrer record");
-
-        // Send new user verification email
-        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+        await supabase.functions.invoke("send-referral-verification", {
           body: { 
             email,
             verificationToken,
@@ -90,11 +78,9 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
           },
         });
 
-        if (emailError) throw new Error("Failed to send verification email");
-
         toast({
-          title: "Registration successful!",
-          description: "Please check your email to verify your account.",
+          title: "Welcome to Our Referral Program!",
+          description: "Please check your email to verify your account. The verification link is valid for 48 hours.",
         });
       }
       
@@ -103,7 +89,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
       console.error("Error in handleSubmit:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to process request. Please try again.",
+        description: "We couldn't process your request. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -122,20 +108,22 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
             <div className="space-y-2">
               <Input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="w-full"
               />
               <Alert>
                 <InfoIcon className="h-4 w-4" />
                 <AlertDescription>
-                  Enter your email to join our referral program or access your dashboard.
+                  Enter your email to join our referral program or access your existing dashboard. 
+                  You'll receive a secure link valid for 48 hours.
                 </AlertDescription>
               </Alert>
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Processing..." : "Register / Login"}
+              {isLoading ? "Processing..." : "Get Started"}
             </Button>
           </form>
         </CardContent>
