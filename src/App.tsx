@@ -15,9 +15,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/referral-program" element={<ReferralProgram />} />
-          <Route path="/referral-admin" element={<ReferralAdmin />} />
+          <Route path="/" element={<PageLayout><Index /></PageLayout>} />
+          <Route path="/referral-program" element={<PageLayout><ReferralProgram /></PageLayout>} />
+          <Route path="/referral-admin" element={<PageLayout><ReferralAdmin /></PageLayout>} />
         </Routes>
       </BrowserRouter>
       <Toaster />
