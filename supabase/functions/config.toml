@@ -1,0 +1,20 @@
+project_id = "pvtamcqdadggkdazehbc"
+
+[global.env]
+SUPABASE_URL = "env"
+SUPABASE_ANON_KEY = "env"
+SUPABASE_SERVICE_ROLE_KEY = "env"
+SUPABASE_DB_URL = "env"
+RESEND_API_KEY = "env"
+
+[[functions]]
+name = "send-referral-verification"
+verify_jwt = false
+
+[[functions]]
+name = "send-referral-notifications"
+verify_jwt = false
+
+[[functions]]
+name = "referral-notifications-cron"
+verify_jwt = false
