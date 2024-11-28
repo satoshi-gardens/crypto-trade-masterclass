@@ -30,7 +30,7 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { courseTitle, packageType, price, referralCode } = location.state || {};
+  const { courseTitle, packageType, price } = location.state || {};
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -56,8 +56,8 @@ const Checkout = () => {
   const onSubmit = async (data: CheckoutFormValues) => {
     setIsSubmitting(true);
     try {
-      // Store application in database
-      const { data: applicationData, error: dbError } = await supabase
+      // Store application in database using the correct method
+      const { error: dbError } = await supabase
         .from("course_applications")
         .insert([{
           first_name: data.firstName,
@@ -70,29 +70,11 @@ const Checkout = () => {
           package: packageType,
           price: price,
           payment_understanding: data.agreement,
-          referral_code: referralCode,
         }])
         .select()
         .single();
 
       if (dbError) throw dbError;
-
-      // Process referral if code exists
-      if (referralCode) {
-        const { error: referralError } = await supabase.functions.invoke("process-referral", {
-          body: {
-            referralCode,
-            courseApplicationId: applicationData.id,
-            price,
-          },
-        });
-
-        if (referralError) {
-          console.error("Error processing referral:", referralError);
-          // Don't throw here, we still want to complete the application
-          toast.error("There was an issue processing the referral code.");
-        }
-      }
 
       // Send confirmation emails
       const { error: emailError } = await supabase.functions.invoke("send-application-email", {
@@ -142,9 +124,6 @@ const Checkout = () => {
             <p><span className="font-medium">Selected Course:</span> {courseTitle}</p>
             <p><span className="font-medium">Package:</span> {packageType}</p>
             <p><span className="font-medium">Price:</span> CHF {price.toLocaleString()}</p>
-            {referralCode && (
-              <p><span className="font-medium">Referral Code:</span> {referralCode}</p>
-            )}
             <p className="text-primary font-medium mt-4">
               Please complete payment within 7 days to secure your spot.
             </p>

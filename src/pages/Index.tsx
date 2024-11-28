@@ -10,29 +10,11 @@ import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
 import ValueProposition from "@/components/ValueProposition";
 import { Helmet } from "react-helmet";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
-import { supabase } from "@/integrations/supabase/client";
-import { useSearchParams } from "react-router-dom";
 
 const Index = () => {
   const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
-  const [searchParams] = useSearchParams();
-  const referralCode = searchParams.get("ref");
-
-  useEffect(() => {
-    const trackReferralClick = async () => {
-      if (referralCode) {
-        await supabase.from("referral_clicks").insert({
-          referral_code: referralCode,
-          page_url: window.location.href,
-          ip_address: "anonymous", // For privacy reasons, we're not tracking real IP
-        });
-      }
-    };
-
-    trackReferralClick();
-  }, [referralCode]);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -101,7 +83,6 @@ const Index = () => {
               ]}
               maxStudents={5}
               paymentType={paymentType}
-              referralCode={referralCode}
             />
             <PricingCard
               title="Premium (In-Person)"
@@ -119,7 +100,6 @@ const Index = () => {
               isPopular={true}
               additionalHourlyRate={450}
               paymentType={paymentType}
-              referralCode={referralCode}
             />
             <PricingCard
               title="Hybrid Training"
@@ -136,7 +116,6 @@ const Index = () => {
               maxStudents={5}
               additionalHourlyRate={450}
               paymentType={paymentType}
-              referralCode={referralCode}
             />
           </div>
         </div>
