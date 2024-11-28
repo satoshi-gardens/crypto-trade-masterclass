@@ -14,8 +14,10 @@ const VerifyReferral = () => {
   useEffect(() => {
     const verifyToken = async () => {
       const token = searchParams.get("token");
+      console.log("Verifying token:", token);
       
       if (!token) {
+        console.error("No token provided in URL");
         toast({
           title: "Error",
           description: "Invalid verification link",
@@ -26,25 +28,51 @@ const VerifyReferral = () => {
       }
 
       try {
-        const { data, error } = await supabase
+        // First, check if the token exists and is valid
+        const { data: referrer, error: fetchError } = await supabase
           .from("referrers")
-          .update({ is_verified: true, verification_token: null })
+          .select("*")
           .eq("verification_token", token)
-          .select()
           .single();
 
-        if (error) throw error;
-
-        if (data) {
-          toast({
-            title: "Success!",
-            description: "Your email has been verified. You can now start referring people!",
-          });
+        if (fetchError) {
+          console.error("Error fetching referrer:", fetchError);
+          throw new Error("Invalid verification token");
         }
-      } catch (error) {
+
+        if (!referrer) {
+          console.error("No referrer found with token:", token);
+          throw new Error("Invalid or expired verification token");
+        }
+
+        // Update the referrer record
+        const { error: updateError } = await supabase
+          .from("referrers")
+          .update({ 
+            is_verified: true, 
+            verification_token: null 
+          })
+          .eq("verification_token", token);
+
+        if (updateError) {
+          console.error("Error updating referrer:", updateError);
+          throw updateError;
+        }
+
+        console.log("Successfully verified referrer:", referrer.user_email);
+        
+        toast({
+          title: "Success!",
+          description: "Your email has been verified. You can now start referring people!",
+        });
+
+        // Store the email in localStorage for automatic login
+        localStorage.setItem("referralEmail", referrer.user_email);
+      } catch (error: any) {
+        console.error("Verification error:", error);
         toast({
           title: "Error",
-          description: "Failed to verify email. Please try again.",
+          description: error.message || "Failed to verify email. Please try again.",
           variant: "destructive",
         });
       } finally {
