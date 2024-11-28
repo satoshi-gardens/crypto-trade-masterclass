@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
 const VerifyReferral = () => {
   const [searchParams] = useSearchParams();
@@ -92,11 +93,16 @@ const VerifyReferral = () => {
             <CardTitle>Verifying Your Email</CardTitle>
           </CardHeader>
           <CardContent>
-            {isVerifying ? (
-              <p>Please wait while we verify your email...</p>
-            ) : (
-              <p>Redirecting you to the referral program page...</p>
-            )}
+            <div className="flex items-center justify-center space-x-2">
+              {isVerifying ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <p>Please wait while we verify your email...</p>
+                </>
+              ) : (
+                <p>Redirecting you to the referral program page...</p>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
