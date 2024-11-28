@@ -24,15 +24,15 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Verification token is required");
     }
 
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
     const verificationUrl = `${Deno.env.get("VITE_WEBSITE_URL")}/verify-referral?token=${verificationToken}`;
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
     console.log("Verification Token:", verificationToken);
-
-    if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
-    }
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

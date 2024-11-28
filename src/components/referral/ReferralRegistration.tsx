@@ -18,11 +18,15 @@ const ReferralRegistration = () => {
 
     try {
       // Check if user already exists
-      const { data: existingReferrer } = await supabase
+      const { data: existingReferrer, error: fetchError } = await supabase
         .from("referrers")
         .select("*")
         .eq("user_email", email)
         .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw new Error(fetchError.message);
+      }
 
       if (existingReferrer) {
         // Send verification email with existing referral code
@@ -33,7 +37,7 @@ const ReferralRegistration = () => {
           },
         });
 
-        if (emailError) throw new Error(emailError.message);
+        if (emailError) throw emailError;
 
         toast({
           title: "Email Sent!",
@@ -52,6 +56,7 @@ const ReferralRegistration = () => {
               user_email: email,
               referral_code: referralCode,
               verification_token: verificationToken,
+              is_verified: false
             },
           ]);
 
@@ -62,7 +67,7 @@ const ReferralRegistration = () => {
           body: { email, verificationToken },
         });
 
-        if (emailError) throw new Error(emailError.message);
+        if (emailError) throw emailError;
 
         toast({
           title: "Registration successful!",
@@ -131,6 +136,7 @@ const ReferralRegistration = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  disabled={isLoading}
                 />
               </div>
               <Button type="submit" disabled={isLoading} className="w-full">
