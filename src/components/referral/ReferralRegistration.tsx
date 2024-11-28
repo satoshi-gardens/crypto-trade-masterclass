@@ -17,46 +17,33 @@ const ReferralRegistration = () => {
     setIsLoading(true);
 
     try {
-      console.log("Starting registration process for email:", email);
-      
       // Check if user already exists
-      const { data: existingReferrer, error: fetchError } = await supabase
+      const { data: existingReferrer } = await supabase
         .from("referrers")
         .select("*")
         .eq("user_email", email)
         .single();
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error("Error fetching existing referrer:", fetchError);
-        throw new Error(fetchError.message);
-      }
-
-      let verificationToken;
-      
       if (existingReferrer) {
-        console.log("Existing referrer found, using existing verification token");
-        verificationToken = existingReferrer.verification_token;
-        
-        if (!verificationToken) {
-          // Generate new token if none exists
-          verificationToken = crypto.randomUUID();
-          const { error: updateError } = await supabase
-            .from("referrers")
-            .update({ verification_token: verificationToken })
-            .eq("user_email", email);
+        // Send verification email with existing referral code
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+          body: { 
+            email, 
+            verificationToken: existingReferrer.verification_token 
+          },
+        });
 
-          if (updateError) {
-            console.error("Error updating verification token:", updateError);
-            throw updateError;
-          }
-        }
+        if (emailError) throw new Error(emailError.message);
+
+        toast({
+          title: "Email Sent!",
+          description: "We've resent your verification email. Please check your inbox.",
+        });
       } else {
-        console.log("Creating new referrer");
-        // Generate new referral code and verification token
+        // Generate new referral code for new user
         const referralCode = `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-        verificationToken = crypto.randomUUID();
-
-        console.log("Generated verification token:", verificationToken);
+        const verificationToken = Math.random().toString(36).substring(2, 15) + 
+                                Math.random().toString(36).substring(2, 15);
 
         const { error: dbError } = await supabase
           .from("referrers")
@@ -65,34 +52,23 @@ const ReferralRegistration = () => {
               user_email: email,
               referral_code: referralCode,
               verification_token: verificationToken,
-              is_verified: false
             },
           ]);
 
-        if (dbError) {
-          console.error("Error inserting new referrer:", dbError);
-          throw dbError;
-        }
+        if (dbError) throw dbError;
+
+        // Send verification email
+        const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
+          body: { email, verificationToken },
+        });
+
+        if (emailError) throw new Error(emailError.message);
+
+        toast({
+          title: "Registration successful!",
+          description: "Please check your email to verify your account.",
+        });
       }
-
-      console.log("Sending verification email with token:", verificationToken);
-      // Send verification email
-      const { error: emailError } = await supabase.functions.invoke("send-referral-verification", {
-        body: { 
-          email, 
-          verificationToken 
-        },
-      });
-
-      if (emailError) {
-        console.error("Error sending verification email:", emailError);
-        throw emailError;
-      }
-
-      toast({
-        title: existingReferrer ? "Email Sent!" : "Registration successful!",
-        description: "Please check your email to verify your account.",
-      });
       
       setEmail("");
     } catch (error: any) {
@@ -155,7 +131,6 @@ const ReferralRegistration = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  disabled={isLoading}
                 />
               </div>
               <Button type="submit" disabled={isLoading} className="w-full">

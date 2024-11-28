@@ -4,12 +4,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
 
 const VerifyReferral = () => {
   const [searchParams] = useSearchParams();
   const [isVerifying, setIsVerifying] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -18,44 +16,40 @@ const VerifyReferral = () => {
       const token = searchParams.get("token");
       
       if (!token) {
-        setError("Invalid verification link. No token provided.");
-        setIsVerifying(false);
+        toast({
+          title: "Error",
+          description: "Invalid verification link",
+          variant: "destructive",
+        });
+        navigate("/referral");
         return;
       }
 
       try {
-        console.log("Verifying token:", token);
-        const { data, error: verificationError } = await supabase
+        const { data, error } = await supabase
           .from("referrers")
           .update({ is_verified: true, verification_token: null })
           .eq("verification_token", token)
           .select()
           .single();
 
-        if (verificationError) {
-          console.error("Verification error:", verificationError);
-          throw verificationError;
-        }
+        if (error) throw error;
 
         if (data) {
           toast({
             title: "Success!",
             description: "Your email has been verified. You can now start referring people!",
           });
-          setTimeout(() => navigate("/referral"), 2000);
-        } else {
-          throw new Error("No referrer found with this verification token.");
         }
-      } catch (error: any) {
-        console.error("Error during verification:", error);
-        setError(error.message || "Failed to verify email. Please try again.");
+      } catch (error) {
         toast({
           title: "Error",
-          description: error.message || "Failed to verify email. Please try again.",
+          description: "Failed to verify email. Please try again.",
           variant: "destructive",
         });
       } finally {
         setIsVerifying(false);
+        navigate("/referral");
       }
     };
 
@@ -65,24 +59,15 @@ const VerifyReferral = () => {
   return (
     <PageLayout>
       <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
+        <Card>
           <CardHeader>
-            <CardTitle>Email Verification</CardTitle>
+            <CardTitle>Verifying Your Email</CardTitle>
           </CardHeader>
           <CardContent>
             {isVerifying ? (
-              <div className="flex items-center space-x-2">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                <p>Verifying your email...</p>
-              </div>
-            ) : error ? (
-              <div className="text-red-500">
-                <p>{error}</p>
-              </div>
+              <p>Please wait while we verify your email...</p>
             ) : (
-              <div className="text-green-500">
-                <p>Verification successful! Redirecting to referral program...</p>
-              </div>
+              <p>Redirecting you to the referral program page...</p>
             )}
           </CardContent>
         </Card>

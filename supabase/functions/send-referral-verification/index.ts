@@ -1,11 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const WEBSITE_URL = Deno.env.get("VITE_WEBSITE_URL");
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 interface EmailRequest {
@@ -20,60 +19,15 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    console.log("Received request to send verification email");
-    const requestData = await req.json();
-    console.log("Request data:", requestData);
-
-    const { email, verificationToken } = requestData as EmailRequest;
-
-    if (!email) {
-      console.error("Missing email in request");
-      return new Response(
-        JSON.stringify({ error: "Email is required" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    if (!verificationToken) {
-      console.error("Missing verification token for email:", email);
-      return new Response(
-        JSON.stringify({ error: "Verification token is required" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    if (!RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured");
-      return new Response(
-        JSON.stringify({ error: "Email service configuration error" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    if (!WEBSITE_URL) {
-      console.error("WEBSITE_URL is not configured");
-      return new Response(
-        JSON.stringify({ error: "Website URL configuration error" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
-
-    const verificationUrl = `${WEBSITE_URL}/verify-referral?token=${verificationToken}`;
+    const { email, verificationToken }: EmailRequest = await req.json();
+    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${verificationToken}`;
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
+
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -94,26 +48,18 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
-    const responseData = await res.json();
-
     if (!res.ok) {
-      console.error("Resend API error:", responseData);
-      return new Response(
-        JSON.stringify({ error: "Failed to send email", details: responseData }),
-        {
-          status: res.status,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      const error = await res.text();
+      console.error("Resend API error:", error);
+      throw new Error(`Failed to send email: ${error}`);
     }
 
-    return new Response(
-      JSON.stringify({ success: true, data: responseData }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    const data = await res.json();
+    console.log("Email sent successfully:", data);
+
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error: any) {
     console.error("Error in send-referral-verification function:", error);
     return new Response(
