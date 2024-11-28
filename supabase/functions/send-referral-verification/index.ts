@@ -27,29 +27,53 @@ const handler = async (req: Request): Promise<Response> => {
     const { email, verificationToken } = requestData as EmailRequest;
 
     if (!email) {
-      throw new Error("Email is required");
+      console.error("Missing email in request");
+      return new Response(
+        JSON.stringify({ error: "Email is required" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     if (!verificationToken) {
       console.error("Missing verification token for email:", email);
-      throw new Error("Verification token is required");
+      return new Response(
+        JSON.stringify({ error: "Verification token is required" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     if (!RESEND_API_KEY) {
       console.error("RESEND_API_KEY is not configured");
-      throw new Error("RESEND_API_KEY is not configured");
+      return new Response(
+        JSON.stringify({ error: "Email service configuration error" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     if (!WEBSITE_URL) {
       console.error("WEBSITE_URL is not configured");
-      throw new Error("WEBSITE_URL is not configured");
+      return new Response(
+        JSON.stringify({ error: "Website URL configuration error" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     const verificationUrl = `${WEBSITE_URL}/verify-referral?token=${verificationToken}`;
 
     console.log("Sending verification email to:", email);
     console.log("Verification URL:", verificationUrl);
-    console.log("Verification Token:", verificationToken);
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -70,23 +94,21 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    const responseData = await res.json();
+
     if (!res.ok) {
-      const error = await res.text();
-      console.error("Resend API error:", error);
+      console.error("Resend API error:", responseData);
       return new Response(
-        JSON.stringify({ error: `Failed to send email: ${error}` }),
+        JSON.stringify({ error: "Failed to send email", details: responseData }),
         {
-          status: 400,
+          status: res.status,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
     }
 
-    const data = await res.json();
-    console.log("Email sent successfully:", data);
-
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, data: responseData }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -97,7 +119,7 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(
       JSON.stringify({ error: error.message }),
       {
-        status: 400,
+        status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
