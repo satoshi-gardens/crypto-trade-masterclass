@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Copy, Facebook, Twitter, Linkedin, WhatsApp } from "lucide-react";
+import { Copy, Facebook, Twitter, Linkedin, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const ReferralIndex = () => {
@@ -108,12 +108,22 @@ const ReferralIndex = () => {
       case "linkedin":
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
         break;
-      case "whatsapp":
-        shareUrl = `https://wa.me/?text=${text}%20${url}`;
-        break;
+      default:
+        // Generic share for mobile devices
+        if (navigator.share) {
+          navigator.share({
+            title: "Join me in learning crypto trading!",
+            text: "Use my referral link:",
+            url: referralLink,
+          }).catch(console.error);
+          return;
+        }
+        copyToClipboard(referralLink);
     }
     
-    window.open(shareUrl, "_blank");
+    if (shareUrl) {
+      window.open(shareUrl, "_blank");
+    }
   };
 
   if (isLoading) {
@@ -172,8 +182,8 @@ const ReferralIndex = () => {
                   <Button variant="outline" onClick={() => shareOnSocial("linkedin")}>
                     <Linkedin className="w-5 h-5" />
                   </Button>
-                  <Button variant="outline" onClick={() => shareOnSocial("whatsapp")}>
-                    <WhatsApp className="w-5 h-5" />
+                  <Button variant="outline" onClick={() => shareOnSocial("generic")}>
+                    <Share2 className="w-5 h-5" />
                   </Button>
                 </div>
               </CardContent>

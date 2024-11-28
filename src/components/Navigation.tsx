@@ -4,6 +4,11 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 import { Menu } from "lucide-react";
 
 const Navigation = () => {
+  const handleSheetClose = () => {
+    const button = document.querySelector('button[type="button"]') as HTMLButtonElement;
+    if (button) button.click();
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
       <nav className="container mx-auto px-6">
@@ -48,42 +53,42 @@ const Navigation = () => {
                 <Link
                   to="/courses"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   Courses
                 </Link>
                 <Link
                   to="/tools"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   Tools
                 </Link>
                 <Link
                   to="/loop-method"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   LOOP Method
                 </Link>
                 <Link
                   to="/about"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   About
                 </Link>
                 <Link
                   to="/contact"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   Contact
                 </Link>
                 <Link
                   to="/referral"
                   className="text-gray-600 hover:text-primary"
-                  onClick={() => document.querySelector('button[type="button"]')?.click()}
+                  onClick={handleSheetClose}
                 >
                   Referral Program
                 </Link>
