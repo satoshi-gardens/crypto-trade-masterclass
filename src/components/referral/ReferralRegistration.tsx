@@ -4,7 +4,11 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-export const ReferralRegistration = () => {
+interface ReferralRegistrationProps {
+  onSuccess?: (email: string) => void;
+}
+
+export const ReferralRegistration = ({ onSuccess }: ReferralRegistrationProps) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -33,6 +37,7 @@ export const ReferralRegistration = () => {
         description: "You've been registered as a referrer. Check your email for your referral link.",
       });
 
+      onSuccess?.(email);
       setEmail("");
     } catch (error: any) {
       toast({
