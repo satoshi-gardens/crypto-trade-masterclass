@@ -1,12 +1,13 @@
+import PageLayout from "@/components/PageLayout";
 import { ReferralRegistration } from "@/components/referral/ReferralRegistration";
 import { ReferralStats } from "@/components/referral/ReferralStats";
-import PageLayout from "@/components/PageLayout";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 const ReferralProgram = () => {
   const [userEmail, setUserEmail] = useState("");
+  const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
 
   const { data: referrer } = useQuery({
     queryKey: ["referrer", userEmail],
@@ -49,7 +50,7 @@ const ReferralProgram = () => {
                   Share this code with potential students or use it in your referral link:
                 </p>
                 <p className="font-mono text-sm mt-2">
-                  {window.location.origin}/?ref={referrer.referral_code}
+                  {`${websiteUrl}/?ref=${referrer.referral_code}`}
                 </p>
               </div>
               
