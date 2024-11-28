@@ -20,37 +20,42 @@ import AdvancedStrategies from "./pages/guides/AdvancedStrategies";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import VerifyTestimonial from "./pages/verify-testimonial";
+import React from 'react';
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+const App = () => {
+  return (
+    <React.StrictMode>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/tools" element={<Tools />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/loop-method" element={<LoopMethod />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/thank-you" element={<ThankYou />} />
-          <Route path="/guides/crypto-basics" element={<CryptoBasics />} />
-          <Route path="/guides/ai-trading" element={<AITrading />} />
-          <Route path="/guides/trading-fundamentals" element={<TradingFundamentals />} />
-          <Route path="/guides/security" element={<Security />} />
-          <Route path="/guides/crypto-basics-guide" element={<CryptoBasicsGuide />} />
-          <Route path="/guides/advanced-strategies" element={<AdvancedStrategies />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
-        </Routes>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/loop-method" element={<LoopMethod />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/thank-you" element={<ThankYou />} />
+              <Route path="/guides/crypto-basics" element={<CryptoBasics />} />
+              <Route path="/guides/ai-trading" element={<AITrading />} />
+              <Route path="/guides/trading-fundamentals" element={<TradingFundamentals />} />
+              <Route path="/guides/security" element={<Security />} />
+              <Route path="/guides/crypto-basics-guide" element={<CryptoBasicsGuide />} />
+              <Route path="/guides/advanced-strategies" element={<AdvancedStrategies />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
+            </Routes>
+          </TooltipProvider>
+        </QueryClientProvider>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </React.StrictMode>
+  );
+};
 
 export default App;
