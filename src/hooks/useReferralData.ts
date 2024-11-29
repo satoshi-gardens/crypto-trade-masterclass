@@ -39,59 +39,64 @@ export const useReferralData = (email: string) => {
           .from("referrers")
           .select("*")
           .eq("user_email", email)
-          .single();
+          .maybeSingle();
 
         if (referrerError) {
-          if (referrerError.code === 'PGRST116') {
-            setReferrer(null);
-          } else {
-            throw referrerError;
-          }
+          throw referrerError;
+        }
+
+        if (!referrerData) {
+          setReferrer(null);
+          setError("No referral account found");
           return;
         }
 
-        if (referrerData) {
-          setReferrer(referrerData);
+        setReferrer(referrerData);
 
-          const { count: clickCount } = await supabase
-            .from("referral_clicks")
-            .select("*", { count: "exact" })
-            .eq("referral_code", referrerData.referral_code);
+        // Fetch click count
+        const { count: clickCount } = await supabase
+          .from("referral_clicks")
+          .select("*", { count: "exact" })
+          .eq("referral_code", referrerData.referral_code);
 
-          let benefits = {
-            tokens: 0,
-            extra_courses: false,
-            course_discount: 0
+        // Parse benefits
+        let benefits = {
+          tokens: 0,
+          extra_courses: false,
+          course_discount: 0
+        };
+
+        if (referrerData.referral_benefits) {
+          const parsedBenefits = typeof referrerData.referral_benefits === 'string' 
+            ? JSON.parse(referrerData.referral_benefits)
+            : referrerData.referral_benefits;
+
+          benefits = {
+            tokens: Number(parsedBenefits.tokens) || 0,
+            extra_courses: Boolean(parsedBenefits.extra_courses) || false,
+            course_discount: Number(parsedBenefits.course_discount) || 0
           };
-
-          if (referrerData.referral_benefits) {
-            const parsedBenefits = typeof referrerData.referral_benefits === 'string' 
-              ? JSON.parse(referrerData.referral_benefits)
-              : referrerData.referral_benefits;
-
-            benefits = {
-              tokens: Number(parsedBenefits.tokens) || 0,
-              extra_courses: Boolean(parsedBenefits.extra_courses) || false,
-              course_discount: Number(parsedBenefits.course_discount) || 0
-            };
-          }
-
-          setStats({
-            clicks: clickCount || 0,
-            registrations: 0,
-            purchases: 0,
-            pendingRewards: 0,
-            tokenBalance: benefits.tokens
-          });
         }
+
+        setStats({
+          clicks: clickCount || 0,
+          registrations: 0,
+          purchases: 0,
+          pendingRewards: 0,
+          tokenBalance: benefits.tokens
+        });
       } catch (error: any) {
         console.error("Error fetching referrer data:", error);
-        setError("An unexpected error occurred. Please try again later.");
-        toast({
-          title: "Error",
-          description: "Failed to load referrer data. Please try again.",
-          variant: "destructive",
-        });
+        if (error.code === 'PGRST116') {
+          setError("No referral account found");
+        } else {
+          setError("An unexpected error occurred. Please try again later.");
+          toast({
+            title: "Error",
+            description: "Failed to load referrer data. Please try again.",
+            variant: "destructive",
+          });
+        }
       } finally {
         setIsLoading(false);
       }
