@@ -11,7 +11,13 @@ interface ReferralDashboardProps {
 
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const [referralCode, setReferralCode] = useState("");
-  const [stats, setStats] = useState({ clicks: 0 });
+  const [stats, setStats] = useState({
+    clicks: 0,
+    registrations: 0,
+    purchases: 0,
+    pendingRewards: 0,
+    tokenBalance: 0
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,7 +38,13 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
             .select("*", { count: "exact" })
             .eq("referral_code", referrer.referral_code);
 
-          setStats({ clicks: count || 0 });
+          setStats({
+            clicks: count || 0,
+            registrations: 0, // You can add these queries later
+            purchases: 0,
+            pendingRewards: 0,
+            tokenBalance: referrer.referral_benefits?.tokens || 0
+          });
         }
       } catch (error) {
         console.error("Error fetching referral data:", error);
@@ -90,7 +102,7 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
         referralLink={`${window.location.origin}/referral?ref=${referralCode}`}
         onShare={handleShare}
       />
-      <ReferralStats referralCode={referralCode} />
+      <ReferralStats stats={stats} />
       <ReferralTabs stats={stats} />
     </div>
   );
