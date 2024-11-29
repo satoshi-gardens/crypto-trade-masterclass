@@ -9,6 +9,12 @@ interface ReferralDashboardProps {
   email: string;
 }
 
+interface ReferralBenefits {
+  tokens: number;
+  extra_courses: boolean;
+  course_discount: number;
+}
+
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const [referralCode, setReferralCode] = useState("");
   const [stats, setStats] = useState({
@@ -38,12 +44,14 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
             .select("*", { count: "exact" })
             .eq("referral_code", referrer.referral_code);
 
+          const benefits = referrer.referral_benefits as ReferralBenefits;
+
           setStats({
             clicks: count || 0,
             registrations: 0, // You can add these queries later
             purchases: 0,
             pendingRewards: 0,
-            tokenBalance: referrer.referral_benefits?.tokens || 0
+            tokenBalance: benefits?.tokens || 0
           });
         }
       } catch (error) {
