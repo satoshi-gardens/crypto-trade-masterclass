@@ -1,14 +1,15 @@
 import { useLocation, Link } from "react-router-dom";
 import { format, addDays } from "date-fns";
-import { Mail, Clock, ArrowRight } from "lucide-react";
+import { Mail, Clock, ArrowRight, Gift, Share2 } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ThankYou = () => {
   const location = useLocation();
-  const { courseTitle, email, firstName } = location.state || {};
+  const { courseTitle, email, firstName, referralCode, price, originalPrice } = location.state || {};
   const deadlineDate = addDays(new Date(), 7);
 
   if (!courseTitle || !email) {
@@ -62,6 +63,16 @@ const ThankYou = () => {
           </div>
         </div>
 
+        {/* Referral Confirmation */}
+        {referralCode && (
+          <Alert className="mb-8 bg-primary/10 border-primary">
+            <Gift className="h-5 w-5 text-primary" />
+            <AlertDescription className="text-lg">
+              Thank you for using a referral code! Your 10% discount has been applied, saving you CHF {(originalPrice - price).toLocaleString()}.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Progress Timeline */}
         <Card className="mb-8">
           <CardContent className="pt-6">
@@ -79,9 +90,6 @@ const ThankYou = () => {
                       <p className="text-sm text-muted-foreground">{step.description}</p>
                     )}
                   </div>
-                  {index < steps.length - 1 && (
-                    <div className="absolute left-4 w-0.5 h-full bg-muted" />
-                  )}
                 </div>
               ))}
             </div>
@@ -106,6 +114,29 @@ const ThankYou = () => {
               <p className="text-sm text-muted-foreground">
                 If you do not receive the email within 24 hours, please check your spam or junk folder. If it's not there, contact us at payments@bit2big.com for assistance.
               </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Join Referral Program Card */}
+        <Card className="mb-8 border-primary">
+          <CardContent className="pt-6">
+            <div className="flex items-start gap-4">
+              <Share2 className="w-6 h-6 text-primary flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Share the Success!</h3>
+                <p className="mb-4">
+                  Want to earn rewards while helping others succeed? Join our referral program and get:
+                </p>
+                <ul className="list-disc list-inside mb-4 space-y-2">
+                  <li>10% commission on successful referrals</li>
+                  <li>Special access to exclusive trading resources</li>
+                  <li>Build your network in the trading community</li>
+                </ul>
+                <Button asChild className="w-full sm:w-auto">
+                  <Link to="/referral">Join Our Referral Program</Link>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
