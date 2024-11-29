@@ -18,29 +18,41 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
 
   useEffect(() => {
     const fetchReferrerDetails = async () => {
-      const { data, error } = await supabase
-        .from("referrers")
-        .select(`
-          user_email,
-          is_verified,
-          referral_conversions (
-            referrer_reward_amount,
-            referred_discount_amount
-          )
-        `)
-        .eq("referral_code", referralCode)
-        .single();
+      const [{ data: referrerData }, { data: commissionRules }] = await Promise.all([
+        supabase
+          .from("referrers")
+          .select(`
+            user_email,
+            is_verified,
+            referral_conversions (
+              referrer_reward_amount,
+              referred_discount_amount
+            )
+          `)
+          .eq("referral_code", referralCode)
+          .single(),
+        supabase
+          .from("referral_commission_rules")
+          .select("commission_percentage")
+          .eq("payment_type", "standard")
+          .single()
+      ]);
 
-      if (data) {
-        const displayName = data.user_email.split('@')[0] || referralCode;
+      if (referrerData) {
+        const displayName = referrerData.user_email.split('@')[0] || referralCode;
         setReferrerName(displayName);
-        setIsVerified(data.is_verified);
+        setIsVerified(referrerData.is_verified);
         
-        if (data.referral_conversions?.length > 0) {
-          const conversion = data.referral_conversions[0];
+        if (referrerData.referral_conversions?.length > 0) {
+          const conversion = referrerData.referral_conversions[0];
           setRewards({
-            referrerReward: conversion.referrer_reward_amount || 0,
+            referrerReward: commissionRules?.commission_percentage || conversion.referrer_reward_amount || 0,
             referredDiscount: conversion.referred_discount_amount || 0
+          });
+        } else if (commissionRules) {
+          setRewards({
+            referrerReward: commissionRules.commission_percentage,
+            referredDiscount: 10 // Default discount for referred users
           });
         }
       }
