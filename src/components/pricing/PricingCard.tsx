@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface PricingCardProps {
   title: string;
@@ -28,19 +28,27 @@ export const PricingCard = ({
   paymentType
 }: PricingCardProps) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("ref");
+  
   const isAnnual = paymentType === "annual";
   const currentPrice = isAnnual ? annualPrice : monthlyPrice;
   const fullPrice = monthlyPrice * 6;
   const monthlyPayment = monthlyPrice;
   const annualSavings = fullPrice - annualPrice;
+  
+  // Apply referral discount if code exists
+  const discountedPrice = referralCode ? currentPrice * 0.9 : currentPrice;
+  const referralSavings = currentPrice - discountedPrice;
 
   const handleApply = () => {
     navigate("/checkout", {
       state: {
         courseTitle: title,
         packageType: title,
-        price: currentPrice,
+        price: discountedPrice,
         paymentType,
+        referralCode,
       },
     });
   };
@@ -56,10 +64,24 @@ export const PricingCard = ({
         <CardTitle className="text-2xl">{title}</CardTitle>
         <div className="mt-4 space-y-2">
           <div className="flex items-center justify-center space-x-2">
-            <span className="text-3xl font-bold">
-              CHF {currentPrice.toLocaleString()}
-            </span>
-            {isAnnual && (
+            {referralCode ? (
+              <div className="text-center">
+                <span className="text-3xl font-bold line-through text-gray-400">
+                  CHF {currentPrice.toLocaleString()}
+                </span>
+                <span className="text-3xl font-bold ml-2">
+                  CHF {discountedPrice.toLocaleString()}
+                </span>
+                <Badge variant="secondary" className="text-primary ml-2">
+                  10% Referral Discount
+                </Badge>
+              </div>
+            ) : (
+              <span className="text-3xl font-bold">
+                CHF {currentPrice.toLocaleString()}
+              </span>
+            )}
+            {isAnnual && !referralCode && (
               <Badge variant="secondary" className="text-primary">
                 Save {Math.round((annualSavings / fullPrice) * 100)}%
               </Badge>
@@ -72,6 +94,11 @@ export const PricingCard = ({
               <span>6 monthly payments of CHF {monthlyPayment.toLocaleString()}</span>
             )}
           </p>
+          {referralCode && (
+            <p className="text-sm text-primary">
+              You save CHF {referralSavings.toLocaleString()} with your referral discount!
+            </p>
+          )}
           {additionalHourlyRate && (
             <p className="text-sm text-primary">
               Additional hours: CHF {additionalHourlyRate}/hour

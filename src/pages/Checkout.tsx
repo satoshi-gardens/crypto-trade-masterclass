@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,8 +29,10 @@ type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { courseTitle, packageType, price } = location.state || {};
+  const { courseTitle, packageType, price, referralCode } = location.state || {};
+  const urlReferralCode = searchParams.get("ref") || referralCode;
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -56,7 +58,6 @@ const Checkout = () => {
   const onSubmit = async (data: CheckoutFormValues) => {
     setIsSubmitting(true);
     try {
-      // Store application in database using the correct method
       const { error: dbError } = await supabase
         .from("course_applications")
         .insert([{
@@ -70,13 +71,13 @@ const Checkout = () => {
           package: packageType,
           price: price,
           payment_understanding: data.agreement,
+          referral_code: urlReferralCode,
         }])
         .select()
         .single();
 
       if (dbError) throw dbError;
 
-      // Send confirmation emails
       const { error: emailError } = await supabase.functions.invoke("send-application-email", {
         body: {
           firstName: data.firstName,
@@ -88,6 +89,7 @@ const Checkout = () => {
           selectedCourse: courseTitle,
           package: packageType,
           price: price,
+          referralCode: urlReferralCode,
         },
       });
 
@@ -113,6 +115,9 @@ const Checkout = () => {
     return null;
   }
 
+  const originalPrice = price / 0.9;
+  const savings = urlReferralCode ? originalPrice - price : 0;
+
   return (
     <PageLayout>
       <div className="container max-w-2xl mx-auto px-6 py-12">
@@ -123,7 +128,23 @@ const Checkout = () => {
           <div className="space-y-2">
             <p><span className="font-medium">Selected Course:</span> {courseTitle}</p>
             <p><span className="font-medium">Package:</span> {packageType}</p>
-            <p><span className="font-medium">Price:</span> CHF {price.toLocaleString()}</p>
+            {urlReferralCode ? (
+              <>
+                <p>
+                  <span className="font-medium">Original Price:</span>{" "}
+                  <span className="line-through">CHF {originalPrice.toLocaleString()}</span>
+                </p>
+                <p>
+                  <span className="font-medium">Discounted Price:</span>{" "}
+                  <span className="text-primary">CHF {price.toLocaleString()}</span>
+                </p>
+                <p className="text-primary">
+                  You save CHF {savings.toLocaleString()} with your referral discount!
+                </p>
+              </>
+            ) : (
+              <p><span className="font-medium">Price:</span> CHF {price.toLocaleString()}</p>
+            )}
             <p className="text-primary font-medium mt-4">
               Please complete payment within 7 days to secure your spot.
             </p>
