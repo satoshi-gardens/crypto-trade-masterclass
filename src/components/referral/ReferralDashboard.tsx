@@ -1,6 +1,7 @@
 import ReferralStats from "./ReferralStats";
 import ReferralLoading from "./ReferralLoading";
 import ReferralError from "./ReferralError";
+import SignupPrompt from "./SignupPrompt";
 import { useReferralData } from "@/hooks/useReferralData";
 
 interface ReferralDashboardProps {
@@ -14,17 +15,16 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
     return <ReferralLoading />;
   }
 
+  if (error?.includes("No referral account found")) {
+    return <SignupPrompt />;
+  }
+
   if (error) {
     return <ReferralError message={error} />;
   }
 
   if (!referrer) {
-    return (
-      <ReferralError 
-        message="No referral account found. Please complete the registration process to access your dashboard."
-        variant="default"
-      />
-    );
+    return <SignupPrompt />;
   }
 
   return (

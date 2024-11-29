@@ -2,12 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
-interface ReferralBenefits {
-  tokens: number;
-  extra_courses: boolean;
-  course_discount: number;
-}
-
 interface ReferralStats {
   clicks: number;
   registrations: number;
@@ -32,7 +26,7 @@ export const useReferralData = (email: string) => {
   useEffect(() => {
     const fetchReferrerData = async () => {
       if (!email) {
-        setError("No email provided. Please complete the registration process.");
+        setError("No referral account found. Please complete the registration process.");
         setIsLoading(false);
         return;
       }
@@ -49,7 +43,7 @@ export const useReferralData = (email: string) => {
 
         if (referrerError) {
           if (referrerError.code === 'PGRST116') {
-            setError("No referral account found for this email. Please complete the registration process.");
+            setError("No referral account found. Please complete the registration process.");
           } else {
             throw referrerError;
           }
@@ -59,14 +53,12 @@ export const useReferralData = (email: string) => {
         if (referrerData) {
           setReferrer(referrerData);
 
-          const { count: clickCount, error: clicksError } = await supabase
+          const { count: clickCount } = await supabase
             .from("referral_clicks")
             .select("*", { count: "exact" })
             .eq("referral_code", referrerData.referral_code);
 
-          if (clicksError) throw clicksError;
-
-          let benefits: ReferralBenefits = {
+          let benefits = {
             tokens: 0,
             extra_courses: false,
             course_discount: 0
@@ -77,13 +69,11 @@ export const useReferralData = (email: string) => {
               ? JSON.parse(referrerData.referral_benefits)
               : referrerData.referral_benefits;
 
-            if (typeof parsedBenefits === 'object' && parsedBenefits !== null) {
-              benefits = {
-                tokens: Number(parsedBenefits.tokens) || 0,
-                extra_courses: Boolean(parsedBenefits.extra_courses) || false,
-                course_discount: Number(parsedBenefits.course_discount) || 0
-              };
-            }
+            benefits = {
+              tokens: Number(parsedBenefits.tokens) || 0,
+              extra_courses: Boolean(parsedBenefits.extra_courses) || false,
+              course_discount: Number(parsedBenefits.course_discount) || 0
+            };
           }
 
           setStats({
