@@ -13,6 +13,7 @@ interface EmailRequest {
   verificationToken: string;
   isExisting: boolean;
   from: string;
+  commissionPercentage: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -81,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
             
             <div style="margin-bottom: 16px;">
               <h4 style="color: #333; margin-bottom: 8px;">💰 Earn Commission</h4>
-              <p style="color: #666; margin: 0;">Receive up to 10% commission for each successful referral</p>
+              <p style="color: #666; margin: 0;">Receive up to ${requestData.commissionPercentage}% commission for each successful referral</p>
             </div>
             
             <div style="margin-bottom: 16px;">
@@ -91,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
             
             <div style="margin-bottom: 16px;">
               <h4 style="color: #333; margin-bottom: 8px;">👥 Help Others Succeed</h4>
-              <p style="color: #666; margin: 0;">Your referrals get a 10% discount on their first course</p>
+              <p style="color: #666; margin: 0;">Your referrals get a ${requestData.commissionPercentage}% discount on their first course</p>
             </div>
             
             <div style="margin-bottom: 16px;">

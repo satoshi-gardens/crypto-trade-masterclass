@@ -1,81 +1,35 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Toaster } from "@/components/ui/toaster";
-import Index from "@/pages/Index";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Courses from "@/pages/Courses";
 import Tools from "@/pages/Tools";
-import LoopMethod from "@/pages/LoopMethod";
-import Privacy from "@/pages/Privacy";
-import Terms from "@/pages/Terms";
-import Referral from "@/pages/Referral";
 import Testimonials from "@/pages/Testimonials";
-import Feedback from "@/pages/Feedback";
-import VerifyTestimonial from "@/pages/verify-testimonial";
+import ThankYou from "@/pages/ThankYou";
 import ThankYouFeedback from "@/pages/ThankYouFeedback";
+import VerifyReferral from "@/pages/verify-referral";
+import VerifyTestimonial from "@/pages/verify-testimonial";
+import ReferralIndex from "@/pages/referral/Index";
+import "./App.css";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Index />,
-  },
-  {
-    path: "/about",
-    element: <About />,
-  },
-  {
-    path: "/contact",
-    element: <Contact />,
-  },
-  {
-    path: "/courses",
-    element: <Courses />,
-  },
-  {
-    path: "/tools",
-    element: <Tools />,
-  },
-  {
-    path: "/loop-method",
-    element: <LoopMethod />,
-  },
-  {
-    path: "/privacy",
-    element: <Privacy />,
-  },
-  {
-    path: "/terms",
-    element: <Terms />,
-  },
-  {
-    path: "/referral",
-    element: <Referral />,
-  },
-  {
-    path: "/testimonials",
-    element: <Testimonials />,
-  },
-  {
-    path: "/feedback",
-    element: <Feedback />,
-  },
-  {
-    path: "/verify-testimonial",
-    element: <VerifyTestimonial />,
-  },
-  {
-    path: "/thank-you-feedback",
-    element: <ThankYouFeedback />,
-  },
-]);
-
-const App = () => {
+function App() {
   return (
-    <>
-      <RouterProvider router={router} />
-      <Toaster />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/tools" element={<Tools />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/thank-you-feedback" element={<ThankYouFeedback />} />
+        <Route path="/verify-referral" element={<VerifyReferral />} />
+        <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
+        <Route path="/referral/*" element={<ReferralIndex />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
