@@ -39,17 +39,17 @@ const CourseModules = () => {
   );
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-12 bg-gray-50">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Course Modules</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">Course Modules</h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Comprehensive learning modules designed to take you from basics to advanced trading
           </p>
         </div>
 
         <div className="space-y-6">
-          <div className="max-w-md mx-auto mb-8 relative">
+          <div className="max-w-md mx-auto mb-6 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="text"
