@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ReferralStats from "./ReferralStats";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ReferralDashboardProps {
   email: string;
@@ -23,6 +25,8 @@ interface Stats {
 
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const [referrer, setReferrer] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<Stats>({
     clicks: 0,
     registrations: 0,
@@ -35,19 +39,30 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   useEffect(() => {
     const fetchReferrerData = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
+
         const { data: referrerData, error: referrerError } = await supabase
           .from("referrers")
           .select("*")
           .eq("user_email", email)
           .single();
 
-        if (referrerError) throw referrerError;
+        if (referrerError) {
+          if (referrerError.code === 'PGRST116') {
+            // No data found
+            setError("No referral account found for this email. Please complete the registration process.");
+          } else {
+            throw referrerError;
+          }
+          return;
+        }
 
         if (referrerData) {
           setReferrer(referrerData);
 
           // Get click count
-          const { count, error: clicksError } = await supabase
+          const { count: clickCount, error: clicksError } = await supabase
             .from("referral_clicks")
             .select("*", { count: "exact" })
             .eq("referral_code", referrerData.referral_code);
@@ -76,20 +91,23 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
           }
 
           setStats({
-            clicks: count || 0,
+            clicks: clickCount || 0,
             registrations: 0, // You can add these queries later
             purchases: 0,
             pendingRewards: 0,
             tokenBalance: benefits.tokens
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching referrer data:", error);
+        setError("Failed to load referrer data. Please try again later.");
         toast({
           title: "Error",
           description: "Failed to load referrer data. Please try again.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -98,11 +116,30 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
     }
   }, [email, toast]);
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-gray-600">Loading referrer data...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="max-w-2xl mx-auto my-8">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
   if (!referrer) {
     return (
-      <div className="text-center py-8">
-        <p>Loading referrer data...</p>
-      </div>
+      <Alert className="max-w-2xl mx-auto my-8">
+        <AlertDescription>
+          No referral account found. Please complete the registration process to access your dashboard.
+        </AlertDescription>
+      </Alert>
     );
   }
 
