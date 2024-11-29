@@ -12,6 +12,7 @@ import Referral from "@/pages/Referral";
 import Testimonials from "@/pages/Testimonials";
 import Feedback from "@/pages/Feedback";
 import VerifyTestimonial from "@/pages/verify-testimonial";
+import ThankYouFeedback from "@/pages/ThankYouFeedback";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: "/verify-testimonial",
     element: <VerifyTestimonial />,
+  },
+  {
+    path: "/thank-you-feedback",
+    element: <ThankYouFeedback />,
   },
 ]);
 

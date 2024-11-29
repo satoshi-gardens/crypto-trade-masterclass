@@ -36,6 +36,19 @@ const handler = async (req: Request): Promise<Response> => {
       <p>${content}</p>
     `;
 
+    // Get site URL from database
+    const { data: siteSettings, error: dbError } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'website_url')
+      .single();
+
+    if (dbError) {
+      throw new Error('Failed to fetch site settings');
+    }
+
+    const websiteUrl = siteSettings?.value || 'https://cryptocourse.bit2big.com';
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -43,10 +56,11 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
+        from: `${websiteUrl} <notifications@${new URL(websiteUrl).hostname}>`,
         to: ["trading4profits@bit2big.com"],
         subject,
         html,
+        reply_to: email,
       }),
     });
 
