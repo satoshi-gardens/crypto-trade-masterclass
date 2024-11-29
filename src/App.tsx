@@ -10,6 +10,7 @@ import ThankYouFeedback from "@/pages/ThankYouFeedback";
 import VerifyReferral from "@/pages/verify-referral";
 import VerifyTestimonial from "@/pages/verify-testimonial";
 import ReferralIndex from "@/pages/referral/Index";
+import LoopMethod from "@/pages/LoopMethod";
 import "./App.css";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/verify-referral" element={<VerifyReferral />} />
         <Route path="/verify-testimonial" element={<VerifyTestimonial />} />
         <Route path="/referral/*" element={<ReferralIndex />} />
+        <Route path="/loop-method" element={<LoopMethod />} />
       </Routes>
     </Router>
   );
