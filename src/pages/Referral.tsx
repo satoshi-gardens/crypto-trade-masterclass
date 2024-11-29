@@ -4,7 +4,9 @@ import ReferralRegistration from "@/components/referral/ReferralRegistration";
 import ReferralDashboard from "@/components/referral/ReferralDashboard";
 
 const Referral = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem("referralEmail") || "";
+  });
 
   return (
     <PageLayout>

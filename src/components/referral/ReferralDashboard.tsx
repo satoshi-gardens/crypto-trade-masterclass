@@ -38,6 +38,12 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
 
   useEffect(() => {
     const fetchReferrerData = async () => {
+      if (!email) {
+        setError("No email provided. Please complete the registration process.");
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setError(null);
@@ -50,7 +56,6 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
 
         if (referrerError) {
           if (referrerError.code === 'PGRST116') {
-            // No data found
             setError("No referral account found for this email. Please complete the registration process.");
           } else {
             throw referrerError;
@@ -111,9 +116,7 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
       }
     };
 
-    if (email) {
-      fetchReferrerData();
-    }
+    fetchReferrerData();
   }, [email, toast]);
 
   if (isLoading) {
