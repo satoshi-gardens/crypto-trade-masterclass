@@ -29,17 +29,27 @@ const VerifyReferral = () => {
           throw new Error("Invalid or expired verification token");
         }
 
-        // Update referrer as verified
+        const now = new Date();
+        const tokenExpiry = new Date(referrer.token_expiry);
+        
+        if (now > tokenExpiry) {
+          toast.error("This verification link has expired. Please request a new one.");
+          navigate("/referral");
+          return;
+        }
+
+        // Update referrer status
         await supabase
           .from("referrers")
           .update({
             is_verified: true,
             verification_token: null,
+            verification_status: 'verified',
+            last_login_at: new Date().toISOString()
           })
           .eq("id", referrer.id);
 
         toast.success("Email verified successfully!");
-        // Store email in localStorage for dashboard access
         localStorage.setItem("referralEmail", referrer.user_email);
         navigate("/referral");
       } catch (error) {

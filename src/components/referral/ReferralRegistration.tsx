@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 interface ReferralRegistrationProps {
   onEmailSet: (email: string) => void;
@@ -15,6 +16,8 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("ref");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
       tokenExpiry.setHours(tokenExpiry.getHours() + 48);
 
       if (existingReferrer) {
+        // Existing user - send dashboard access link
         await supabase
           .from("referrers")
           .update({ 
@@ -56,16 +60,16 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
           description: "Check your email for a secure link to access your referral dashboard. The link is valid for 48 hours.",
         });
       } else {
-        const referralCode = `REF${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-
+        // New user registration
         await supabase
           .from("referrers")
           .insert([
             {
               user_email: email,
-              referral_code: referralCode,
               verification_token: verificationToken,
               token_expiry: tokenExpiry.toISOString(),
+              verification_status: 'pending',
+              referred_by: referralCode // Store who referred them if applicable
             },
           ]);
 
@@ -114,13 +118,22 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
                 required
                 className="w-full"
               />
-              <Alert>
-                <InfoIcon className="h-4 w-4" />
-                <AlertDescription>
-                  Enter your email to join our referral program or access your existing dashboard. 
-                  You'll receive a secure link valid for 48 hours.
-                </AlertDescription>
-              </Alert>
+              {referralCode ? (
+                <Alert className="bg-primary/10">
+                  <InfoIcon className="h-4 w-4" />
+                  <AlertDescription>
+                    You've been referred! After joining, you'll be able to refer others and earn rewards too.
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <Alert>
+                  <InfoIcon className="h-4 w-4" />
+                  <AlertDescription>
+                    Enter your email to join our referral program or access your existing dashboard. 
+                    You'll receive a secure link valid for 48 hours.
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? "Processing..." : "Get Started"}
