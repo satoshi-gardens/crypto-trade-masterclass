@@ -1,110 +1,70 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const VerifyReferral = () => {
   const [searchParams] = useSearchParams();
-  const [isVerifying, setIsVerifying] = useState(true);
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const [isVerifying, setIsVerifying] = useState(true);
+  const token = searchParams.get("token");
 
   useEffect(() => {
     const verifyToken = async () => {
-      const token = searchParams.get("token");
-      
       if (!token) {
-        console.error("No token provided in URL");
-        toast({
-          title: "Error",
-          description: "Invalid verification link",
-          variant: "destructive",
-        });
+        toast.error("Invalid verification link");
         navigate("/referral");
         return;
       }
 
       try {
-        // Check if the token exists and is valid
-        const { data: referrer, error: fetchError } = await supabase
+        const { data: referrer, error } = await supabase
           .from("referrers")
           .select("*")
           .eq("verification_token", token)
           .single();
 
-        if (fetchError || !referrer) {
-          console.error("Error fetching referrer:", fetchError);
-          throw new Error("Invalid verification token");
+        if (error || !referrer) {
+          throw new Error("Invalid or expired verification token");
         }
 
-        // Check if token has expired
-        if (referrer.token_expiry && new Date(referrer.token_expiry) < new Date()) {
-          throw new Error("Verification link has expired. Please request a new one.");
-        }
-
-        // Update the referrer record
-        const { error: updateError } = await supabase
+        // Update referrer as verified
+        await supabase
           .from("referrers")
-          .update({ 
+          .update({
             is_verified: true,
             verification_token: null,
-            token_expiry: null
           })
-          .eq("verification_token", token);
+          .eq("id", referrer.id);
 
-        if (updateError) {
-          console.error("Error updating referrer:", updateError);
-          throw updateError;
-        }
-
-        console.log("Successfully verified referrer:", referrer.user_email);
-        
-        toast({
-          title: "Success!",
-          description: "Your email has been verified. You can now start referring people!",
-        });
-
-        // Store the email in localStorage for automatic login
+        toast.success("Email verified successfully!");
+        // Store email in localStorage for dashboard access
         localStorage.setItem("referralEmail", referrer.user_email);
-      } catch (error: any) {
+        navigate("/referral");
+      } catch (error) {
         console.error("Verification error:", error);
-        toast({
-          title: "Error",
-          description: error.message || "Failed to verify email. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to verify email. Please try again.");
+        navigate("/referral");
       } finally {
         setIsVerifying(false);
-        navigate("/referral");
       }
     };
 
     verifyToken();
-  }, [searchParams, toast, navigate]);
+  }, [token, navigate]);
 
   return (
     <PageLayout>
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Verifying Your Email</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-center space-x-2">
-              {isVerifying ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <p>Please wait while we verify your email...</p>
-                </>
-              ) : (
-                <p>Redirecting you to the referral program page...</p>
-              )}
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto text-center">
+          {isVerifying ? (
+            <div className="space-y-4">
+              <h1 className="text-2xl font-bold">Verifying your email...</h1>
+              <p className="text-gray-600">Please wait while we verify your email address.</p>
             </div>
-          </CardContent>
-        </Card>
+          ) : null}
+        </div>
       </div>
     </PageLayout>
   );
