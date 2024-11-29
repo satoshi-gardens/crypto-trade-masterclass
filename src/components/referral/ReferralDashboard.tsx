@@ -54,17 +54,33 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
 
           if (clicksError) throw clicksError;
 
-          // Parse the JSON benefits data
-          const benefits: ReferralBenefits = typeof referrerData.referral_benefits === 'string' 
-            ? JSON.parse(referrerData.referral_benefits)
-            : referrerData.referral_benefits as ReferralBenefits;
+          // Parse and validate the benefits data
+          let benefits: ReferralBenefits = {
+            tokens: 0,
+            extra_courses: false,
+            course_discount: 0
+          };
+
+          if (referrerData.referral_benefits) {
+            const parsedBenefits = typeof referrerData.referral_benefits === 'string' 
+              ? JSON.parse(referrerData.referral_benefits)
+              : referrerData.referral_benefits;
+
+            if (typeof parsedBenefits === 'object' && parsedBenefits !== null) {
+              benefits = {
+                tokens: Number(parsedBenefits.tokens) || 0,
+                extra_courses: Boolean(parsedBenefits.extra_courses) || false,
+                course_discount: Number(parsedBenefits.course_discount) || 0
+              };
+            }
+          }
 
           setStats({
             clicks: count || 0,
             registrations: 0, // You can add these queries later
             purchases: 0,
             pendingRewards: 0,
-            tokenBalance: benefits?.tokens || 0
+            tokenBalance: benefits.tokens
           });
         }
       } catch (error) {
