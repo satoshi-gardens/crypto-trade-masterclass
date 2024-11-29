@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import CourseList from "@/components/CourseList";
-import SearchBar from "@/components/SearchBar";
 import ReferralBanner from "@/components/ReferralBanner";
 import CourseModules from "@/components/course/CourseModules";
 import ModuleCarousel from "@/components/ModuleCarousel";
@@ -70,7 +69,6 @@ const coursesData = [
 ];
 
 const Courses = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const referralCode = searchParams.get("ref");
@@ -125,17 +123,9 @@ const Courses = () => {
             </p>
           </div>
 
-          <div className="max-w-xl mx-auto mb-12">
-            <SearchBar
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search courses and packages..."
-            />
-          </div>
-
           <CourseList
             courses={coursesData}
-            searchQuery={searchQuery}
+            searchQuery=""
           />
         </section>
         
