@@ -14,6 +14,9 @@ const corsHeaders = {
 interface FeedbackRequest {
   name: string;
   email: string;
+  phone?: string;
+  country: string;
+  area: "general" | "courses" | "platform" | "technical" | "other";
   message: string;
 }
 
@@ -25,6 +28,15 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const supabase = createClient(supabaseUrl!, supabaseKey!);
     const feedbackData: FeedbackRequest = await req.json();
+
+    // Get country name from code
+    const { data: countryData } = await supabase
+      .from('countries')
+      .select('name')
+      .eq('code', feedbackData.country)
+      .single();
+
+    const countryName = countryData?.name || feedbackData.country;
 
     // Send confirmation email to user
     const userEmailRes = await fetch("https://api.resend.com/emails", {
@@ -56,10 +68,14 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "ct4p@bit2big.com",
         to: ["mail@bit2big.com"],
-        subject: "New Feedback Received",
+        subject: `New Feedback Received - ${feedbackData.area.toUpperCase()}`,
         html: `
           <h2>New Feedback Submission</h2>
-          <p><strong>From:</strong> ${feedbackData.name} (${feedbackData.email})</p>
+          <p><strong>From:</strong> ${feedbackData.name}</p>
+          <p><strong>Email:</strong> ${feedbackData.email}</p>
+          <p><strong>Phone:</strong> ${feedbackData.phone || 'Not provided'}</p>
+          <p><strong>Country:</strong> ${countryName}</p>
+          <p><strong>Area:</strong> ${feedbackData.area}</p>
           <p><strong>Message:</strong></p>
           <p>${feedbackData.message}</p>
         `,

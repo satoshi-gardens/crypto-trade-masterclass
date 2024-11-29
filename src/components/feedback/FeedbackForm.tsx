@@ -13,10 +13,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const feedbackSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  country: z.string().min(1, "Please select your country"),
+  area: z.enum(["general", "courses", "platform", "technical", "other"], {
+    required_error: "Please select a feedback area",
+  }),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
 
@@ -30,6 +44,36 @@ interface FeedbackFormProps {
 const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
+  });
+
+  const { data: countries, isLoading: isLoadingCountries } = useQuery({
+    queryKey: ['countries'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('countries')
+        .select('*')
+        .eq('is_active', true)
+        .order('priority', { ascending: true })
+        .order('name', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const groupedCountries = countries?.reduce((acc, country) => {
+    const region = country.region || 'Other';
+    if (!acc[region]) {
+      acc[region] = [];
+    }
+    acc[region].push(country);
+    return acc;
+  }, {} as Record<string, typeof countries>);
+
+  const sortedRegions = Object.keys(groupedCountries || {}).sort((a, b) => {
+    if (a === 'Switzerland') return -1;
+    if (b === 'Switzerland') return 1;
+    return a.localeCompare(b);
   });
 
   return (
@@ -49,15 +93,94 @@ const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
           )}
         />
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone (Optional)</FormLabel>
+                <FormControl>
+                  <Input type="tel" placeholder="+1234567890" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
-          name="email"
+          name="country"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} />
-              </FormControl>
+              <FormLabel>Country</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {isLoadingCountries ? (
+                    <SelectItem value="loading" disabled>
+                      Loading countries...
+                    </SelectItem>
+                  ) : (
+                    sortedRegions.map((region) => (
+                      <div key={region}>
+                        <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
+                          {region}
+                        </div>
+                        {groupedCountries?.[region]?.map((country) => (
+                          <SelectItem key={country.code} value={country.code}>
+                            {country.name}
+                          </SelectItem>
+                        ))}
+                      </div>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="area"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Feedback Area</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select feedback area" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="general">General Feedback</SelectItem>
+                  <SelectItem value="courses">Course Content</SelectItem>
+                  <SelectItem value="platform">Platform Experience</SelectItem>
+                  <SelectItem value="technical">Technical Issues</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
