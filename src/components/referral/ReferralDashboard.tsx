@@ -63,7 +63,8 @@ const ReferralDashboard = ({ email }: { email: string }) => {
         .select("*")
         .eq("referral_code", referralData?.referral_code);
 
-      const validConversions = conversions?.filter(c => !c.suspicious_activity) || [];
+      // Only count conversions if the referrer's account is not flagged
+      const validConversions = !referralData?.suspicious_activity ? conversions || [] : [];
       const tokenBalance = validConversions.length * (referralData?.tokens_per_referral || 0);
 
       setStats({
