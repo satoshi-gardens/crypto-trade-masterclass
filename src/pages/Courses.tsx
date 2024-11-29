@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Book, Users, ChartBar } from "lucide-react";
 
 const coursesData = [
   {
@@ -42,14 +43,17 @@ const challenges = [
   {
     title: "Market Volatility",
     description: "Crypto markets are highly volatile, making it challenging to maintain consistent profits.",
+    icon: ChartBar,
   },
   {
     title: "Information Overload",
     description: "The abundance of information makes it difficult to identify reliable sources and strategies.",
+    icon: Book,
   },
   {
     title: "Technical Complexity",
     description: "Understanding blockchain technology and trading mechanics can be overwhelming.",
+    icon: Users,
   },
 ];
 
@@ -122,7 +126,7 @@ const Courses = () => {
       <div className="container mx-auto px-4">
         {referralCode && <ReferralBanner referralCode={referralCode} />}
         
-        <section className="py-16 text-center">
+        <section className="py-16 text-center bg-gradient-to-b from-purple-50 to-white">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             Master Cryptocurrency Trading
           </h1>
@@ -140,9 +144,12 @@ const Courses = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {challenges.map((challenge, index) => (
               <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <h3 className="text-xl font-semibold mb-4">{challenge.title}</h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <challenge.icon className="h-6 w-6 text-primary" />
+                  <h3 className="text-xl font-semibold">{challenge.title}</h3>
+                </div>
                 <p className="text-gray-600">{challenge.description}</p>
-                <Button variant="link" className="mt-4">
+                <Button variant="link" className="mt-4 text-primary">
                   How We Address It →
                 </Button>
               </Card>
@@ -163,7 +170,7 @@ const Courses = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 mb-12">
             {solutions.map((solution, index) => (
-              <div key={index} className="text-center p-6">
+              <div key={index} className="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                 <span className="text-4xl mb-4 block">{solution.icon}</span>
                 <h3 className="text-xl font-semibold mb-2">{solution.title}</h3>
                 <p className="text-gray-600">{solution.description}</p>
