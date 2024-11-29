@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import Home from "@/pages/Home";
+import Index from "@/pages/Index";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Courses from "@/pages/Courses";
@@ -17,7 +17,7 @@ import ThankYouFeedback from "@/pages/ThankYouFeedback";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Index />,
   },
   {
     path: "/about",

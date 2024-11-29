@@ -137,7 +137,7 @@ const Footer = () => {
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Twitter className="w-6 h-6" />
               </a>
-              <a href="https://linkedin.com/company/crypto4profits" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.linkedin.com/in/michaelkiberu/" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Linkedin className="w-6 h-6" />
               </a>
