@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import Hero from "@/components/Hero";
@@ -9,6 +9,8 @@ import CourseModules from "@/components/course/CourseModules";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const coursesData = [
   {
@@ -80,17 +82,43 @@ const solutions = [
 const Courses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const referralCode = searchParams.get("ref");
+
+  useEffect(() => {
+    const verifyReferralCode = async () => {
+      if (!referralCode) return;
+
+      try {
+        // Check if it's a verification token
+        const { data: referrer } = await supabase
+          .from("referrers")
+          .select("*")
+          .eq("verification_token", referralCode)
+          .single();
+
+        if (referrer) {
+          // Update the referrer as verified
+          await supabase
+            .from("referrers")
+            .update({ is_verified: true, verification_token: null })
+            .eq("id", referrer.id);
+
+          toast({
+            title: "Email Verified!",
+            description: "Your referral account has been verified. You can now start referring others!",
+          });
+        }
+      } catch (error) {
+        console.error("Error verifying referral code:", error);
+      }
+    };
+
+    verifyReferralCode();
+  }, [referralCode, toast]);
 
   return (
     <PageLayout>
-      <Hero
-        title="Master Cryptocurrency Trading"
-        subtitle="Transform your trading journey with expert-led courses designed to help you succeed in the crypto markets"
-        buttonText="Explore Our Courses"
-        buttonLink="#courses"
-      />
-      
       <div className="container mx-auto px-4">
         {referralCode && <ReferralBanner referralCode={referralCode} />}
         

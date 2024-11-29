@@ -35,7 +35,8 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields");
     }
 
-    const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${requestData.verificationToken}`;
+    // Update the verification URL to point to the courses page
+    const verificationUrl = `${req.headers.get("origin")}/courses?ref=${requestData.verificationToken}`;
     
     let emailSubject, emailContent;
     
