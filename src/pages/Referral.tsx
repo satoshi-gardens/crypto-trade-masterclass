@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import ReferralRegistration from "@/components/referral/ReferralRegistration";
 import ReferralDashboard from "@/components/referral/ReferralDashboard";
@@ -7,6 +7,14 @@ const Referral = () => {
   const [email, setEmail] = useState(() => {
     return localStorage.getItem("referralEmail") || "";
   });
+
+  useEffect(() => {
+    if (email) {
+      localStorage.setItem("referralEmail", email);
+    } else {
+      localStorage.removeItem("referralEmail");
+    }
+  }, [email]);
 
   return (
     <PageLayout>
