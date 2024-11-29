@@ -65,25 +65,57 @@ const handler = async (req: Request): Promise<Response> => {
     } else {
       emailSubject = "Welcome to Bit2Big's Referral Program - Verify Your Email";
       emailContent = `
-        <h2>Welcome to Bit2Big's Referral Program!</h2>
-        <p>Thank you for joining our community of successful traders! To get started and activate your referral account, please verify your email by clicking the button below:</p>
-        <p style="margin: 20px 0;">
-          <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
-            Verify Email & Activate Account
-          </a>
-        </p>
-        <p><strong>What's Next?</strong></p>
-        <ul>
-          <li>After verification, you'll get your unique referral link</li>
-          <li>Share your link with friends interested in trading</li>
-          <li>Earn rewards for successful referrals</li>
-          <li>Track your earnings in your dashboard</li>
-        </ul>
-        <p><strong>Note:</strong> This verification link is valid for 48 hours.</p>
-        <hr style="margin: 20px 0;">
-        <p style="color: #666; font-size: 12px;">
-          This is an automated message from Bit2Big. Please do not reply to this email.
-        </p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333; margin-bottom: 24px;">Welcome to Bit2Big's Referral Program!</h2>
+          
+          <p>Thank you for joining our community of successful traders! To get started and activate your referral account, please verify your email by clicking the button below:</p>
+          
+          <p style="margin: 32px 0; text-align: center;">
+            <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Verify Email & Activate Account
+            </a>
+          </p>
+
+          <div style="background-color: #f5f5f5; padding: 24px; border-radius: 8px; margin: 32px 0;">
+            <h3 style="color: #0070f3; margin-top: 0;">Your Benefits as a Referrer:</h3>
+            
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: #333; margin-bottom: 8px;">💰 Earn Commission</h4>
+              <p style="color: #666; margin: 0;">Receive up to 10% commission for each successful referral</p>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: #333; margin-bottom: 8px;">🎁 Reward Tokens</h4>
+              <p style="color: #666; margin: 0;">Get 100 tokens for every 5 successful referrals</p>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: #333; margin-bottom: 8px;">👥 Help Others Succeed</h4>
+              <p style="color: #666; margin: 0;">Your referrals get a 10% discount on their first course</p>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+              <h4 style="color: #333; margin-bottom: 8px;">🏆 Exclusive Access</h4>
+              <p style="color: #666; margin: 0;">Unlock additional courses and special benefits as you refer more people</p>
+            </div>
+          </div>
+
+          <p><strong>Note:</strong> This verification link is valid for 48 hours.</p>
+          
+          <p>After verification, you'll be able to:</p>
+          <ul style="color: #666;">
+            <li>Access your unique referral link</li>
+            <li>Track your referrals and earnings</li>
+            <li>Monitor your rewards progress</li>
+            <li>View detailed statistics</li>
+          </ul>
+
+          <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;">
+          
+          <p style="color: #666; font-size: 12px; text-align: center;">
+            This is an automated message from Bit2Big. Please do not reply to this email.
+          </p>
+        </div>
       `;
     }
 

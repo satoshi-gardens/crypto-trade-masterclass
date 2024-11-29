@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, Gift, Coins, Users, Trophy } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 interface ReferralRegistrationProps {
@@ -102,45 +102,85 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Join Our Referral Program</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full"
-              />
-              {referralCode ? (
-                <Alert className="bg-primary/10">
-                  <InfoIcon className="h-4 w-4" />
-                  <AlertDescription>
-                    You've been referred! After joining, you'll be able to refer others and earn rewards too.
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert>
-                  <InfoIcon className="h-4 w-4" />
-                  <AlertDescription>
-                    Enter your email to join our referral program or access your existing dashboard. 
-                    You'll receive a secure link valid for 48 hours.
-                  </AlertDescription>
-                </Alert>
-              )}
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card className="md:col-span-1">
+          <CardHeader>
+            <CardTitle>Join Our Referral Program</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full"
+                />
+                {referralCode ? (
+                  <Alert className="bg-primary/10">
+                    <InfoIcon className="h-4 w-4" />
+                    <AlertDescription>
+                      You've been referred! After joining, you'll be able to refer others and earn rewards too.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <Alert>
+                    <InfoIcon className="h-4 w-4" />
+                    <AlertDescription>
+                      Enter your email to join our referral program or access your existing dashboard. 
+                      You'll receive a secure link valid for 48 hours.
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </div>
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading ? "Processing..." : "Get Started"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-1">
+          <CardHeader>
+            <CardTitle>Program Benefits</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-3">
+                <Coins className="h-6 w-6 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Earn Commission</h4>
+                  <p className="text-sm text-gray-600">Receive up to 10% commission for each successful referral</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Gift className="h-6 w-6 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Reward Tokens</h4>
+                  <p className="text-sm text-gray-600">Get 100 tokens for every 5 successful referrals</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Users className="h-6 w-6 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Help Others Succeed</h4>
+                  <p className="text-sm text-gray-600">Your referrals get a 10% discount on their first course</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <Trophy className="h-6 w-6 text-primary" />
+                <div>
+                  <h4 className="font-semibold">Exclusive Access</h4>
+                  <p className="text-sm text-gray-600">Unlock additional courses and special benefits as you refer more people</p>
+                </div>
+              </div>
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Processing..." : "Get Started"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
