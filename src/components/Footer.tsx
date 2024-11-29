@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Wrench, Brain, Info, Mail, MessageSquare, Star } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Wrench, Brain, Info, Mail, MessageSquare, Star, Users } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
