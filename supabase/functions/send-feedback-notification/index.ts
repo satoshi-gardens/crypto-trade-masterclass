@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(supabaseUrl!, supabaseKey!);
     const { type, name, email, content, isStudent }: FeedbackRequest = await req.json();
 
     const subject = type === "testimonial" 
@@ -44,6 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       .single();
 
     if (dbError) {
+      console.error('Failed to fetch site settings:', dbError);
       throw new Error('Failed to fetch site settings');
     }
 
@@ -65,6 +70,8 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!res.ok) {
+      const error = await res.text();
+      console.error("Resend API error:", error);
       throw new Error("Failed to send email");
     }
 
