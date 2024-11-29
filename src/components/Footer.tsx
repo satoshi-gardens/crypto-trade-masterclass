@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Wrench, Brain, Info, Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, ArrowUp, Home, BookOpen, Wrench, Brain, Info, Mail, MessageSquare, Star } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Footer = () => {
@@ -114,9 +114,24 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Social Media Links */}
+          {/* Community & Feedback */}
           <div className="space-y-8">
-            <h4 className="text-lg font-semibold text-gray-800">Follow Us</h4>
+            <h4 className="text-lg font-semibold text-gray-800">Community</h4>
+            <nav className="flex flex-col space-y-6">
+              <Link to="/testimonials" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Star size={18} />
+                <span>Share Your Story</span>
+              </Link>
+              <Link to="/feedback" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <MessageSquare size={18} />
+                <span>Give Feedback</span>
+              </Link>
+              <Link to="/referral" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
+                <Users size={18} />
+                <span>Referral Program</span>
+              </Link>
+            </nav>
+
             <div className="flex space-x-8">
               <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
                  className="text-gray-600 hover:text-primary transition-colors">
