@@ -26,7 +26,7 @@ export const useReferralData = (email: string) => {
   useEffect(() => {
     const fetchReferrerData = async () => {
       if (!email) {
-        setError("No referral account found. Please complete the registration process.");
+        setReferrer(null);
         setIsLoading(false);
         return;
       }
@@ -43,7 +43,7 @@ export const useReferralData = (email: string) => {
 
         if (referrerError) {
           if (referrerError.code === 'PGRST116') {
-            setError("No referral account found. Please complete the registration process.");
+            setReferrer(null);
           } else {
             throw referrerError;
           }
@@ -86,7 +86,7 @@ export const useReferralData = (email: string) => {
         }
       } catch (error: any) {
         console.error("Error fetching referrer data:", error);
-        setError("Failed to load referrer data. Please try again later.");
+        setError("An unexpected error occurred. Please try again later.");
         toast({
           title: "Error",
           description: "Failed to load referrer data. Please try again.",

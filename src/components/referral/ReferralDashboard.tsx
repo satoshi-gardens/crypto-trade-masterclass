@@ -15,16 +15,13 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
     return <ReferralLoading />;
   }
 
-  if (error?.includes("No referral account found")) {
+  // If there's no referrer or specific error about no account, show signup prompt
+  if (!referrer || error?.includes("No referral account found")) {
     return <SignupPrompt />;
   }
 
   if (error) {
     return <ReferralError message={error} />;
-  }
-
-  if (!referrer) {
-    return <SignupPrompt />;
   }
 
   return (
