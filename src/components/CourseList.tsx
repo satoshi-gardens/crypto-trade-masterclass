@@ -7,6 +7,7 @@ export interface Course {
   description: string;
   duration: number;
   price: number;
+  packageType?: string;
 }
 
 interface CourseListProps {

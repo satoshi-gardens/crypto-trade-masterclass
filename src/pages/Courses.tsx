@@ -19,6 +19,7 @@ const coursesData = [
     description: "Perfect for self-paced learning with comprehensive online resources.",
     duration: 6,
     price: 1800,
+    packageType: "Online",
   },
   {
     id: "2",
@@ -26,6 +27,7 @@ const coursesData = [
     description: "Intensive in-person training with direct mentorship and hands-on practice.",
     duration: 8,
     price: 3240,
+    packageType: "Premium",
   },
   {
     id: "3",
@@ -33,6 +35,7 @@ const coursesData = [
     description: "Combine online flexibility with periodic in-person sessions for optimal learning.",
     duration: 12,
     price: 2700,
+    packageType: "Hybrid",
   },
 ];
 
