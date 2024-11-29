@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const VerifyReferral = () => {
   const [searchParams] = useSearchParams();
@@ -49,7 +50,7 @@ const VerifyReferral = () => {
           })
           .eq("id", referrer.id);
 
-        toast.success("Email verified successfully!");
+        toast.success("Email verified successfully! Welcome to our referral program.");
         localStorage.setItem("referralEmail", referrer.user_email);
         navigate("/referral");
       } catch (error) {
@@ -71,7 +72,10 @@ const VerifyReferral = () => {
           {isVerifying ? (
             <div className="space-y-4">
               <h1 className="text-2xl font-bold">Verifying your email...</h1>
-              <p className="text-gray-600">Please wait while we verify your email address.</p>
+              <p className="text-muted-foreground">Please wait while we verify your email address.</p>
+              <div className="flex justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
             </div>
           ) : null}
         </div>

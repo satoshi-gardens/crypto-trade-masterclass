@@ -35,28 +35,55 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields");
     }
 
-    // For referral program signup, use verify-referral endpoint
     const verificationUrl = `${req.headers.get("origin")}/verify-referral?token=${requestData.verificationToken}`;
     
     let emailSubject, emailContent;
     
     if (requestData.isExisting) {
-      emailSubject = "Access Your Referral Dashboard";
+      emailSubject = "Access Your Bit2Big Referral Dashboard";
       emailContent = `
-        <h2>Welcome Back!</h2>
-        <p>You requested access to your referral dashboard. Click the link below to access it:</p>
-        <p><a href="${verificationUrl}">Access Dashboard</a></p>
-        <p>This link is valid for 48 hours.</p>
-        <p>If you didn't request this, please ignore this email.</p>
+        <h2>Welcome Back to Bit2Big!</h2>
+        <p>You've requested access to your referral dashboard. Click the secure link below to access it:</p>
+        <p style="margin: 20px 0;">
+          <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+            Access Your Dashboard
+          </a>
+        </p>
+        <p><strong>Important:</strong> This link is valid for 48 hours for your security.</p>
+        <p>With your referral dashboard, you can:</p>
+        <ul>
+          <li>Track your referrals and earnings</li>
+          <li>Access your unique referral link</li>
+          <li>View your rewards and benefits</li>
+        </ul>
+        <p>If you didn't request this access, please ignore this email.</p>
+        <hr style="margin: 20px 0;">
+        <p style="color: #666; font-size: 12px;">
+          This is an automated message from Bit2Big. Please do not reply to this email.
+        </p>
       `;
     } else {
-      emailSubject = "Verify Your Email to Activate Your Referral Account";
+      emailSubject = "Welcome to Bit2Big's Referral Program - Verify Your Email";
       emailContent = `
-        <h2>Welcome to our Referral Program!</h2>
-        <p>Thank you for registering! Please click the link below to verify your email and activate your referral account:</p>
-        <p><a href="${verificationUrl}">Verify Email</a></p>
-        <p>This verification link is valid for 48 hours.</p>
-        <p>If you didn't request this, please ignore this email.</p>
+        <h2>Welcome to Bit2Big's Referral Program!</h2>
+        <p>Thank you for joining our community of successful traders! To get started and activate your referral account, please verify your email by clicking the button below:</p>
+        <p style="margin: 20px 0;">
+          <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
+            Verify Email & Activate Account
+          </a>
+        </p>
+        <p><strong>What's Next?</strong></p>
+        <ul>
+          <li>After verification, you'll get your unique referral link</li>
+          <li>Share your link with friends interested in trading</li>
+          <li>Earn rewards for successful referrals</li>
+          <li>Track your earnings in your dashboard</li>
+        </ul>
+        <p><strong>Note:</strong> This verification link is valid for 48 hours.</p>
+        <hr style="margin: 20px 0;">
+        <p style="color: #666; font-size: 12px;">
+          This is an automated message from Bit2Big. Please do not reply to this email.
+        </p>
       `;
     }
 
