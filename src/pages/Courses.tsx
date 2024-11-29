@@ -6,6 +6,7 @@ import CourseList from "@/components/CourseList";
 import SearchBar from "@/components/SearchBar";
 import ReferralBanner from "@/components/ReferralBanner";
 import CourseModules from "@/components/course/CourseModules";
+import { CourseStructure } from "@/components/course/CourseStructure";
 
 const coursesData = [
   {
@@ -47,27 +48,40 @@ const Courses = () => {
       <div className="container mx-auto px-4">
         {referralCode && <ReferralBanner referralCode={referralCode} />}
         
-        <div className="max-w-xl mx-auto mb-8">
-          <SearchBar
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search courses..."
-          />
-        </div>
+        <section className="py-12">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Your Path to Trading Excellence</h2>
+            <p className="text-lg text-gray-600">
+              Our comprehensive trading education program is designed to take you from beginner 
+              to professional trader. With expert mentorship, practical exercises, and real-world 
+              trading experience, you'll develop the skills needed to succeed in the cryptocurrency markets.
+            </p>
+          </div>
 
-        <div className="space-y-20">
-          <section>
-            <h2 className="text-3xl font-bold text-center mb-12">Course Packages</h2>
-            <CourseList
-              courses={coursesData}
-              searchQuery={searchQuery}
+          <div className="max-w-xl mx-auto mb-12">
+            <SearchBar
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search courses and modules..."
             />
-          </section>
+          </div>
 
-          <section>
-            <CourseModules />
-          </section>
-        </div>
+          <div className="space-y-20">
+            <section>
+              <h2 className="text-3xl font-bold text-center mb-12">Course Packages</h2>
+              <CourseList
+                courses={coursesData}
+                searchQuery={searchQuery}
+              />
+            </section>
+
+            <CourseStructure />
+
+            <section>
+              <CourseModules />
+            </section>
+          </div>
+        </section>
       </div>
     </PageLayout>
   );
