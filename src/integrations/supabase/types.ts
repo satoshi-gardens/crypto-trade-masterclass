@@ -333,6 +333,8 @@ export type Database = {
           ip_address: string | null
           page_url: string | null
           referral_code: string
+          referrer_url: string | null
+          user_agent: string | null
         }
         Insert: {
           converted?: boolean | null
@@ -341,6 +343,8 @@ export type Database = {
           ip_address?: string | null
           page_url?: string | null
           referral_code: string
+          referrer_url?: string | null
+          user_agent?: string | null
         }
         Update: {
           converted?: boolean | null
@@ -349,6 +353,8 @@ export type Database = {
           ip_address?: string | null
           page_url?: string | null
           referral_code?: string
+          referrer_url?: string | null
+          user_agent?: string | null
         }
         Relationships: [
           {
@@ -398,6 +404,9 @@ export type Database = {
           id: number
           paid: boolean | null
           referral_code: string
+          referred_discount_amount: number | null
+          referrer_reward_amount: number | null
+          referrer_reward_type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -407,6 +416,9 @@ export type Database = {
           id?: number
           paid?: boolean | null
           referral_code: string
+          referred_discount_amount?: number | null
+          referrer_reward_amount?: number | null
+          referrer_reward_type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -416,6 +428,9 @@ export type Database = {
           id?: number
           paid?: boolean | null
           referral_code?: string
+          referred_discount_amount?: number | null
+          referrer_reward_amount?: number | null
+          referrer_reward_type?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -441,11 +456,14 @@ export type Database = {
           id: number
           is_active: boolean | null
           is_verified: boolean | null
+          last_ip_address: string | null
           last_login_at: string | null
           min_referrals_for_tokens: number | null
           referral_benefits: Json | null
           referral_code: string
           referred_by: string | null
+          reward_eligible: boolean | null
+          suspicious_activity: boolean | null
           token_expiry: string | null
           tokens_per_referral: number | null
           total_earnings: number | null
@@ -459,11 +477,14 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_ip_address?: string | null
           last_login_at?: string | null
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code: string
           referred_by?: string | null
+          reward_eligible?: boolean | null
+          suspicious_activity?: boolean | null
           token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null
@@ -477,11 +498,14 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_ip_address?: string | null
           last_login_at?: string | null
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code?: string
           referred_by?: string | null
+          reward_eligible?: boolean | null
+          suspicious_activity?: boolean | null
           token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null

@@ -102,7 +102,7 @@ const ReferralDashboard = ({ email }: { email: string }) => {
 
       <ReferralHeader 
         referralLink={`${window.location.origin}/referral?ref=${referralData.referral_code}`}
-        isEligible={referralData.reward_eligible}
+        onShare={() => {}}
       />
       <ReferralStats stats={stats} />
       <ReferralTabs stats={stats} />

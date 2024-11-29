@@ -37,9 +37,10 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
         setIsVerified(data.is_verified);
         
         if (data.referral_conversions?.length > 0) {
+          const conversion = data.referral_conversions[0];
           setRewards({
-            referrerReward: data.referral_conversions[0].referrer_reward_amount,
-            referredDiscount: data.referral_conversions[0].referred_discount_amount
+            referrerReward: conversion.referrer_reward_amount || 0,
+            referredDiscount: conversion.referred_discount_amount || 0
           });
         }
       }
