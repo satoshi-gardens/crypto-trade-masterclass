@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import ReferralHeader from "./ReferralHeader";
 import ReferralStats from "./ReferralStats";
-import ReferralTabs from "./ReferralTabs";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface ReferralDashboardProps {
   email: string;
@@ -15,36 +13,51 @@ interface ReferralBenefits {
   course_discount: number;
 }
 
+interface Stats {
+  clicks: number;
+  registrations: number;
+  purchases: number;
+  pendingRewards: number;
+  tokenBalance: number;
+}
+
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
-  const [referralCode, setReferralCode] = useState("");
-  const [stats, setStats] = useState({
+  const [referrer, setReferrer] = useState<any>(null);
+  const [stats, setStats] = useState<Stats>({
     clicks: 0,
     registrations: 0,
     purchases: 0,
     pendingRewards: 0,
-    tokenBalance: 0
+    tokenBalance: 0,
   });
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchReferralData = async () => {
+    const fetchReferrerData = async () => {
       try {
-        const { data: referrer } = await supabase
+        const { data: referrerData, error: referrerError } = await supabase
           .from("referrers")
           .select("*")
           .eq("user_email", email)
           .single();
 
-        if (referrer) {
-          setReferralCode(referrer.referral_code);
+        if (referrerError) throw referrerError;
 
-          // Fetch click stats
-          const { count } = await supabase
+        if (referrerData) {
+          setReferrer(referrerData);
+
+          // Get click count
+          const { count, error: clicksError } = await supabase
             .from("referral_clicks")
             .select("*", { count: "exact" })
-            .eq("referral_code", referrer.referral_code);
+            .eq("referral_code", referrerData.referral_code);
 
-          const benefits = referrer.referral_benefits as ReferralBenefits;
+          if (clicksError) throw clicksError;
+
+          // Parse the JSON benefits data
+          const benefits: ReferralBenefits = typeof referrerData.referral_benefits === 'string' 
+            ? JSON.parse(referrerData.referral_benefits)
+            : referrerData.referral_benefits as ReferralBenefits;
 
           setStats({
             clicks: count || 0,
@@ -55,63 +68,38 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
           });
         }
       } catch (error) {
-        console.error("Error fetching referral data:", error);
+        console.error("Error fetching referrer data:", error);
         toast({
           title: "Error",
-          description: "Could not load your referral data. Please try again later.",
+          description: "Failed to load referrer data. Please try again.",
           variant: "destructive",
         });
       }
     };
 
     if (email) {
-      fetchReferralData();
+      fetchReferrerData();
     }
   }, [email, toast]);
 
-  const handleShare = async (platform: string) => {
-    const referralLink = `${window.location.origin}/referral?ref=${referralCode}`;
-    
-    switch (platform) {
-      case "facebook":
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
-          "_blank"
-        );
-        break;
-      case "twitter":
-        window.open(
-          `https://twitter.com/intent/tweet?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent("Join me on KY Connect!")}`,
-          "_blank"
-        );
-        break;
-      case "whatsapp":
-        window.open(
-          `https://wa.me/?text=${encodeURIComponent(`Join me on KY Connect! ${referralLink}`)}`,
-          "_blank"
-        );
-        break;
-      default:
-        break;
-    }
-  };
-
-  if (!referralCode) {
+  if (!referrer) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="text-center py-8">
+        <p>Loading referrer data...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <ReferralHeader
-        referralLink={`${window.location.origin}/referral?ref=${referralCode}`}
-        onShare={handleShare}
-      />
-      <ReferralStats stats={stats} />
-      <ReferralTabs stats={stats} />
+    <div className="space-y-6">
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-2xl font-semibold mb-4">Your Referral Dashboard</h2>
+        <div className="mb-4">
+          <p className="text-gray-600">Your Referral Code:</p>
+          <p className="text-xl font-semibold">{referrer.referral_code}</p>
+        </div>
+        <ReferralStats stats={stats} />
+      </div>
     </div>
   );
 };
