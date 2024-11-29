@@ -80,7 +80,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
           description: "Check your email for a secure link to access your referral dashboard. The link is valid for 48 hours.",
         });
       } else {
-        // Let the database trigger handle referral code generation
+        // Include an empty referral_code that will be replaced by the trigger
         const { error: insertError } = await supabase
           .from("referrers")
           .insert({
@@ -90,6 +90,7 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
             is_verified: false,
             verification_status: 'pending',
             referred_by: referralCode,
+            referral_code: '',
             referral_benefits: {
               tokens: 0,
               extra_courses: false,
