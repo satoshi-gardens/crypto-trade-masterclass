@@ -47,6 +47,13 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
     return acc;
   }, {} as Record<string, typeof countries>);
 
+  // Sort regions to ensure Switzerland appears first
+  const sortedRegions = Object.keys(groupedCountries || {}).sort((a, b) => {
+    if (a === 'Switzerland') return -1;
+    if (b === 'Switzerland') return 1;
+    return a.localeCompare(b);
+  });
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold text-primary">Location</h2>
@@ -83,12 +90,12 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
                       Loading countries...
                     </SelectItem>
                   ) : (
-                    groupedCountries && Object.entries(groupedCountries).map(([region, countries]) => (
+                    sortedRegions.map((region) => (
                       <div key={region}>
                         <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
                           {region}
                         </div>
-                        {countries?.map((country) => (
+                        {groupedCountries?.[region]?.map((country) => (
                           <SelectItem key={country.code} value={country.code}>
                             {country.name}
                           </SelectItem>
