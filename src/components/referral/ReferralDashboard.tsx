@@ -1,111 +1,96 @@
 import { useState, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReferralHeader from "./ReferralHeader";
 import ReferralStats from "./ReferralStats";
 import ReferralTabs from "./ReferralTabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
-const ReferralDashboard = ({ email }: { email: string }) => {
-  const [referralData, setReferralData] = useState<any>(null);
-  const [stats, setStats] = useState({
-    clicks: 0,
-    registrations: 0,
-    purchases: 0,
-    pendingRewards: 0,
-    tokenBalance: 0
-  });
+interface ReferralDashboardProps {
+  email: string;
+}
+
+const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
+  const [referralCode, setReferralCode] = useState("");
+  const [stats, setStats] = useState({ clicks: 0 });
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchReferralData();
-    fetchReferralStats();
-  }, [email]);
+    const fetchReferralData = async () => {
+      try {
+        const { data: referrer } = await supabase
+          .from("referrers")
+          .select("*")
+          .eq("user_email", email)
+          .single();
 
-  const fetchReferralData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("referrers")
-        .select("*, referral_conversions(*)")
-        .eq("user_email", email)
-        .single();
+        if (referrer) {
+          setReferralCode(referrer.referral_code);
 
-      if (error) throw error;
-      setReferralData(data);
+          // Fetch click stats
+          const { count } = await supabase
+            .from("referral_clicks")
+            .select("*", { count: "exact" })
+            .eq("referral_code", referrer.referral_code);
 
-      // Check for suspicious activity
-      if (data.suspicious_activity) {
+          setStats({ clicks: count || 0 });
+        }
+      } catch (error) {
+        console.error("Error fetching referral data:", error);
         toast({
-          title: "Account Review",
-          description: "Your account is under review. Some features may be temporarily restricted.",
+          title: "Error",
+          description: "Could not load your referral data. Please try again later.",
           variant: "destructive",
         });
       }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: "Unable to load your referral information. Please try again.",
-        variant: "destructive",
-      });
+    };
+
+    if (email) {
+      fetchReferralData();
+    }
+  }, [email, toast]);
+
+  const handleShare = async (platform: string) => {
+    const referralLink = `${window.location.origin}/referral?ref=${referralCode}`;
+    
+    switch (platform) {
+      case "facebook":
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
+          "_blank"
+        );
+        break;
+      case "twitter":
+        window.open(
+          `https://twitter.com/intent/tweet?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent("Join me on KY Connect!")}`,
+          "_blank"
+        );
+        break;
+      case "whatsapp":
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(`Join me on KY Connect! ${referralLink}`)}`,
+          "_blank"
+        );
+        break;
+      default:
+        break;
     }
   };
 
-  const fetchReferralStats = async () => {
-    try {
-      const { data: clicks } = await supabase
-        .from("referral_clicks")
-        .select("*", { count: "exact" })
-        .eq("referral_code", referralData?.referral_code);
-
-      const { data: conversions } = await supabase
-        .from("referral_conversions")
-        .select("*")
-        .eq("referral_code", referralData?.referral_code);
-
-      // Only count conversions if the referrer's account is not flagged
-      const validConversions = !referralData?.suspicious_activity ? conversions || [] : [];
-      const tokenBalance = validConversions.length * (referralData?.tokens_per_referral || 0);
-
-      setStats({
-        clicks: clicks?.length || 0,
-        registrations: validConversions.filter(c => c.course_application_id).length || 0,
-        purchases: validConversions.filter(c => !c.paid).length || 0,
-        pendingRewards: validConversions.reduce((acc, curr) => acc + Number(curr.commission_amount), 0) || 0,
-        tokenBalance
-      });
-    } catch (error) {
-      console.error("Error fetching stats:", error);
-    }
-  };
-
-  if (!referralData) return null;
+  if (!referralCode) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {referralData.suspicious_activity && (
-        <Alert variant="destructive">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Your account is under review due to suspicious activity. Please contact support for more information.
-          </AlertDescription>
-        </Alert>
-      )}
-      
-      {!referralData.reward_eligible && (
-        <Alert>
-          <Shield className="h-4 w-4" />
-          <AlertDescription>
-            Complete at least one course purchase to unlock full referral benefits.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      <ReferralHeader 
-        referralLink={`${window.location.origin}/referral?ref=${referralData.referral_code}`}
-        onShare={() => {}}
+    <div className="space-y-8">
+      <ReferralHeader
+        referralLink={`${window.location.origin}/referral?ref=${referralCode}`}
+        onShare={handleShare}
       />
-      <ReferralStats stats={stats} />
+      <ReferralStats referralCode={referralCode} />
       <ReferralTabs stats={stats} />
     </div>
   );
