@@ -1,22 +1,37 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import ReferralRegistration from "@/components/referral/ReferralRegistration";
 import ReferralDashboard from "@/components/referral/ReferralDashboard";
 
 const ReferralIndex = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get("ref");
+  
   const [email, setEmail] = useState(() => {
-    // Initialize from localStorage on component mount
     return localStorage.getItem("referralEmail") || "";
   });
 
   useEffect(() => {
+    // If there's a referral code in the URL, redirect to courses page
+    if (referralCode) {
+      navigate(`/courses?ref=${referralCode}`);
+      return;
+    }
+
     // Update localStorage when email changes
     if (email) {
       localStorage.setItem("referralEmail", email);
     } else {
       localStorage.removeItem("referralEmail");
     }
-  }, [email]);
+  }, [email, referralCode, navigate]);
+
+  // If there's a referral code, don't render anything as we're redirecting
+  if (referralCode) {
+    return null;
+  }
 
   return (
     <PageLayout>
