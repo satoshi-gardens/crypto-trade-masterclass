@@ -50,7 +50,7 @@ const Courses = () => {
           <SearchBar
             placeholder="Search courses..."
             value={searchQuery}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+            onChange={setSearchQuery}
           />
         </div>
 
