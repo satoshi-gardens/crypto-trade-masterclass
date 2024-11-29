@@ -19,7 +19,7 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
   useEffect(() => {
     const fetchReferrerDetails = async () => {
       try {
-        const [{ data: referrerData }, { data: commissionRules, error: commissionError }] = await Promise.all([
+        const [{ data: referrerData }, { data: commissionRules }] = await Promise.all([
           supabase
             .from("referrers")
             .select(`
@@ -44,7 +44,7 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
           setIsVerified(referrerData.is_verified);
           
           // Get the commission percentage from rules or use default
-          const defaultCommission = 10; // Fallback value
+          const defaultCommission = 10;
           const commission = commissionRules?.[0]?.commission_percentage || defaultCommission;
           
           if (referrerData.referral_conversions?.length > 0) {
@@ -56,7 +56,7 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
           } else {
             setRewards({
               referrerReward: commission || defaultCommission,
-              referredDiscount: defaultCommission // Default discount for referred users
+              referredDiscount: defaultCommission
             });
           }
         }
