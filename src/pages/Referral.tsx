@@ -1,29 +1,30 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import ReferralRegistration from "@/components/referral/ReferralRegistration";
-import ReferralHeader from "@/components/referral/ReferralHeader";
-import { useToast } from "@/components/ui/use-toast";
+import ReferralDashboard from "@/components/referral/ReferralDashboard";
 
 const Referral = () => {
   const [email, setEmail] = useState("");
-  const { toast } = useToast();
-
-  const handleShare = (platform: string) => {
-    // Share functionality can be implemented here
-    toast({
-      title: "Coming Soon",
-      description: `Sharing to ${platform} will be available soon.`,
-    });
-  };
 
   return (
     <PageLayout>
       <div className="container mx-auto px-4 py-12">
-        <ReferralHeader 
-          referralLink={window.location.origin + "/referral"}
-          onShare={handleShare}
-        />
-        <ReferralRegistration onEmailSet={setEmail} />
+        <div className="max-w-4xl mx-auto">
+          {!email && (
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold mb-4">Referral Program</h1>
+              <p className="text-xl text-gray-600">
+                Join our referral program and earn rewards while helping others succeed in their trading journey
+              </p>
+            </div>
+          )}
+          
+          {email ? (
+            <ReferralDashboard email={email} />
+          ) : (
+            <ReferralRegistration onEmailSet={setEmail} />
+          )}
+        </div>
       </div>
     </PageLayout>
   );
