@@ -12,6 +12,8 @@ import VerifyTestimonial from "@/pages/verify-testimonial";
 import ReferralIndex from "@/pages/referral/Index";
 import LoopMethod from "@/pages/LoopMethod";
 import Feedback from "@/pages/Feedback";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 import "./App.css";
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
         <Route path="/referral/*" element={<ReferralIndex />} />
         <Route path="/loop-method" element={<LoopMethod />} />
         <Route path="/feedback" element={<Feedback />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
       </Routes>
     </Router>
   );

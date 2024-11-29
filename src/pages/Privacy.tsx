@@ -97,7 +97,7 @@ const Privacy = () => {
             <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
             <p>
               For any privacy-related questions or to exercise your data rights, please contact our Data Protection Officer at:
-              privacy@kipya.com
+              privacy@bit2big.com
             </p>
           </section>
         </div>
