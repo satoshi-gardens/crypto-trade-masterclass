@@ -12,7 +12,8 @@ const corsHeaders = {
 };
 
 interface FeedbackRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string;
   country: string;
@@ -51,6 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: "Thank you for your feedback",
         html: `
           <h2>Thank you for your feedback!</h2>
+          <p>Dear ${feedbackData.firstName},</p>
           <p>We appreciate you taking the time to share your thoughts with us.</p>
           <p>Your message:</p>
           <p>${feedbackData.message}</p>
@@ -71,7 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: `New Feedback Received - ${feedbackData.area.toUpperCase()}`,
         html: `
           <h2>New Feedback Submission</h2>
-          <p><strong>From:</strong> ${feedbackData.name}</p>
+          <p><strong>From:</strong> ${feedbackData.firstName} ${feedbackData.lastName}</p>
           <p><strong>Email:</strong> ${feedbackData.email}</p>
           <p><strong>Phone:</strong> ${feedbackData.phone || 'Not provided'}</p>
           <p><strong>Country:</strong> ${countryName}</p>
