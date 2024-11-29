@@ -441,14 +441,17 @@ export type Database = {
           id: number
           is_active: boolean | null
           is_verified: boolean | null
+          last_login_at: string | null
           min_referrals_for_tokens: number | null
           referral_benefits: Json | null
           referral_code: string
+          referred_by: string | null
           token_expiry: string | null
           tokens_per_referral: number | null
           total_earnings: number | null
           updated_at: string | null
           user_email: string
+          verification_status: string | null
           verification_token: string | null
         }
         Insert: {
@@ -456,14 +459,17 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_login_at?: string | null
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code: string
+          referred_by?: string | null
           token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null
           user_email: string
+          verification_status?: string | null
           verification_token?: string | null
         }
         Update: {
@@ -471,17 +477,28 @@ export type Database = {
           id?: number
           is_active?: boolean | null
           is_verified?: boolean | null
+          last_login_at?: string | null
           min_referrals_for_tokens?: number | null
           referral_benefits?: Json | null
           referral_code?: string
+          referred_by?: string | null
           token_expiry?: string | null
           tokens_per_referral?: number | null
           total_earnings?: number | null
           updated_at?: string | null
           user_email?: string
+          verification_status?: string | null
           verification_token?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "referrers_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "referrers"
+            referencedColumns: ["referral_code"]
+          },
+        ]
       }
       testimonials: {
         Row: {
@@ -533,7 +550,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

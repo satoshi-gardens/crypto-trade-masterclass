@@ -63,15 +63,14 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
         // New user registration
         await supabase
           .from("referrers")
-          .insert([
-            {
-              user_email: email,
-              verification_token: verificationToken,
-              token_expiry: tokenExpiry.toISOString(),
-              verification_status: 'pending',
-              referred_by: referralCode // Store who referred them if applicable
-            },
-          ]);
+          .insert({
+            user_email: email,
+            verification_token: verificationToken,
+            token_expiry: tokenExpiry.toISOString(),
+            is_verified: false,
+            verification_status: 'pending',
+            referred_by: referralCode // Store who referred them if applicable
+          });
 
         await supabase.functions.invoke("send-referral-verification", {
           body: { 
