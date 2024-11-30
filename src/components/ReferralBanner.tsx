@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon, Gift } from "lucide-react";
+import { toast } from "sonner";
 
 interface ReferralBannerProps {
   referralCode: string;
@@ -59,10 +60,15 @@ const ReferralBanner = ({ referralCode }: ReferralBannerProps) => {
               referredDiscount: defaultCommission
             });
           }
+
+          // Show welcome toast for referral
+          toast.success("Welcome via Referral!", {
+            description: `You've been referred by ${displayName}. You'll get ${rewards.referredDiscount}% off your first purchase!`,
+            duration: 5000,
+          });
         }
       } catch (error) {
         console.error("Error fetching referrer details:", error);
-        // Set default values in case of error
         setRewards({
           referrerReward: 10,
           referredDiscount: 10

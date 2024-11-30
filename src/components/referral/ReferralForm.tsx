@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface ReferralFormProps {
   onSubmit: (email: string) => Promise<void>;
@@ -15,7 +16,18 @@ const ReferralForm = ({ onSubmit, isLoading, referralCode }: ReferralFormProps) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit(email);
+    try {
+      await onSubmit(email);
+      toast.success("Verification Email Sent!", {
+        description: "Please check your inbox and click the verification link to activate your referral account.",
+        duration: 5000,
+      });
+    } catch (error) {
+      toast.error("Failed to send verification email", {
+        description: "Please try again later or contact support if the problem persists.",
+        duration: 5000,
+      });
+    }
   };
 
   return (
