@@ -13,8 +13,13 @@ interface Notification {
   link?: string;
 }
 
+const DISMISSED_NOTIFICATIONS_KEY = 'dismissed_notifications';
+
 const NotificationArea = () => {
-  const [dismissedNotifications, setDismissedNotifications] = useState<string[]>([]);
+  const [dismissedNotifications, setDismissedNotifications] = useState<string[]>(() => {
+    const saved = localStorage.getItem(DISMISSED_NOTIFICATIONS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const { data: notifications } = useQuery({
     queryKey: ["notifications"],
@@ -32,12 +37,17 @@ const NotificationArea = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (notifications?.length) {
-        setDismissedNotifications(notifications.map(n => n.id));
+        const newDismissed = notifications.map(n => n.id);
+        setDismissedNotifications(prev => [...new Set([...prev, ...newDismissed])]);
       }
     }, 180000);
 
     return () => clearTimeout(timer);
   }, [notifications]);
+
+  useEffect(() => {
+    localStorage.setItem(DISMISSED_NOTIFICATIONS_KEY, JSON.stringify(dismissedNotifications));
+  }, [dismissedNotifications]);
 
   const getLinkIcon = (link: string) => {
     if (!link) return <ExternalLink className="h-3 w-3" />;
