@@ -30,12 +30,11 @@ const NotificationArea = () => {
   });
 
   useEffect(() => {
-    // Auto-dismiss notifications after 3 minutes
     const timer = setTimeout(() => {
       if (notifications?.length) {
         setDismissedNotifications(notifications.map(n => n.id));
       }
-    }, 180000); // 3 minutes in milliseconds
+    }, 180000);
 
     return () => clearTimeout(timer);
   }, [notifications]);
@@ -90,12 +89,12 @@ const NotificationArea = () => {
   if (!activeNotifications?.length) return null;
 
   return (
-    <div className="space-y-1 mb-2 max-w-2xl mx-auto">
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4 space-y-1">
       {activeNotifications.map((notification) => (
         <Alert 
           key={notification.id} 
           variant="default" 
-          className="bg-primary/5 py-2 px-3 relative"
+          className="bg-white/95 backdrop-blur-sm shadow-lg border border-gray-200 py-2 px-3 relative animate-fade-in"
         >
           <Bell className="h-3 w-3" />
           <AlertDescription className="flex items-center justify-between text-sm">
@@ -104,7 +103,7 @@ const NotificationArea = () => {
               {renderLink(notification)}
               <button
                 onClick={() => handleDismiss(notification.id)}
-                className="p-1 hover:bg-primary/10 rounded-full"
+                className="p-1 hover:bg-gray-100 rounded-full"
                 aria-label="Dismiss notification"
               >
                 <X className="h-3 w-3" />
