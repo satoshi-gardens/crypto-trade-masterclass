@@ -28,36 +28,51 @@ export const sendFeedbackEmails = async (feedbackData: {
   feedback: string;
   rating?: string;
   experience?: string;
-}) => {
-  const { email, name, feedback, rating, experience } = feedbackData;
+}): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const { email, name, feedback, rating, experience } = feedbackData;
 
-  // Send confirmation to user
-  await sendEmail({
-    to: [email],
-    subject: "Thank You for Your Feedback - Bit2Big",
-    html: `
-      <h2>Thank You for Your Feedback!</h2>
-      <p>Dear ${name},</p>
-      <p>We greatly appreciate you taking the time to share your thoughts with us.</p>
-      <p>Your feedback helps us improve our services.</p>
-      <p>Best regards,<br>The Bit2Big Team</p>
-    `,
-    from: "Bit2Big Feedback <feedback@bit2big.com>",
-  });
+    // Send confirmation to user
+    const userEmailResult = await sendEmail({
+      to: [email],
+      subject: "Thank You for Your Feedback - Bit2Big",
+      html: `
+        <h2>Thank You for Your Feedback!</h2>
+        <p>Dear ${name},</p>
+        <p>We greatly appreciate you taking the time to share your thoughts with us.</p>
+        <p>Your feedback helps us improve our services.</p>
+        <p>Best regards,<br>The Bit2Big Team</p>
+      `,
+      from: "Bit2Big Feedback <feedback@bit2big.com>",
+    });
 
-  // Send notification to admin
-  await sendEmail({
-    to: ["admin@bit2big.com"],
-    subject: `New Feedback Received from ${name}`,
-    html: `
-      <h2>New Feedback Received</h2>
-      <p><strong>From:</strong> ${name} (${email})</p>
-      ${rating ? `<p><strong>Rating:</strong> ${rating}</p>` : ''}
-      ${experience ? `<p><strong>Experience Level:</strong> ${experience}</p>` : ''}
-      <p><strong>Feedback:</strong></p>
-      <p>${feedback}</p>
-    `,
-    from: "Bit2Big Feedback System <feedback@bit2big.com>",
-    replyTo: email,
-  });
+    if (!userEmailResult.success) {
+      throw new Error(userEmailResult.error || "Failed to send confirmation email");
+    }
+
+    // Send notification to admin
+    const adminEmailResult = await sendEmail({
+      to: ["admin@bit2big.com"],
+      subject: `New Feedback Received from ${name}`,
+      html: `
+        <h2>New Feedback Received</h2>
+        <p><strong>From:</strong> ${name} (${email})</p>
+        ${rating ? `<p><strong>Rating:</strong> ${rating}</p>` : ''}
+        ${experience ? `<p><strong>Experience Level:</strong> ${experience}</p>` : ''}
+        <p><strong>Feedback:</strong></p>
+        <p>${feedback}</p>
+      `,
+      from: "Bit2Big Feedback System <feedback@bit2big.com>",
+      replyTo: email,
+    });
+
+    if (!adminEmailResult.success) {
+      throw new Error(adminEmailResult.error || "Failed to send admin notification");
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending feedback emails:", error);
+    return { success: false, error: error.message };
+  }
 };
