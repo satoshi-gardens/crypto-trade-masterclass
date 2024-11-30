@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Bell, ExternalLink } from "lucide-react";
+import { Bell, ExternalLink, Telegram, Twitter, Candlestick } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
@@ -26,6 +26,20 @@ const NotificationArea = () => {
     },
   });
 
+  const getLinkIcon = (link: string) => {
+    if (!link) return <ExternalLink className="h-4 w-4" />;
+    
+    const url = link.toLowerCase();
+    
+    if (url.includes('telegram.')) return <Telegram className="h-4 w-4" />;
+    if (url.includes('twitter.') || url.includes('x.com')) return <Twitter className="h-4 w-4" />;
+    if (url.includes('whatsapp.')) return <Bell className="h-4 w-4 rotate-45" />; // Using Bell rotated as WhatsApp icon
+    if (url.includes('discord.')) return <Bell className="h-4 w-4" />; // Using Bell as Discord icon
+    
+    // Default to candlestick for trading-related or other links
+    return <Candlestick className="h-4 w-4" />;
+  };
+
   if (!notifications?.length) return null;
 
   return (
@@ -41,7 +55,7 @@ const NotificationArea = () => {
                 className="flex items-center text-primary hover:underline ml-2"
               >
                 Learn More
-                <ExternalLink className="h-4 w-4 ml-1" />
+                {getLinkIcon(notification.link)}
               </Link>
             )}
           </AlertDescription>
