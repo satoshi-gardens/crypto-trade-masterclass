@@ -41,27 +41,86 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   }
 
   if (error) {
+    if (error.includes("verification token expired")) {
+      return (
+        <Alert className="bg-primary/10">
+          <InfoIcon className="h-5 w-5" />
+          <AlertDescription className="space-y-3">
+            <p className="text-lg font-medium">Verification Link Expired</p>
+            <p>Your verification link has expired. Please request a new verification email.</p>
+            <p className="text-sm text-muted-foreground">
+              You can{" "}
+              <Link to="/referral" className="text-primary hover:underline">
+                request a new verification email
+              </Link>
+              .
+            </p>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    if (error.includes("invalid verification token")) {
+      return (
+        <Alert className="bg-primary/10">
+          <InfoIcon className="h-5 w-5" />
+          <AlertDescription className="space-y-3">
+            <p className="text-lg font-medium">Invalid Verification Link</p>
+            <p>The verification link you used is invalid. Please request a new verification email.</p>
+            <p className="text-sm text-muted-foreground">
+              You can{" "}
+              <Link to="/referral" className="text-primary hover:underline">
+                request a new verification email
+              </Link>
+              .
+            </p>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
     return <ReferralError message={error} />;
   }
 
   // Check if the referrer is verified
   if (!referrer.is_verified) {
-    return (
-      <Alert className="bg-primary/10">
-        <InfoIcon className="h-5 w-5" />
-        <AlertDescription className="space-y-3">
-          <p className="text-lg font-medium">Email Verification Required</p>
-          <p>Please check your email and click the verification link to access your referral dashboard.</p>
-          <p className="text-sm text-muted-foreground">
-            If you haven't received the verification email, you can{" "}
-            <Link to="/referral" className="text-primary hover:underline">
-              sign up again
-            </Link>
-            .
-          </p>
-        </AlertDescription>
-      </Alert>
-    );
+    if (referrer.verification_status === 'pending') {
+      return (
+        <Alert className="bg-primary/10">
+          <InfoIcon className="h-5 w-5" />
+          <AlertDescription className="space-y-3">
+            <p className="text-lg font-medium">Email Verification Required</p>
+            <p>Please check your email and click the verification link to access your referral dashboard.</p>
+            <p className="text-sm text-muted-foreground">
+              If you haven't received the verification email, you can{" "}
+              <Link to="/referral" className="text-primary hover:underline">
+                sign up again
+              </Link>
+              .
+            </p>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    if (referrer.verification_status === 'failed') {
+      return (
+        <Alert className="bg-primary/10">
+          <InfoIcon className="h-5 w-5" />
+          <AlertDescription className="space-y-3">
+            <p className="text-lg font-medium">Verification Failed</p>
+            <p>There was a problem verifying your email. Please try again.</p>
+            <p className="text-sm text-muted-foreground">
+              You can{" "}
+              <Link to="/referral" className="text-primary hover:underline">
+                request a new verification email
+              </Link>
+              .
+            </p>
+          </AlertDescription>
+        </Alert>
+      );
+    }
   }
 
   const referralLink = `${websiteUrl}/referral?ref=${referrer.referral_code}`;

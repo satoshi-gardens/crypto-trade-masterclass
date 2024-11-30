@@ -42,13 +42,28 @@ export const useReferralData = (email: string) => {
           .maybeSingle();
 
         if (referrerError) {
-          throw referrerError;
+          if (referrerError.code === 'PGRST116') {
+            setError("No referral account found");
+          } else {
+            throw referrerError;
+          }
+          return;
         }
 
         if (!referrerData) {
-          setReferrer(null);
           setError("No referral account found");
           return;
+        }
+
+        // Check verification token status
+        if (referrerData.verification_token && !referrerData.is_verified) {
+          const now = new Date();
+          const tokenExpiry = new Date(referrerData.token_expiry);
+          
+          if (now > tokenExpiry) {
+            setError("verification token expired");
+            return;
+          }
         }
 
         setReferrer(referrerData);
@@ -87,8 +102,8 @@ export const useReferralData = (email: string) => {
         });
       } catch (error: any) {
         console.error("Error fetching referrer data:", error);
-        if (error.code === 'PGRST116') {
-          setError("No referral account found");
+        if (error.message?.includes("verification")) {
+          setError("invalid verification token");
         } else {
           setError("An unexpected error occurred. Please try again later.");
           toast({
