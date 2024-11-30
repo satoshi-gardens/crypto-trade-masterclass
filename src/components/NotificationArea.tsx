@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Bell, ExternalLink, Twitter, MessageSquare } from "lucide-react";
+import { Bell, ExternalLink, Twitter, MessageSquare, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 interface Notification {
   id: string;
@@ -13,6 +14,8 @@ interface Notification {
 }
 
 const NotificationArea = () => {
+  const [dismissedNotifications, setDismissedNotifications] = useState<string[]>([]);
+
   const { data: notifications } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
@@ -26,6 +29,17 @@ const NotificationArea = () => {
     },
   });
 
+  useEffect(() => {
+    // Auto-dismiss notifications after 3 minutes
+    const timer = setTimeout(() => {
+      if (notifications?.length) {
+        setDismissedNotifications(notifications.map(n => n.id));
+      }
+    }, 180000); // 3 minutes in milliseconds
+
+    return () => clearTimeout(timer);
+  }, [notifications]);
+
   const getLinkIcon = (link: string) => {
     if (!link) return <ExternalLink className="h-3 w-3" />;
     
@@ -33,16 +47,19 @@ const NotificationArea = () => {
     
     if (url.includes('telegram.')) return <MessageSquare className="h-3 w-3" />;
     if (url.includes('twitter.') || url.includes('x.com')) return <Twitter className="h-3 w-3" />;
-    if (url.includes('whatsapp.')) return <Bell className="h-3 w-3 rotate-45" />; // Using Bell rotated as WhatsApp icon
-    if (url.includes('discord.')) return <Bell className="h-3 w-3" />; // Using Bell as Discord icon
+    if (url.includes('whatsapp.')) return <Bell className="h-3 w-3 rotate-45" />;
+    if (url.includes('discord.')) return <Bell className="h-3 w-3" />;
     
     return <ExternalLink className="h-3 w-3" />;
+  };
+
+  const handleDismiss = (id: string) => {
+    setDismissedNotifications(prev => [...prev, id]);
   };
 
   const renderLink = (notification: Notification) => {
     if (!notification.link) return null;
 
-    // Check if link is internal (starts with '/')
     if (notification.link.startsWith('/')) {
       return (
         <Link 
@@ -55,7 +72,6 @@ const NotificationArea = () => {
       );
     }
 
-    // External link
     return (
       <a 
         href={notification.link}
@@ -69,16 +85,31 @@ const NotificationArea = () => {
     );
   };
 
-  if (!notifications?.length) return null;
+  const activeNotifications = notifications?.filter(n => !dismissedNotifications.includes(n.id));
+  
+  if (!activeNotifications?.length) return null;
 
   return (
-    <div className="space-y-1 mb-2">
-      {notifications.map((notification) => (
-        <Alert key={notification.id} variant="default" className="bg-primary/5 py-2 px-3">
+    <div className="space-y-1 mb-2 max-w-2xl mx-auto">
+      {activeNotifications.map((notification) => (
+        <Alert 
+          key={notification.id} 
+          variant="default" 
+          className="bg-primary/5 py-2 px-3 relative"
+        >
           <Bell className="h-3 w-3" />
           <AlertDescription className="flex items-center justify-between text-sm">
-            <span className="line-clamp-1">{notification.message}</span>
-            {renderLink(notification)}
+            <span className="line-clamp-1 mr-2">{notification.message}</span>
+            <div className="flex items-center gap-2 shrink-0">
+              {renderLink(notification)}
+              <button
+                onClick={() => handleDismiss(notification.id)}
+                className="p-1 hover:bg-primary/10 rounded-full"
+                aria-label="Dismiss notification"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
           </AlertDescription>
         </Alert>
       ))}
