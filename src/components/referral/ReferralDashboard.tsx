@@ -6,6 +6,7 @@ import SignupPrompt from "./SignupPrompt";
 import { useReferralData } from "@/hooks/useReferralData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ReferralDashboardProps {
   email: string;
@@ -52,7 +53,11 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
           <p className="text-lg font-medium">Email Verification Required</p>
           <p>Please check your email and click the verification link to access your referral dashboard.</p>
           <p className="text-sm text-muted-foreground">
-            If you haven't received the verification email, you can request a new one by signing up again.
+            If you haven't received the verification email, you can{" "}
+            <Link to="/referral" className="text-primary hover:underline">
+              sign up again
+            </Link>
+            .
           </p>
         </AlertDescription>
       </Alert>
