@@ -4,6 +4,8 @@ import ReferralError from "./ReferralError";
 import ReferralHeader from "./ReferralHeader";
 import SignupPrompt from "./SignupPrompt";
 import { useReferralData } from "@/hooks/useReferralData";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface ReferralDashboardProps {
   email: string;
@@ -39,6 +41,22 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
 
   if (error) {
     return <ReferralError message={error} />;
+  }
+
+  // Check if the referrer is verified
+  if (!referrer.is_verified) {
+    return (
+      <Alert className="bg-primary/10">
+        <InfoIcon className="h-5 w-5" />
+        <AlertDescription className="space-y-3">
+          <p className="text-lg font-medium">Email Verification Required</p>
+          <p>Please check your email and click the verification link to access your referral dashboard.</p>
+          <p className="text-sm text-muted-foreground">
+            If you haven't received the verification email, you can request a new one by signing up again.
+          </p>
+        </AlertDescription>
+      </Alert>
+    );
   }
 
   const referralLink = `${websiteUrl}/referral?ref=${referrer.referral_code}`;
