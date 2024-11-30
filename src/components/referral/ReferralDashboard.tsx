@@ -7,14 +7,73 @@ import { useReferralData } from "@/hooks/useReferralData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ReferralDashboardProps {
   email: string;
 }
 
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
-  const { referrer, isLoading, error, stats } = useReferralData(email);
+  const [searchParams] = useSearchParams();
+  const verificationToken = searchParams.get("token");
+  const { referrer, isLoading, error, stats, refetch } = useReferralData(email);
   const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (!verificationToken || !email) return;
+
+      try {
+        // First, check if the token matches and is not expired
+        const { data: referrerData, error: fetchError } = await supabase
+          .from("referrers")
+          .select("*")
+          .eq("user_email", email)
+          .eq("verification_token", verificationToken)
+          .single();
+
+        if (fetchError || !referrerData) {
+          toast.error("Invalid verification link");
+          return;
+        }
+
+        const now = new Date();
+        const tokenExpiry = new Date(referrerData.token_expiry);
+        
+        if (now > tokenExpiry) {
+          toast.error("This verification link has expired. Please request a new one.");
+          return;
+        }
+
+        // Update referrer status
+        const { error: updateError } = await supabase
+          .from("referrers")
+          .update({
+            is_verified: true,
+            verification_token: null,
+            verification_status: 'verified',
+            last_login_at: new Date().toISOString()
+          })
+          .eq("user_email", email);
+
+        if (updateError) {
+          toast.error("Failed to verify your account. Please try again.");
+          return;
+        }
+
+        toast.success("Email verified successfully! Welcome to our referral program.");
+        refetch(); // Refresh the referrer data
+      } catch (error) {
+        console.error("Verification error:", error);
+        toast.error("Failed to verify email. Please try again.");
+      }
+    };
+
+    verifyToken();
+  }, [verificationToken, email, refetch]);
 
   const handleShare = (platform: string) => {
     const referralLink = `${websiteUrl}/referral?ref=${referrer?.referral_code}`;
