@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types/json";
 
 export interface EmailData {
   to: string[];
@@ -11,7 +12,7 @@ export interface EmailData {
 interface EmailTemplate {
   subject: string;
   html_content: string;
-  variables?: Record<string, any>;
+  variables?: Json;
 }
 
 const processTemplate = (template: EmailTemplate, data: Record<string, any>) => {
