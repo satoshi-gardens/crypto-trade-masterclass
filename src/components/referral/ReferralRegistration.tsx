@@ -76,11 +76,10 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
         });
 
         toast({
-          title: "Access Link Sent!",
-          description: "Check your email for a secure link to access your referral dashboard. The link is valid for 48 hours.",
+          title: "Welcome Back!",
+          description: "We've sent you an email with a secure link to access your referral dashboard. Please check your inbox.",
         });
       } else {
-        // Include an empty referral_code that will be replaced by the trigger
         const { error: insertError } = await supabase
           .from("referrers")
           .insert({

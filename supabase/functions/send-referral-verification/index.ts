@@ -43,25 +43,35 @@ const handler = async (req: Request): Promise<Response> => {
     if (requestData.isExisting) {
       emailSubject = "Access Your Bit2Big Referral Dashboard";
       emailContent = `
-        <h2>Welcome Back to Bit2Big!</h2>
-        <p>You've requested access to your referral dashboard. Click the secure link below to access it:</p>
-        <p style="margin: 20px 0;">
-          <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;">
-            Access Your Dashboard
-          </a>
-        </p>
-        <p><strong>Important:</strong> This link is valid for 48 hours for your security.</p>
-        <p>With your referral dashboard, you can:</p>
-        <ul>
-          <li>Track your referrals and earnings</li>
-          <li>Access your unique referral link</li>
-          <li>View your rewards and benefits</li>
-        </ul>
-        <p>If you didn't request this access, please ignore this email.</p>
-        <hr style="margin: 20px 0;">
-        <p style="color: #666; font-size: 12px;">
-          This is an automated message from Bit2Big. Please do not reply to this email.
-        </p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #333; margin-bottom: 24px;">Welcome Back to Bit2Big!</h2>
+          
+          <p>You've requested access to your existing referral dashboard. Click the secure link below to access it:</p>
+          
+          <p style="margin: 32px 0; text-align: center;">
+            <a href="${verificationUrl}" style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+              Access Your Dashboard
+            </a>
+          </p>
+
+          <div style="background-color: #f5f5f5; padding: 24px; border-radius: 8px; margin: 32px 0;">
+            <h3 style="color: #0070f3; margin-top: 0;">What's Next?</h3>
+            <ul style="color: #666; margin: 16px 0;">
+              <li>Click the button above to access your dashboard</li>
+              <li>View your referral statistics</li>
+              <li>Get your unique referral link</li>
+              <li>Track your earnings and rewards</li>
+            </ul>
+          </div>
+
+          <p><strong>Note:</strong> This access link is valid for 48 hours.</p>
+          
+          <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;">
+          
+          <p style="color: #666; font-size: 12px; text-align: center;">
+            This is an automated message from Bit2Big. Please do not reply to this email.
+          </p>
+        </div>
       `;
     } else {
       emailSubject = "Welcome to Bit2Big's Referral Program - Verify Your Email";
@@ -103,14 +113,6 @@ const handler = async (req: Request): Promise<Response> => {
 
           <p><strong>Note:</strong> This verification link is valid for 48 hours.</p>
           
-          <p>After verification, you'll be able to:</p>
-          <ul style="color: #666;">
-            <li>Access your unique referral link</li>
-            <li>Track your referrals and earnings</li>
-            <li>Monitor your rewards progress</li>
-            <li>View detailed statistics</li>
-          </ul>
-
           <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;">
           
           <p style="color: #666; font-size: 12px; text-align: center;">
