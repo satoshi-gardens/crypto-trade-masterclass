@@ -11,9 +11,10 @@ interface ReferralDashboardProps {
 
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const { referrer, isLoading, error, stats } = useReferralData(email);
+  const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
 
   const handleShare = (platform: string) => {
-    const referralLink = `${window.location.origin}/referral?ref=${referrer?.referral_code}`;
+    const referralLink = `${websiteUrl}/referral?ref=${referrer?.referral_code}`;
     
     switch (platform) {
       case "facebook":
@@ -40,7 +41,7 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
     return <ReferralError message={error} />;
   }
 
-  const referralLink = `${window.location.origin}/referral?ref=${referrer.referral_code}`;
+  const referralLink = `${websiteUrl}/referral?ref=${referrer.referral_code}`;
 
   return (
     <div className="space-y-6">
