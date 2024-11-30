@@ -1,10 +1,10 @@
+import { useState, useEffect } from "react";
 import ReferralLoading from "./ReferralLoading";
 import ReferralError from "./ReferralError";
 import SignupPrompt from "./SignupPrompt";
 import ReferralContent from "./ReferralContent";
 import { useReferralData } from "@/hooks/useReferralData";
 import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -35,14 +35,12 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
     }
   };
 
-  // Keep token verification logic
   useEffect(() => {
     const verifyToken = async () => {
       if (!verificationToken || !email || isVerifying) return;
 
       setIsVerifying(true);
       try {
-        // First, check if the token matches and is not expired
         const { data: referrerData, error: fetchError } = await supabase
           .from("referrers")
           .select("*")
@@ -63,7 +61,6 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
           return;
         }
 
-        // Update referrer status
         const { error: updateError } = await supabase
           .from("referrers")
           .update({
@@ -80,7 +77,7 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
         }
 
         toast.success("Email verified successfully! Welcome to our referral program.");
-        await refetch(); // Refresh the referrer data
+        await refetch();
       } catch (error) {
         console.error("Verification error:", error);
         toast.error("Failed to verify email. Please try again.");
