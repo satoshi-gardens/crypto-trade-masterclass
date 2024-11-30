@@ -27,16 +27,16 @@ const NotificationArea = () => {
   });
 
   const getLinkIcon = (link: string) => {
-    if (!link) return <ExternalLink className="h-4 w-4" />;
+    if (!link) return <ExternalLink className="h-3 w-3" />;
     
     const url = link.toLowerCase();
     
-    if (url.includes('telegram.')) return <MessageSquare className="h-4 w-4" />;
-    if (url.includes('twitter.') || url.includes('x.com')) return <Twitter className="h-4 w-4" />;
-    if (url.includes('whatsapp.')) return <Bell className="h-4 w-4 rotate-45" />; // Using Bell rotated as WhatsApp icon
-    if (url.includes('discord.')) return <Bell className="h-4 w-4" />; // Using Bell as Discord icon
+    if (url.includes('telegram.')) return <MessageSquare className="h-3 w-3" />;
+    if (url.includes('twitter.') || url.includes('x.com')) return <Twitter className="h-3 w-3" />;
+    if (url.includes('whatsapp.')) return <Bell className="h-3 w-3 rotate-45" />; // Using Bell rotated as WhatsApp icon
+    if (url.includes('discord.')) return <Bell className="h-3 w-3" />; // Using Bell as Discord icon
     
-    return <ExternalLink className="h-4 w-4" />;
+    return <ExternalLink className="h-3 w-3" />;
   };
 
   const renderLink = (notification: Notification) => {
@@ -47,9 +47,9 @@ const NotificationArea = () => {
       return (
         <Link 
           to={notification.link} 
-          className="flex items-center text-primary hover:underline ml-2"
+          className="flex items-center text-primary hover:underline ml-2 text-sm"
         >
-          Learn More
+          More
           {getLinkIcon(notification.link)}
         </Link>
       );
@@ -61,9 +61,9 @@ const NotificationArea = () => {
         href={notification.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center text-primary hover:underline ml-2"
+        className="flex items-center text-primary hover:underline ml-2 text-sm"
       >
-        Learn More
+        More
         {getLinkIcon(notification.link)}
       </a>
     );
@@ -72,12 +72,12 @@ const NotificationArea = () => {
   if (!notifications?.length) return null;
 
   return (
-    <div className="space-y-2 mb-4">
+    <div className="space-y-1 mb-2">
       {notifications.map((notification) => (
-        <Alert key={notification.id} variant="default" className="bg-primary/10">
-          <Bell className="h-4 w-4" />
-          <AlertDescription className="flex items-center justify-between">
-            <span>{notification.message}</span>
+        <Alert key={notification.id} variant="default" className="bg-primary/5 py-2 px-3">
+          <Bell className="h-3 w-3" />
+          <AlertDescription className="flex items-center justify-between text-sm">
+            <span className="line-clamp-1">{notification.message}</span>
             {renderLink(notification)}
           </AlertDescription>
         </Alert>
