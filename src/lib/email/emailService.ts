@@ -9,12 +9,24 @@ export interface EmailData {
 }
 
 export const sendEmail = async (emailData: EmailData): Promise<{ success: boolean; error?: string }> => {
+  console.log("Sending email:", {
+    to: emailData.to,
+    subject: emailData.subject,
+    from: emailData.from,
+    replyTo: emailData.replyTo
+  });
+
   try {
     const { error } = await supabase.functions.invoke("send-email", {
       body: emailData,
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error in sendEmail:", error);
+      throw error;
+    }
+    
+    console.log("Email sent successfully to:", emailData.to);
     return { success: true };
   } catch (error) {
     console.error("Error sending email:", error);
@@ -29,10 +41,13 @@ export const sendFeedbackEmails = async (feedbackData: {
   rating?: string;
   experience?: string;
 }): Promise<{ success: boolean; error?: string }> => {
+  console.log("Processing feedback emails for:", feedbackData.email);
+  
   try {
     const { email, name, feedback, rating, experience } = feedbackData;
 
     // Send confirmation to user
+    console.log("Sending confirmation email to user:", email);
     const userEmailResult = await sendEmail({
       to: [email],
       subject: "Thank You for Your Feedback - Bit2Big",
@@ -47,10 +62,12 @@ export const sendFeedbackEmails = async (feedbackData: {
     });
 
     if (!userEmailResult.success) {
+      console.error("Failed to send user confirmation email:", userEmailResult.error);
       throw new Error(userEmailResult.error || "Failed to send confirmation email");
     }
 
     // Send notification to admin
+    console.log("Sending notification email to admin");
     const adminEmailResult = await sendEmail({
       to: ["admin@bit2big.com"],
       subject: `New Feedback Received from ${name}`,
@@ -67,9 +84,11 @@ export const sendFeedbackEmails = async (feedbackData: {
     });
 
     if (!adminEmailResult.success) {
+      console.error("Failed to send admin notification email:", adminEmailResult.error);
       throw new Error(adminEmailResult.error || "Failed to send admin notification");
     }
 
+    console.log("All feedback emails sent successfully");
     return { success: true };
   } catch (error) {
     console.error("Error sending feedback emails:", error);
