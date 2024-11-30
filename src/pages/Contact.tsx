@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
@@ -38,7 +40,22 @@ const Contact = () => {
 
       if (error) throw error;
 
+      // Create a notification
+      await supabase.from("notifications").insert({
+        title: "Contact Form Submitted",
+        message: "Thank you for contacting us! We'll get back to you shortly.",
+        icon: "mail",
+        start_date: new Date().toISOString(),
+        expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+      });
+
       toast.success("Thank you for reaching out! We'll get back to you shortly.");
+      
+      // Redirect after 5 seconds
+      setTimeout(() => {
+        navigate("/courses");
+      }, 5000);
+
       form.reset();
     } catch (error) {
       console.error('Error submitting form:', error);

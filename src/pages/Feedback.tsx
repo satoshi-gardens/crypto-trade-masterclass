@@ -5,6 +5,7 @@ import PageLayout from "@/components/PageLayout";
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import type { FeedbackFormValues } from "@/components/feedback/FeedbackForm";
 import { sendFeedbackEmails } from "@/lib/email/emailService";
+import { supabase } from "@/integrations/supabase/client";
 
 const Feedback = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,8 +25,22 @@ const Feedback = () => {
 
       if (!success) throw new Error(error);
 
+      // Create a notification
+      await supabase.from("notifications").insert({
+        title: "New Feedback Received",
+        message: "Thank you for your valuable feedback! We'll review it shortly.",
+        icon: "message-square",
+        start_date: new Date().toISOString(),
+        expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+      });
+
       toast.success("Thank you for your feedback!");
-      navigate("/thank-you-feedback");
+      
+      // Redirect after 5 seconds
+      setTimeout(() => {
+        navigate("/courses");
+      }, 5000);
+
     } catch (error) {
       console.error("Error submitting feedback:", error);
       toast.error(
