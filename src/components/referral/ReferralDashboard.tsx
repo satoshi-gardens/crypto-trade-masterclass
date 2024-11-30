@@ -17,7 +17,11 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const verificationToken = searchParams.get("token");
   const [isVerifying, setIsVerifying] = useState(false);
   const { referrer, isLoading, error, stats, refetch } = useReferralData(email);
-  const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
+  
+  // Ensure proper URL construction
+  const websiteUrl = import.meta.env.VITE_WEBSITE_URL 
+    ? import.meta.env.VITE_WEBSITE_URL.replace(/\/$/, '') // Remove trailing slash if present
+    : window.location.origin;
 
   const handleShare = (platform: string) => {
     const referralLink = `${websiteUrl}/referral?ref=${referrer?.referral_code}`;
