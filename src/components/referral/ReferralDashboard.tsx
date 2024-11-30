@@ -7,7 +7,7 @@ import { useReferralData } from "@/hooks/useReferralData";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,13 +19,15 @@ interface ReferralDashboardProps {
 const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const [searchParams] = useSearchParams();
   const verificationToken = searchParams.get("token");
+  const [isVerifying, setIsVerifying] = useState(false);
   const { referrer, isLoading, error, stats, refetch } = useReferralData(email);
   const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
 
   useEffect(() => {
     const verifyToken = async () => {
-      if (!verificationToken || !email) return;
+      if (!verificationToken || !email || isVerifying) return;
 
+      setIsVerifying(true);
       try {
         // First, check if the token matches and is not expired
         const { data: referrerData, error: fetchError } = await supabase
@@ -65,33 +67,19 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
         }
 
         toast.success("Email verified successfully! Welcome to our referral program.");
-        refetch(); // Refresh the referrer data
+        await refetch(); // Refresh the referrer data
       } catch (error) {
         console.error("Verification error:", error);
         toast.error("Failed to verify email. Please try again.");
+      } finally {
+        setIsVerifying(false);
       }
     };
 
     verifyToken();
-  }, [verificationToken, email, refetch]);
+  }, [verificationToken, email, refetch, isVerifying]);
 
-  const handleShare = (platform: string) => {
-    const referralLink = `${websiteUrl}/referral?ref=${referrer?.referral_code}`;
-    
-    switch (platform) {
-      case "facebook":
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, '_blank');
-        break;
-      case "twitter":
-        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent('Join me in learning crypto trading!')}`, '_blank');
-        break;
-      case "whatsapp":
-        window.open(`https://wa.me/?text=${encodeURIComponent(`Check out this crypto trading course: ${referralLink}`)}`, '_blank');
-        break;
-    }
-  };
-
-  if (isLoading) {
+  if (isLoading || isVerifying) {
     return <ReferralLoading />;
   }
 
