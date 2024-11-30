@@ -8,6 +8,50 @@ export interface EmailData {
   replyTo?: string;
 }
 
+interface EmailTemplate {
+  subject: string;
+  html_content: string;
+  variables?: Record<string, any>;
+}
+
+const processTemplate = (template: EmailTemplate, data: Record<string, any>) => {
+  let processedHtml = template.html_content;
+  let processedSubject = template.subject;
+
+  // Replace variables in both subject and content
+  Object.entries(data).forEach(([key, value]) => {
+    const regex = new RegExp(`{{${key}}}`, 'g');
+    processedHtml = processedHtml.replace(regex, String(value));
+    processedSubject = processedSubject.replace(regex, String(value));
+  });
+
+  return {
+    subject: processedSubject,
+    html: processedHtml,
+  };
+};
+
+export const getEmailTemplate = async (
+  type: string,
+  data: Record<string, any>
+): Promise<{ subject: string; html: string } | null> => {
+  try {
+    const { data: template, error } = await supabase
+      .from("email_templates")
+      .select("subject, html_content, variables")
+      .eq("type", type)
+      .single();
+
+    if (error) throw error;
+    if (!template) return null;
+
+    return processTemplate(template, data);
+  } catch (error) {
+    console.error("Error fetching email template:", error);
+    return null;
+  }
+};
+
 export const sendEmail = async (emailData: EmailData): Promise<{ success: boolean; error?: string }> => {
   console.log("Sending email:", {
     to: emailData.to,
@@ -44,20 +88,23 @@ export const sendFeedbackEmails = async (feedbackData: {
   console.log("Processing feedback emails for:", feedbackData.email);
   
   try {
-    const { email, name, feedback, rating, experience } = feedbackData;
+    // Get user confirmation template
+    const userTemplate = await getEmailTemplate("feedback_confirmation", {
+      name: feedbackData.name,
+      feedback: feedbackData.feedback,
+      rating: feedbackData.rating || "Not provided",
+      experience: feedbackData.experience || "Not provided"
+    });
+
+    if (!userTemplate) {
+      throw new Error("Failed to fetch user feedback template");
+    }
 
     // Send confirmation to user
-    console.log("Sending confirmation email to user:", email);
     const userEmailResult = await sendEmail({
-      to: [email],
-      subject: "Thank You for Your Feedback - Bit2Big",
-      html: `
-        <h2>Thank You for Your Feedback!</h2>
-        <p>Dear ${name},</p>
-        <p>We greatly appreciate you taking the time to share your thoughts with us.</p>
-        <p>Your feedback helps us improve our services.</p>
-        <p>Best regards,<br>The Bit2Big Team</p>
-      `,
+      to: [feedbackData.email],
+      subject: userTemplate.subject,
+      html: userTemplate.html,
       from: "Bit2Big Feedback <feedback@bit2big.com>",
     });
 
@@ -66,21 +113,26 @@ export const sendFeedbackEmails = async (feedbackData: {
       throw new Error(userEmailResult.error || "Failed to send confirmation email");
     }
 
+    // Get admin notification template
+    const adminTemplate = await getEmailTemplate("feedback_notification_admin", {
+      name: feedbackData.name,
+      email: feedbackData.email,
+      feedback: feedbackData.feedback,
+      rating: feedbackData.rating || "Not provided",
+      experience: feedbackData.experience || "Not provided"
+    });
+
+    if (!adminTemplate) {
+      throw new Error("Failed to fetch admin notification template");
+    }
+
     // Send notification to admin
-    console.log("Sending notification email to admin");
     const adminEmailResult = await sendEmail({
       to: ["admin@bit2big.com"],
-      subject: `New Feedback Received from ${name}`,
-      html: `
-        <h2>New Feedback Received</h2>
-        <p><strong>From:</strong> ${name} (${email})</p>
-        ${rating ? `<p><strong>Rating:</strong> ${rating}</p>` : ''}
-        ${experience ? `<p><strong>Experience Level:</strong> ${experience}</p>` : ''}
-        <p><strong>Feedback:</strong></p>
-        <p>${feedback}</p>
-      `,
+      subject: adminTemplate.subject,
+      html: adminTemplate.html,
       from: "Bit2Big Feedback System <feedback@bit2big.com>",
-      replyTo: email,
+      replyTo: feedbackData.email,
     });
 
     if (!adminEmailResult.success) {
