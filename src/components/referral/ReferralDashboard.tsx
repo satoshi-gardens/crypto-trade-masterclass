@@ -23,6 +23,22 @@ const ReferralDashboard = ({ email }: ReferralDashboardProps) => {
   const { referrer, isLoading, error, stats, refetch } = useReferralData(email);
   const websiteUrl = import.meta.env.VITE_WEBSITE_URL || window.location.origin;
 
+  const handleShare = (platform: string) => {
+    const referralLink = `${websiteUrl}/referral?ref=${referrer?.referral_code}`;
+    
+    switch (platform) {
+      case "facebook":
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, '_blank');
+        break;
+      case "twitter":
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent('Join me in learning crypto trading!')}`, '_blank');
+        break;
+      case "whatsapp":
+        window.open(`https://wa.me/?text=${encodeURIComponent(`Check out this crypto trading course: ${referralLink}`)}`, '_blank');
+        break;
+    }
+  };
+
   useEffect(() => {
     const verifyToken = async () => {
       if (!verificationToken || !email || isVerifying) return;
