@@ -22,7 +22,7 @@ const ResourceCard = ({ resource }: ResourceCardProps) => {
     if (resource.link.startsWith('/')) {
       navigate(resource.link);
     } else {
-      window.open(resource.link, "_blank");
+      window.open(resource.link, "_blank", "noopener,noreferrer");
     }
   };
 

@@ -36,8 +36,37 @@ const NotificationArea = () => {
     if (url.includes('whatsapp.')) return <Bell className="h-4 w-4 rotate-45" />; // Using Bell rotated as WhatsApp icon
     if (url.includes('discord.')) return <Bell className="h-4 w-4" />; // Using Bell as Discord icon
     
-    // Default to ExternalLink for trading-related or other links
     return <ExternalLink className="h-4 w-4" />;
+  };
+
+  const renderLink = (notification: Notification) => {
+    if (!notification.link) return null;
+
+    // Check if link is internal (starts with '/')
+    if (notification.link.startsWith('/')) {
+      return (
+        <Link 
+          to={notification.link} 
+          className="flex items-center text-primary hover:underline ml-2"
+        >
+          Learn More
+          {getLinkIcon(notification.link)}
+        </Link>
+      );
+    }
+
+    // External link
+    return (
+      <a 
+        href={notification.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center text-primary hover:underline ml-2"
+      >
+        Learn More
+        {getLinkIcon(notification.link)}
+      </a>
+    );
   };
 
   if (!notifications?.length) return null;
@@ -49,15 +78,7 @@ const NotificationArea = () => {
           <Bell className="h-4 w-4" />
           <AlertDescription className="flex items-center justify-between">
             <span>{notification.message}</span>
-            {notification.link && (
-              <Link 
-                to={notification.link} 
-                className="flex items-center text-primary hover:underline ml-2"
-              >
-                Learn More
-                {getLinkIcon(notification.link)}
-              </Link>
-            )}
+            {renderLink(notification)}
           </AlertDescription>
         </Alert>
       ))}
