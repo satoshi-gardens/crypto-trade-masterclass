@@ -310,6 +310,45 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string | null
+          expire_date: string
+          icon: string
+          id: string
+          is_active: boolean | null
+          link: string | null
+          message: string
+          start_date: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expire_date: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          link?: string | null
+          message: string
+          start_date: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expire_date?: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          link?: string | null
+          message?: string
+          start_date?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       payout_records: {
         Row: {
           amount: number
