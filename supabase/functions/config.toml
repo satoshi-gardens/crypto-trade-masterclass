@@ -8,6 +8,10 @@ SUPABASE_DB_URL = "env"
 RESEND_API_KEY = "env"
 
 [[functions]]
+name = "send-email"
+verify_jwt = false
+
+[[functions]]
 name = "send-referral-verification"
 verify_jwt = false
 

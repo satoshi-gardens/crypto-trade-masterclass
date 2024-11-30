@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import type { FeedbackFormValues } from "@/components/feedback/FeedbackForm";
+import { sendFeedbackEmails } from "@/lib/email/emailService";
 
 const Feedback = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,11 +14,15 @@ const Feedback = () => {
     try {
       setIsSubmitting(true);
 
-      const { error } = await supabase.functions.invoke("send-feedback-email", {
-        body: data,
+      const { success, error } = await sendFeedbackEmails({
+        email: data.email,
+        name: `${data.firstName} ${data.lastName}`,
+        feedback: data.message,
+        rating: data.area,
+        experience: data.country,
       });
 
-      if (error) throw error;
+      if (!success) throw new Error(error);
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
