@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import type { FeedbackFormValues } from "@/components/feedback/FeedbackForm";
 import { sendFeedbackEmail } from "@/lib/email/emailService";
-import { supabase } from "@/integrations/supabase/client";
+import PageLayout from "@/components/PageLayout";
 
 const Feedback = () => {
   const navigate = useNavigate();
@@ -37,9 +37,10 @@ const Feedback = () => {
   };
 
   return (
-    <>
+    <PageLayout>
       <Helmet>
-        <title>Feedback - Bit2Big Crypto Course</title>
+        <title>Share Your Feedback - Bit2Big Crypto Course</title>
+        <meta name="description" content="We value your feedback to improve our crypto trading courses and services." />
       </Helmet>
 
       <div className="container max-w-3xl py-8 md:py-12">
@@ -50,9 +51,11 @@ const Feedback = () => {
           </p>
         </div>
 
-        <FeedbackForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+        <div className="glass-card p-6 rounded-lg">
+          <FeedbackForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+        </div>
       </div>
-    </>
+    </PageLayout>
   );
 };
 
