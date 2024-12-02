@@ -36,15 +36,14 @@ export const CheckoutForm = ({ form, onSubmit, isSubmitting }: CheckoutFormProps
               <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
-                    id="agreement"
-                    name="agreement"
+                    id="terms-agreement"
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <label
-                    htmlFor="agreement"
+                    htmlFor="terms-agreement"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     I understand that payment must be completed within 7 days to secure my spot.
