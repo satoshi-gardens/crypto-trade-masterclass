@@ -2,15 +2,13 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { checkoutFormSchema } from "@/lib/validations/checkout";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
-import { CheckoutHeader } from "@/components/checkout/CheckoutHeader";
-import { CheckoutValidation } from "@/components/checkout/CheckoutValidation";
 
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
@@ -20,6 +18,8 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
+  
+  console.log("Checkout state:", location.state);
   
   const { courseTitle, packageType, price, paymentType } = location?.state || {};
   const urlReferralCode = searchParams.get("ref");
@@ -39,6 +39,22 @@ const Checkout = () => {
   });
 
   useEffect(() => {
+    // Validate required parameters
+    if (!location.state) {
+      console.error("No state provided to checkout page");
+      toast.error("Please select a course package to proceed to checkout.");
+      navigate("/courses");
+      return;
+    }
+
+    if (!courseTitle || !packageType || !price || !paymentType) {
+      console.error("Missing required parameters:", { courseTitle, packageType, price, paymentType });
+      toast.error("Please select a course package to proceed to checkout.");
+      navigate("/courses");
+      return;
+    }
+
+    // Validate price on component mount
     const validatePrice = async () => {
       try {
         let ipAddress;
@@ -48,8 +64,17 @@ const Checkout = () => {
           ipAddress = ipResponse?.ip;
         } catch (error) {
           console.error("Error fetching IP:", error);
-          ipAddress = '0.0.0.0';
+          ipAddress = '0.0.0.0'; // Fallback IP
         }
+
+        console.log("Validating price with parameters:", {
+          courseTitle,
+          packageType,
+          price,
+          paymentType,
+          referralCode: urlReferralCode,
+          ipAddress,
+        });
 
         const { data, error } = await supabase.functions.invoke("validate-checkout", {
           body: {
@@ -62,7 +87,14 @@ const Checkout = () => {
           },
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error("Price validation error:", error);
+          toast.error(error.message || "Failed to validate price. Please try again.");
+          navigate("/courses");
+          return;
+        }
+
+        console.log("Price validation successful:", data);
         setValidatedPrice(data.validatedPrice);
       } catch (error) {
         console.error("Price validation error:", error);
@@ -71,9 +103,7 @@ const Checkout = () => {
       }
     };
 
-    if (location.state) {
-      validatePrice();
-    }
+    validatePrice();
   }, [courseTitle, packageType, price, paymentType, urlReferralCode, navigate, location.state]);
 
   const onSubmit = async (data: CheckoutFormValues) => {
@@ -84,6 +114,15 @@ const Checkout = () => {
 
     setIsSubmitting(true);
     try {
+      console.log("Submitting application with data:", {
+        ...data,
+        courseTitle,
+        packageType,
+        price: validatedPrice,
+        paymentType,
+        referralCode: urlReferralCode,
+      });
+
       const { error: dbError } = await supabase
         .from("course_applications")
         .insert([{
@@ -139,27 +178,27 @@ const Checkout = () => {
     }
   };
 
+  // Only render if we have all required data
+  if (!location.state || !courseTitle || !packageType || !price || !paymentType || validatedPrice === null) {
+    return null;
+  }
+
   return (
     <PageLayout>
       <div className="container max-w-2xl mx-auto px-6 py-12">
-        <CheckoutValidation state={location.state} />
-        <CheckoutHeader />
-        {validatedPrice !== null && (
-          <>
-            <CheckoutSummary
-              courseTitle={courseTitle}
-              packageType={packageType}
-              paymentType={paymentType}
-              validatedPrice={validatedPrice}
-              referralCode={urlReferralCode}
-            />
-            <CheckoutForm
-              form={form}
-              onSubmit={onSubmit}
-              isSubmitting={isSubmitting}
-            />
-          </>
-        )}
+        <h1 className="text-3xl font-bold mb-8">Complete Your Application</h1>
+        <CheckoutSummary
+          courseTitle={courseTitle}
+          packageType={packageType}
+          paymentType={paymentType}
+          validatedPrice={validatedPrice}
+          referralCode={urlReferralCode}
+        />
+        <CheckoutForm
+          form={form}
+          onSubmit={onSubmit}
+          isSubmitting={isSubmitting}
+        />
       </div>
     </PageLayout>
   );

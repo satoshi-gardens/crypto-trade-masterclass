@@ -15,18 +15,15 @@ export const CheckoutSummary = ({
 }: CheckoutSummaryProps) => {
   const originalPrice = referralCode ? validatedPrice / 0.9 : validatedPrice;
   const savings = referralCode ? originalPrice - validatedPrice : 0;
-  const displayReferralCode = referralCode || "CT4P4bit2BIG";
 
   return (
     <div className="bg-accent/10 p-6 rounded-lg mb-8">
       <h2 className="text-xl font-semibold mb-4">Course Summary</h2>
       <div className="space-y-2">
         <p><span className="font-medium">Selected Course:</span> {courseTitle}</p>
+        <p><span className="font-medium">Package:</span> {packageType}</p>
         <p>
           <span className="font-medium">Payment Type:</span> {paymentType === 'annual' ? 'One-time Payment' : 'Monthly Payments'}
-        </p>
-        <p>
-          <span className="font-medium">Referral Code:</span> {displayReferralCode}
         </p>
         {referralCode ? (
           <>
