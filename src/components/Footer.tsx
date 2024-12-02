@@ -37,56 +37,56 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-accent pt-24 pb-12 mt-auto">
-      <div className="container mx-auto px-8">
+    <footer className="bg-accent pt-12 pb-6">
+      <div className="container mx-auto px-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Branding Section */}
-          <div className="space-y-8">
-            <h3 className="text-xl font-bold text-gray-800">KY Connect</h3>
-            <p className="text-gray-600">
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-gray-800">KY Connect</h3>
+            <p className="text-sm text-gray-600">
               Empowering Profitable Trading
             </p>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               &copy; {currentYear} KIPYA Connect. All rights reserved.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-8">
-            <h4 className="text-lg font-semibold text-gray-800">Quick Links</h4>
-            <nav className="flex flex-col space-y-6">
-              <Link to="/" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Home size={18} />
+          <div className="space-y-4">
+            <h4 className="text-base font-semibold text-gray-800">Quick Links</h4>
+            <nav className="flex flex-col space-y-2">
+              <Link to="/" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Home size={16} />
                 <span>Home</span>
               </Link>
-              <Link to="/courses" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <BookOpen size={18} />
+              <Link to="/courses" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <BookOpen size={16} />
                 <span>Courses</span>
               </Link>
-              <Link to="/tools" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Wrench size={18} />
+              <Link to="/tools" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Wrench size={16} />
                 <span>Tools & Resources</span>
               </Link>
-              <Link to="/loop-method" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Brain size={18} />
+              <Link to="/loop-method" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Brain size={16} />
                 <span>LOOP Method</span>
               </Link>
-              <Link to="/about" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Info size={18} />
+              <Link to="/about" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Info size={16} />
                 <span>About</span>
               </Link>
-              <Link to="/contact" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Mail size={18} />
+              <Link to="/contact" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Mail size={16} />
                 <span>Contact</span>
               </Link>
             </nav>
           </div>
 
           {/* Contact Information */}
-          <div className="space-y-8">
-            <h4 className="text-lg font-semibold text-gray-800">Contact Us</h4>
-            <div className="space-y-6 text-gray-600">
+          <div className="space-y-4">
+            <h4 className="text-base font-semibold text-gray-800">Contact Us</h4>
+            <div className="space-y-2 text-sm text-gray-600">
               <p>
                 <a
                   href="#"
@@ -106,7 +106,7 @@ const Footer = () => {
                   {formatPhone()}
                 </a>
               </p>
-              <address className="not-italic">
+              <address className="not-italic text-sm">
                 Turbinenstrasse 31<br />
                 8005 Zürich<br />
                 Switzerland
@@ -115,52 +115,52 @@ const Footer = () => {
           </div>
 
           {/* Community & Feedback */}
-          <div className="space-y-8">
-            <h4 className="text-lg font-semibold text-gray-800">Community</h4>
-            <nav className="flex flex-col space-y-6">
-              <Link to="/testimonials" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Star size={18} />
+          <div className="space-y-4">
+            <h4 className="text-base font-semibold text-gray-800">Community</h4>
+            <nav className="flex flex-col space-y-2">
+              <Link to="/testimonials" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Star size={16} />
                 <span>Share Your Story</span>
               </Link>
-              <Link to="/feedback" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <MessageSquare size={18} />
+              <Link to="/feedback" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <MessageSquare size={16} />
                 <span>Give Feedback</span>
               </Link>
-              <Link to="/referral" className="flex items-center space-x-2 text-gray-600 hover:text-primary transition-colors">
-                <Users size={18} />
+              <Link to="/referral" className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <Users size={16} />
                 <span>Referral Program</span>
               </Link>
             </nav>
 
-            <div className="flex space-x-8">
+            <div className="flex space-x-4">
               <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
                  className="text-gray-600 hover:text-primary transition-colors">
-                <Twitter className="w-6 h-6" />
+                <Twitter className="w-5 h-5" />
               </a>
               <a href="https://www.linkedin.com/in/michaelkiberu/" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
-                <Linkedin className="w-6 h-6" />
+                <Linkedin className="w-5 h-5" />
               </a>
               <a href="https://instagram.com/crypto4profits" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
-                <Instagram className="w-6 h-6" />
+                <Instagram className="w-5 h-5" />
               </a>
               <a href="https://facebook.com/crypto4profits" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
-                <Facebook className="w-6 h-6" />
+                <Facebook className="w-5 h-5" />
               </a>
             </div>
           </div>
         </div>
 
         {/* Legal Links */}
-        <div className="border-t border-gray-200 pt-8 mt-12">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-8">
-              <Link to="/privacy" className="text-sm text-gray-600 hover:text-primary transition-colors">
+        <div className="border-t border-gray-200 pt-4 mt-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
+              <Link to="/privacy" className="text-xs text-gray-600 hover:text-primary transition-colors">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-sm text-gray-600 hover:text-primary transition-colors">
+              <Link to="/terms" className="text-xs text-gray-600 hover:text-primary transition-colors">
                 Terms of Service
               </Link>
             </div>
@@ -168,9 +168,9 @@ const Footer = () => {
               onClick={scrollToTop}
               variant="outline"
               size="sm"
-              className="group"
+              className="group text-xs"
             >
-              <ArrowUp className="w-4 h-4 mr-2 group-hover:text-primary" />
+              <ArrowUp className="w-3 h-3 mr-1 group-hover:text-primary" />
               Back to Top
             </Button>
           </div>
