@@ -19,7 +19,6 @@ const processTemplate = (template: EmailTemplate, data: Record<string, any>) => 
   let processedHtml = template.html_content;
   let processedSubject = template.subject;
 
-  // Replace variables in both subject and content
   Object.entries(data).forEach(([key, value]) => {
     const regex = new RegExp(`{{${key}}}`, 'g');
     processedHtml = processedHtml.replace(regex, String(value));
@@ -62,7 +61,14 @@ export const getEmailTemplate = async (
 
 export const sendEmail = async (emailData: EmailData): Promise<{ success: boolean; error?: string }> => {
   try {
-    const { error } = await supabase.functions.invoke("send-application-email", {
+    console.log("Sending email with data:", {
+      to: emailData.to,
+      subject: emailData.subject,
+      from: emailData.from,
+      replyTo: emailData.replyTo
+    });
+
+    const { error, data } = await supabase.functions.invoke("send-application-email", {
       body: {
         to: emailData.to,
         subject: emailData.subject,
@@ -75,6 +81,10 @@ export const sendEmail = async (emailData: EmailData): Promise<{ success: boolea
     if (error) {
       console.error("Error in sendEmail:", error);
       throw error;
+    }
+
+    if (!data?.success) {
+      throw new Error(data?.error || "Failed to send email");
     }
     
     return { success: true };
@@ -94,7 +104,6 @@ export const sendFeedbackEmail = async (data: {
   message: string;
 }): Promise<{ success: boolean; error?: string }> => {
   try {
-    // Get the feedback confirmation email template
     const userTemplate = await getEmailTemplate("feedback_confirmation", {
       name: data.name,
       area: data.area,
@@ -104,7 +113,6 @@ export const sendFeedbackEmail = async (data: {
       throw new Error("Failed to fetch feedback confirmation email template");
     }
 
-    // Send confirmation email to user
     const userEmailResult = await sendEmail({
       to: [data.email],
       subject: userTemplate.subject,
@@ -116,7 +124,6 @@ export const sendFeedbackEmail = async (data: {
       throw new Error("Failed to send confirmation email to user");
     }
 
-    // Get the admin notification email template
     const adminTemplate = await getEmailTemplate("feedback_notification", {
       name: data.name,
       email: data.email,
@@ -128,7 +135,6 @@ export const sendFeedbackEmail = async (data: {
       throw new Error("Failed to fetch admin notification email template");
     }
 
-    // Send notification email to admin
     const adminEmailResult = await sendEmail({
       to: ["admin@bit2big.com"],
       subject: adminTemplate.subject,
