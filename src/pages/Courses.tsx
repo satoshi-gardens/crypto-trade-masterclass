@@ -5,6 +5,7 @@ import PageLayout from "@/components/PageLayout";
 import CoursesHero from "@/components/courses/CoursesHero";
 import ChallengesSection from "@/components/courses/ChallengesSection";
 import SolutionsSection from "@/components/courses/SolutionsSection";
+import CourseModules from "@/components/course/CourseModules";
 
 const Courses = () => {
   const [searchParams] = useSearchParams();
@@ -26,6 +27,7 @@ const Courses = () => {
       <CoursesHero />
       <ChallengesSection />
       <SolutionsSection />
+      <CourseModules />
     </PageLayout>
   );
 };
