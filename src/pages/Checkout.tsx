@@ -53,7 +53,7 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
-  const { courseTitle, packageType } = location.state || {};
+  const { courseTitle, packageType, price, paymentType } = location.state || {};
   const urlReferralCode = searchParams.get("ref");
 
   const form = useForm<CheckoutFormValues>({
@@ -71,7 +71,7 @@ const Checkout = () => {
   });
 
   useEffect(() => {
-    if (!courseTitle || !packageType) {
+    if (!courseTitle || !packageType || !price || !paymentType) {
       toast.error("Please select a course package to proceed to checkout.");
       navigate("/courses");
       return;
@@ -87,6 +87,8 @@ const Checkout = () => {
           body: {
             courseTitle,
             packageType,
+            price,
+            paymentType,
             referralCode: urlReferralCode,
             ipAddress: ipResponse.ip,
           },
@@ -108,7 +110,7 @@ const Checkout = () => {
     };
 
     validatePrice();
-  }, [courseTitle, packageType, urlReferralCode, navigate]);
+  }, [courseTitle, packageType, price, paymentType, urlReferralCode, navigate]);
 
   const onSubmit = async (data: CheckoutFormValues) => {
     if (!validatedPrice) {
@@ -130,6 +132,7 @@ const Checkout = () => {
           selected_course: courseTitle,
           package: packageType,
           price: validatedPrice,
+          payment_type: paymentType,
           payment_understanding: data.agreement,
           referral_code: urlReferralCode,
         }])
@@ -149,6 +152,7 @@ const Checkout = () => {
           selectedCourse: courseTitle,
           package: packageType,
           price: validatedPrice,
+          paymentType: paymentType,
           referralCode: urlReferralCode,
         },
       });
@@ -171,7 +175,7 @@ const Checkout = () => {
     }
   };
 
-  if (!courseTitle || !packageType || validatedPrice === null) {
+  if (!courseTitle || !packageType || !price || !paymentType || validatedPrice === null) {
     return null;
   }
 
@@ -188,6 +192,7 @@ const Checkout = () => {
           <div className="space-y-2">
             <p><span className="font-medium">Selected Course:</span> {courseTitle}</p>
             <p><span className="font-medium">Package:</span> {packageType}</p>
+            <p><span className="font-medium">Payment Type:</span> {paymentType === 'annual' ? 'One-time Payment' : 'Monthly Payments'}</p>
             {urlReferralCode ? (
               <>
                 <p>

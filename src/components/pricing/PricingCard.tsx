@@ -49,6 +49,7 @@ export const PricingCard = ({
         price: discountedPrice,
         paymentType,
         referralCode,
+        originalPrice: currentPrice,
       },
     });
   };
