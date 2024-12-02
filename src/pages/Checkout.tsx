@@ -16,6 +16,7 @@ type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
