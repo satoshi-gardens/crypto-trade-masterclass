@@ -17,13 +17,14 @@ export const CheckoutContainer = () => {
   
   const { courseTitle, packageType, price, paymentType, referralCode } = location?.state || {};
 
-  // Validate price and set initial state
+  // Validate price and set initial state with a default value
   const [validatedPrice, setValidatedPrice] = useState<number>(() => {
-    if (!price || typeof price !== 'number' || isNaN(price)) {
+    const numericPrice = Number(price);
+    if (isNaN(numericPrice) || numericPrice <= 0) {
       console.error("Invalid price received:", price);
       return 0;
     }
-    return price;
+    return numericPrice;
   });
 
   const form = useForm<CheckoutFormValues>({
@@ -41,8 +42,9 @@ export const CheckoutContainer = () => {
   });
 
   const handleApplicationSubmission = async (data: CheckoutFormValues) => {
-    if (!validatedPrice) {
+    if (validatedPrice <= 0) {
       toast.error("Invalid price. Please try again.");
+      navigate("/courses");
       return;
     }
 
@@ -79,8 +81,9 @@ export const CheckoutContainer = () => {
     }
   };
 
-  if (!location.state || !courseTitle || !packageType || !validatedPrice || !paymentType) {
-    console.error("Missing required parameters:", { courseTitle, packageType, price, paymentType });
+  // Redirect if missing required data
+  if (!location.state || !courseTitle || !packageType || validatedPrice <= 0 || !paymentType) {
+    console.error("Missing required parameters:", { courseTitle, packageType, validatedPrice, paymentType });
     toast.error("Please select a course package to proceed to checkout.");
     navigate("/courses");
     return null;
