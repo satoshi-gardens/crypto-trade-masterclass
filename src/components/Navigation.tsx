@@ -13,8 +13,8 @@ const Navigation = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
       <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8" />
+          <Link to="/" className="flex items-center space-x-3">
+            <img src="/logo.svg" alt="KY Connect Logo" className="w-10 h-10 transition-transform hover:scale-105" />
             <span className="font-bold text-xl">KY Connect</span>
           </Link>
 
