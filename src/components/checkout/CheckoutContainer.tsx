@@ -3,13 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
 import { checkoutFormSchema } from "@/lib/validations/checkout";
 import type { CheckoutFormValues } from "@/types/checkout";
-import { sendEmail, getEmailTemplate } from "@/lib/email/emailService";
 import { CheckoutForm } from "./CheckoutForm";
 import { CheckoutSummary } from "./CheckoutSummary";
 import CheckoutHeader from "./CheckoutHeader";
+import { submitApplication } from "@/lib/services/checkoutService";
 
 export const CheckoutContainer = () => {
   const location = useLocation();
@@ -41,54 +40,14 @@ export const CheckoutContainer = () => {
 
     setIsSubmitting(true);
     try {
-      const applicationData = {
-        first_name: data.firstName.trim(),
-        last_name: data.lastName.trim(),
-        email: data.email.trim().toLowerCase(),
-        phone: data.phone.trim(),
-        city: data.city.trim(),
-        country: data.country,
-        selected_course: courseTitle,
-        package: packageType,
-        price: validatedPrice,
-        payment_type: paymentType.toLowerCase(),
-        payment_understanding: data.agreement,
-        referral_code: referralCode || null,
-      };
-
-      const { error: dbError } = await supabase
-        .from("course_applications")
-        .insert([applicationData])
-        .select()
-        .single();
-
-      if (dbError) throw dbError;
-
-      // Get email template and send confirmation
-      const template = await getEmailTemplate("application_confirmation", {
-        firstName: data.firstName,
+      await submitApplication({
+        formData: data,
         courseTitle,
         packageType,
         price: validatedPrice,
         paymentType,
+        referralCode,
       });
-
-      if (!template) {
-        console.error("Failed to fetch email template");
-        throw new Error("Failed to send confirmation email");
-      }
-
-      const emailResult = await sendEmail({
-        to: [data.email],
-        subject: template.subject,
-        html: template.html,
-        from: "Bit2Big Course Applications <courses@bit2big.com>",
-      });
-
-      if (!emailResult.success) {
-        console.error("Error sending email:", emailResult.error);
-        throw new Error("Failed to send confirmation email");
-      }
 
       toast.success("Application submitted successfully!");
       navigate("/thank-you", {
