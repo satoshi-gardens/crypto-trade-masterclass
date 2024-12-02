@@ -22,6 +22,7 @@ const VerifyReferral = () => {
       try {
         console.log("Starting verification process for token:", token);
         
+        // First, check if the token exists and is valid
         const { data: referrer, error: fetchError } = await supabase
           .from("referrers")
           .select("*")
@@ -35,25 +36,24 @@ const VerifyReferral = () => {
 
         console.log("Found referrer:", referrer);
 
+        // Check token expiry
         const now = new Date();
         const tokenExpiry = new Date(referrer.token_expiry);
         
         if (now > tokenExpiry) {
           console.error("Token expired:", { now, tokenExpiry });
-          toast.error("This verification link has expired. Please request a new one.");
-          navigate("/referral");
-          return;
+          throw new Error("This verification link has expired. Please request a new one.");
         }
 
         // Update referrer status with all required fields
-        const { error: updateError } = await supabase
+        const { data: updatedReferrer, error: updateError } = await supabase
           .from("referrers")
           .update({
             is_verified: true,
             verification_token: null,
             verification_status: 'verified',
             last_login_at: new Date().toISOString(),
-            is_active: true // Explicitly set account to active
+            is_active: true
           })
           .eq("id", referrer.id)
           .select()
@@ -64,13 +64,26 @@ const VerifyReferral = () => {
           throw new Error("Failed to verify your account");
         }
 
-        console.log("Successfully verified referrer");
-        toast.success("Email verified successfully! Welcome to our referral program.");
+        if (!updatedReferrer) {
+          console.error("No referrer was updated");
+          throw new Error("Failed to verify your account");
+        }
+
+        console.log("Successfully verified referrer:", updatedReferrer);
+        
+        // Store email in localStorage and show success message
         localStorage.setItem("referralEmail", referrer.user_email);
+        toast.success("Email verified successfully! Welcome to our referral program.");
+        
+        // Small delay to ensure the toast is visible
+        await new Promise(resolve => setTimeout(resolve, 1000));
         navigate("/referral");
       } catch (error: any) {
         console.error("Verification error:", error);
         toast.error(error.message || "Failed to verify email. Please try again.");
+        
+        // Small delay to ensure the error toast is visible
+        await new Promise(resolve => setTimeout(resolve, 1000));
         navigate("/referral");
       } finally {
         setIsVerifying(false);
