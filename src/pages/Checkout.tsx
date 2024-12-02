@@ -110,26 +110,32 @@ const Checkout = () => {
         referralCode: urlReferralCode,
       });
 
+      // Format the data according to the database schema
+      const applicationData = {
+        first_name: data.firstName.trim(),
+        last_name: data.lastName.trim(),
+        email: data.email.trim().toLowerCase(),
+        phone: data.phone.trim(),
+        city: data.city.trim(),
+        country: data.country,
+        selected_course: courseTitle,
+        package: packageType,
+        price: validatedPrice,
+        payment_type: paymentType,
+        payment_understanding: data.agreement,
+        referral_code: urlReferralCode || null,
+      };
+
       const { error: dbError } = await supabase
         .from("course_applications")
-        .insert([{
-          first_name: data.firstName.trim(),
-          last_name: data.lastName.trim(),
-          email: data.email.trim(),
-          phone: data.phone.trim(),
-          city: data.city.trim(),
-          country: data.country,
-          selected_course: courseTitle,
-          package: packageType,
-          price: validatedPrice,
-          payment_type: paymentType,
-          payment_understanding: data.agreement,
-          referral_code: urlReferralCode,
-        }])
+        .insert([applicationData])
         .select()
         .single();
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw new Error(dbError.message);
+      }
 
       // Send confirmation email
       const { error: emailError } = await supabase.functions.invoke("send-application-email", {
@@ -164,7 +170,7 @@ const Checkout = () => {
       });
     } catch (error) {
       console.error("Error submitting application:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(error.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
