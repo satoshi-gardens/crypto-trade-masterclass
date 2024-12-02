@@ -1,6 +1,9 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,7 +11,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface ContactFormData {
+interface ContactRequest {
   firstName: string;
   lastName: string;
   email: string;
@@ -19,124 +22,107 @@ interface ContactFormData {
   message: string;
 }
 
-serve(async (req) => {
-  console.log("Received contact form request:", req.method);
-
+const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    if (!RESEND_API_KEY) {
-      console.error("RESEND_API_KEY is not configured");
-      throw new Error("Email service is not configured");
-    }
+    const supabase = createClient(supabaseUrl!, supabaseKey!);
+    const contactData: ContactRequest = await req.json();
 
-    const formData: ContactFormData = await req.json();
-    console.log("Processing contact form data:", {
-      name: `${formData.firstName} ${formData.lastName}`,
-      email: formData.email,
-      purpose: formData.purpose
-    });
+    // Store in database
+    const { error: dbError } = await supabase
+      .from("general_inquiries")
+      .insert({
+        first_name: contactData.firstName,
+        last_name: contactData.lastName,
+        email: contactData.email,
+        phone: contactData.phone,
+        city: contactData.city,
+        country: contactData.country,
+        contact_purpose: contactData.purpose,
+        message: contactData.message,
+      });
+
+    if (dbError) {
+      console.error("Database error:", dbError);
+      throw new Error("Failed to store inquiry");
+    }
 
     // Send confirmation email to user
-    console.log("Sending confirmation email to user:", formData.email);
-    const userEmailResponse = await fetch("https://api.resend.com/emails", {
+    const userEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "KY Connect <noreply@bit2big.com>",
-        to: [formData.email],
-        subject: "We've Received Your Message",
+        from: "ct4p@bit2big.com",
+        to: [contactData.email],
+        subject: "We received your inquiry",
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2>Thank You for Contacting Us!</h2>
-            <p>Dear ${formData.firstName},</p>
-            <p>We've received your message and will get back to you shortly.</p>
-            
-            <div style="background-color: #f7f7f7; padding: 20px; margin: 20px 0; border-radius: 5px;">
-              <h3>Your Message Details:</h3>
-              <p><strong>Purpose:</strong> ${formData.purpose}</p>
-              <p><strong>Message:</strong><br>${formData.message}</p>
-            </div>
-
-            <p>While you wait, why not explore our courses?</p>
-            <p><a href="https://bit2big.com/courses" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">View Our Courses</a></p>
-            
-            <p>Best regards,<br>The KY Connect Team</p>
-          </div>
+          <h2>Thank you for contacting us!</h2>
+          <p>We have received your inquiry and will get back to you shortly.</p>
+          <p>Your message:</p>
+          <p>${contactData.message}</p>
         `,
       }),
     });
 
-    if (!userEmailResponse.ok) {
-      const error = await userEmailResponse.text();
-      console.error("Error sending user confirmation email:", error);
-      throw new Error(`Failed to send confirmation email: ${error}`);
-    }
-
-    console.log("User confirmation email sent successfully");
-
-    // Send notification to admin
-    console.log("Sending notification email to admin");
-    const adminEmailResponse = await fetch("https://api.resend.com/emails", {
+    // Send detailed notification email to admin
+    const adminEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "KY Connect Contact Form <noreply@bit2big.com>",
-        to: ["admin@bit2big.com"],
-        reply_to: formData.email,
-        subject: `New Contact Form Submission from ${formData.firstName} ${formData.lastName}`,
+        from: "ct4p@bit2big.com",
+        to: ["mail@bit2big.com"],
+        subject: `New Contact Form Submission - ${contactData.purpose}`,
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2>New Contact Form Submission</h2>
-            <div style="background-color: #f7f7f7; padding: 20px; margin: 20px 0; border-radius: 5px;">
-              <h3>Contact Details:</h3>
-              <p><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
-              <p><strong>Email:</strong> ${formData.email}</p>
-              <p><strong>Phone:</strong> ${formData.phone || 'Not provided'}</p>
-              <p><strong>Location:</strong> ${formData.city || 'Not provided'}, ${formData.country || 'Not provided'}</p>
-              <p><strong>Purpose:</strong> ${formData.purpose}</p>
-              <p><strong>Message:</strong><br>${formData.message}</p>
-            </div>
-            <p>You can reply directly to this email to contact the sender.</p>
-          </div>
+          <h2>New Contact Form Submission</h2>
+          <h3>Contact Information</h3>
+          <ul>
+            <li><strong>Name:</strong> ${contactData.firstName} ${contactData.lastName}</li>
+            <li><strong>Email:</strong> ${contactData.email}</li>
+            <li><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</li>
+            <li><strong>Location:</strong> ${contactData.city || 'Not provided'}, ${contactData.country || 'Not provided'}</li>
+          </ul>
+          
+          <h3>Inquiry Details</h3>
+          <ul>
+            <li><strong>Purpose:</strong> ${contactData.purpose}</li>
+          </ul>
+          
+          <h3>Message</h3>
+          <p>${contactData.message}</p>
+          
+          <p><em>To reply, simply respond to this email.</em></p>
         `,
+        reply_to: contactData.email,
       }),
     });
 
-    if (!adminEmailResponse.ok) {
-      const error = await adminEmailResponse.text();
-      console.error("Error sending admin notification email:", error);
-      throw new Error(`Failed to send admin notification: ${error}`);
+    if (!userEmailRes.ok || !adminEmailRes.ok) {
+      throw new Error("Failed to send email");
     }
 
-    console.log("Admin notification email sent successfully");
-
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error in contact-form function:", error);
     return new Response(
-      JSON.stringify({ success: true, message: "Contact form processed successfully" }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
-  } catch (error: any) {
-    console.error("Error processing contact form:", error);
-    return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message || "Failed to process contact form" 
-      }),
+      JSON.stringify({ error: error.message }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       }
     );
   }
-});
+};
+
+serve(handler);
