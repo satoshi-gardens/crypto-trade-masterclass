@@ -14,9 +14,17 @@ export const CheckoutContainer = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
   
   const { courseTitle, packageType, price, paymentType, referralCode } = location?.state || {};
+
+  // Validate price and set initial state
+  const [validatedPrice, setValidatedPrice] = useState<number>(() => {
+    if (!price || typeof price !== 'number' || isNaN(price)) {
+      console.error("Invalid price received:", price);
+      return 0;
+    }
+    return price;
+  });
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -35,6 +43,12 @@ export const CheckoutContainer = () => {
   const handleApplicationSubmission = async (data: CheckoutFormValues) => {
     if (!validatedPrice) {
       toast.error("Invalid price. Please try again.");
+      return;
+    }
+
+    if (!courseTitle || !packageType || !paymentType) {
+      toast.error("Missing required course information. Please select a course package.");
+      navigate("/courses");
       return;
     }
 
@@ -65,7 +79,7 @@ export const CheckoutContainer = () => {
     }
   };
 
-  if (!location.state || !courseTitle || !packageType || !price || !paymentType) {
+  if (!location.state || !courseTitle || !packageType || !validatedPrice || !paymentType) {
     console.error("Missing required parameters:", { courseTitle, packageType, price, paymentType });
     toast.error("Please select a course package to proceed to checkout.");
     navigate("/courses");
