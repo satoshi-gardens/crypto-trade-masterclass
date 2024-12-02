@@ -26,8 +26,16 @@ const Feedback = () => {
         throw new Error(emailResult.error || "Failed to send feedback");
       }
 
-      toast.success("Feedback submitted successfully!");
-      navigate("/thank-you-feedback");
+      // Show success notification
+      toast.success("Thank you for your feedback! We appreciate your input.", {
+        duration: 3000,
+      });
+
+      // Redirect to courses page after 3 seconds
+      setTimeout(() => {
+        navigate("/courses");
+      }, 3000);
+
     } catch (error: any) {
       console.error("Error submitting feedback:", error);
       toast.error(error.message || "Failed to submit feedback");
