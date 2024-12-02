@@ -438,6 +438,30 @@ export type Database = {
           },
         ]
       }
+      referral_code_attempts: {
+        Row: {
+          attempt_count: number | null
+          id: number
+          ip_address: string
+          last_attempt: string | null
+          referral_code: string
+        }
+        Insert: {
+          attempt_count?: number | null
+          id?: number
+          ip_address: string
+          last_attempt?: string | null
+          referral_code: string
+        }
+        Update: {
+          attempt_count?: number | null
+          id?: number
+          ip_address?: string
+          last_attempt?: string | null
+          referral_code?: string
+        }
+        Relationships: []
+      }
       referral_commission_rules: {
         Row: {
           commission_percentage: number
@@ -670,6 +694,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_referral_rate_limit: {
+        Args: {
+          p_referral_code: string
+          p_ip_address: string
+        }
+        Returns: boolean
+      }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string

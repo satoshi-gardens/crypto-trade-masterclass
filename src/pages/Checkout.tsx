@@ -12,12 +12,33 @@ import LocationFields from "@/components/contact/LocationFields";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
+// Enhanced validation schema
 const checkoutFormSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(1, "Phone number is required"),
-  city: z.string().min(1, "City is required"),
+  firstName: z
+    .string()
+    .min(1, "First name is required")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "First name can only contain letters, spaces, hyphens, and apostrophes"),
+  lastName: z
+    .string()
+    .min(1, "Last name is required")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Last name can only contain letters, spaces, hyphens, and apostrophes"),
+  email: z
+    .string()
+    .email("Invalid email address")
+    .refine((email) => {
+      // Validate email domain
+      const domain = email.split('@')[1];
+      return !['tempmail.com', 'throwaway.com'].includes(domain);
+    }, "Please use a valid email domain")
+    .transform(str => str.toLowerCase().trim()),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
+  city: z
+    .string()
+    .min(1, "City is required")
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "City name can only contain letters, spaces, hyphens, and apostrophes"),
   country: z.string().min(1, "Country is required"),
   agreement: z.boolean().refine((val) => val === true, {
     message: "You must agree to the payment terms",
@@ -31,8 +52,9 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { courseTitle, packageType, price, referralCode } = location.state || {};
-  const urlReferralCode = searchParams.get("ref") || referralCode;
+  const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
+  const { courseTitle, packageType } = location.state || {};
+  const urlReferralCode = searchParams.get("ref");
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -49,27 +71,65 @@ const Checkout = () => {
   });
 
   useEffect(() => {
-    if (!courseTitle || !packageType || !price) {
+    if (!courseTitle || !packageType) {
       toast.error("Please select a course package to proceed to checkout.");
       navigate("/courses");
+      return;
     }
-  }, [courseTitle, packageType, price, navigate]);
+
+    // Validate price on component mount
+    const validatePrice = async () => {
+      try {
+        const { data: ipResponse } = await fetch('https://api.ipify.org?format=json')
+          .then(res => res.json());
+
+        const { data, error } = await supabase.functions.invoke("validate-checkout", {
+          body: {
+            courseTitle,
+            packageType,
+            referralCode: urlReferralCode,
+            ipAddress: ipResponse.ip,
+          },
+        });
+
+        if (error) {
+          console.error("Price validation error:", error);
+          toast.error(error.message || "Failed to validate price. Please try again.");
+          navigate("/courses");
+          return;
+        }
+
+        setValidatedPrice(data.validatedPrice);
+      } catch (error) {
+        console.error("Price validation error:", error);
+        toast.error("Failed to validate price. Please try again.");
+        navigate("/courses");
+      }
+    };
+
+    validatePrice();
+  }, [courseTitle, packageType, urlReferralCode, navigate]);
 
   const onSubmit = async (data: CheckoutFormValues) => {
+    if (!validatedPrice) {
+      toast.error("Invalid price. Please try again.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const { error: dbError } = await supabase
         .from("course_applications")
         .insert([{
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          city: data.city,
+          first_name: data.firstName.trim(),
+          last_name: data.lastName.trim(),
+          email: data.email.trim(),
+          phone: data.phone.trim(),
+          city: data.city.trim(),
           country: data.country,
           selected_course: courseTitle,
           package: packageType,
-          price: price,
+          price: validatedPrice,
           payment_understanding: data.agreement,
           referral_code: urlReferralCode,
         }])
@@ -88,7 +148,7 @@ const Checkout = () => {
           country: data.country,
           selectedCourse: courseTitle,
           package: packageType,
-          price: price,
+          price: validatedPrice,
           referralCode: urlReferralCode,
         },
       });
@@ -111,12 +171,12 @@ const Checkout = () => {
     }
   };
 
-  if (!courseTitle || !packageType || !price) {
+  if (!courseTitle || !packageType || validatedPrice === null) {
     return null;
   }
 
-  const originalPrice = price / 0.9;
-  const savings = urlReferralCode ? originalPrice - price : 0;
+  const originalPrice = validatedPrice / 0.9;
+  const savings = urlReferralCode ? originalPrice - validatedPrice : 0;
 
   return (
     <PageLayout>
@@ -136,14 +196,14 @@ const Checkout = () => {
                 </p>
                 <p>
                   <span className="font-medium">Discounted Price:</span>{" "}
-                  <span className="text-primary">CHF {price.toLocaleString()}</span>
+                  <span className="text-primary">CHF {validatedPrice.toLocaleString()}</span>
                 </p>
                 <p className="text-primary">
                   You save CHF {savings.toLocaleString()} with your referral discount!
                 </p>
               </>
             ) : (
-              <p><span className="font-medium">Price:</span> CHF {price.toLocaleString()}</p>
+              <p><span className="font-medium">Price:</span> CHF {validatedPrice.toLocaleString()}</p>
             )}
             <p className="text-primary font-medium mt-4">
               Please complete payment within 7 days to secure your spot.
