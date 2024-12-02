@@ -141,7 +141,7 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     // Send email to user
-    await fetch("https://api.resend.com/emails", {
+    const userEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -155,8 +155,14 @@ const handler = async (req: Request): Promise<Response> => {
       }),
     });
 
+    if (!userEmailResponse.ok) {
+      const error = await userEmailResponse.text();
+      console.error("Error sending user email:", error);
+      throw new Error("Failed to send confirmation email");
+    }
+
     // Send notification to admin
-    await fetch("https://api.resend.com/emails", {
+    const adminEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -170,6 +176,12 @@ const handler = async (req: Request): Promise<Response> => {
         html: adminEmailHtml,
       }),
     });
+
+    if (!adminEmailResponse.ok) {
+      const error = await adminEmailResponse.text();
+      console.error("Error sending admin email:", error);
+      throw new Error("Failed to send admin notification");
+    }
 
     return new Response(
       JSON.stringify({ message: "Feedback submitted successfully" }),
