@@ -110,6 +110,12 @@ const Checkout = () => {
         referralCode: urlReferralCode,
       });
 
+      // Ensure payment_type is either 'monthly' or 'annual'
+      const normalizedPaymentType = paymentType.toLowerCase();
+      if (!['monthly', 'annual'].includes(normalizedPaymentType)) {
+        throw new Error("Invalid payment type. Must be either 'monthly' or 'annual'.");
+      }
+
       // Format the data according to the database schema
       const applicationData = {
         first_name: data.firstName.trim(),
@@ -121,7 +127,7 @@ const Checkout = () => {
         selected_course: courseTitle,
         package: packageType,
         price: validatedPrice,
-        payment_type: paymentType,
+        payment_type: normalizedPaymentType,
         payment_understanding: data.agreement,
         referral_code: urlReferralCode || null,
       };
@@ -149,7 +155,7 @@ const Checkout = () => {
           selectedCourse: courseTitle,
           package: packageType,
           price: validatedPrice,
-          paymentType: paymentType,
+          paymentType: normalizedPaymentType,
           referralCode: urlReferralCode,
         },
       });
