@@ -34,6 +34,13 @@ const CourseCard = ({
   const navigate = useNavigate();
 
   const handleApply = () => {
+    console.log("Navigating to checkout with state:", {
+      courseTitle: title,
+      packageType,
+      price,
+      paymentType: "monthly",
+    });
+
     navigate("/checkout", {
       state: {
         courseTitle: title,

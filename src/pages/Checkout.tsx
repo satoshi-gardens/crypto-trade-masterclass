@@ -4,21 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
-import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
-import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
-import LocationFields from "@/components/contact/LocationFields";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-
-// Move form schema to a separate file
 import { checkoutFormSchema } from "@/lib/validations/checkout";
-type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
-
-// Move summary section to a separate component
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+
+type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 const Checkout = () => {
   const location = useLocation();
@@ -27,10 +19,9 @@ const Checkout = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
   
-  // Log the state for debugging
   console.log("Checkout state:", location.state);
   
-  const { courseTitle, packageType, price, paymentType } = location.state || {};
+  const { courseTitle, packageType, price, paymentType } = location?.state || {};
   const urlReferralCode = searchParams.get("ref");
 
   const form = useForm<CheckoutFormValues>({
@@ -49,6 +40,13 @@ const Checkout = () => {
 
   useEffect(() => {
     // Validate required parameters
+    if (!location.state) {
+      console.error("No state provided to checkout page");
+      toast.error("Please select a course package to proceed to checkout.");
+      navigate("/courses");
+      return;
+    }
+
     if (!courseTitle || !packageType || !price || !paymentType) {
       console.error("Missing required parameters:", { courseTitle, packageType, price, paymentType });
       toast.error("Please select a course package to proceed to checkout.");
@@ -99,7 +97,7 @@ const Checkout = () => {
     };
 
     validatePrice();
-  }, [courseTitle, packageType, price, paymentType, urlReferralCode, navigate]);
+  }, [courseTitle, packageType, price, paymentType, urlReferralCode, navigate, location.state]);
 
   const onSubmit = async (data: CheckoutFormValues) => {
     if (!validatedPrice) {
@@ -173,7 +171,8 @@ const Checkout = () => {
     }
   };
 
-  if (!courseTitle || !packageType || !price || !paymentType || validatedPrice === null) {
+  // Only render if we have all required data
+  if (!location.state || !courseTitle || !packageType || !price || !paymentType || validatedPrice === null) {
     return null;
   }
 

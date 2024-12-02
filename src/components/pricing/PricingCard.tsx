@@ -42,6 +42,15 @@ export const PricingCard = ({
   const referralSavings = currentPrice - discountedPrice;
 
   const handleApply = () => {
+    console.log("Navigating to checkout with state:", {
+      courseTitle: title,
+      packageType: title,
+      price: discountedPrice,
+      paymentType,
+      referralCode,
+      originalPrice: currentPrice,
+    });
+
     navigate("/checkout", {
       state: {
         courseTitle: title,
