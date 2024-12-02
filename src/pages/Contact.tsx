@@ -1,93 +1,120 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import PageLayout from "@/components/PageLayout";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { contactFormSchema, type ContactFormValues } from "@/lib/validations/contact";
-import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
-import LocationFields from "@/components/contact/LocationFields";
-import InquiryFields from "@/components/contact/InquiryFields";
-import Hero from "@/components/Hero";
+import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import PageLayout from "@/components/PageLayout";
+import InquiryFields from "@/components/contact/InquiryFields";
+import LocationFields from "@/components/contact/LocationFields";
+import PersonalInfoFields from "@/components/contact/PersonalInfoFields";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const contactFormSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+  contactPurpose: z.string().min(1, "Please select a contact purpose"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+});
+
+export type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      city: "",
-      country: "",
-      purpose: "general",
-      message: "",
-    },
   });
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.functions.invoke('send-contact-email', {
+      const response = await supabase.functions.invoke('send-contact-email', {
         body: data,
       });
 
-      if (error) throw error;
+      if (response.error) throw response.error;
 
-      // Create a notification
-      await supabase.from("notifications").insert({
-        title: "Contact Form Submitted",
-        message: "Thank you for contacting us! We'll get back to you shortly.",
-        icon: "mail",
-        start_date: new Date().toISOString(),
-        expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for contacting us. We'll get back to you soon.",
       });
 
-      toast.success("Thank you for reaching out! We'll get back to you shortly.");
+      setIsSubmitted(true);
       
-      // Redirect after 5 seconds
+      // Redirect to courses page after 5 seconds
       setTimeout(() => {
-        navigate("/courses");
+        navigate('/courses');
       }, 5000);
-
-      form.reset();
     } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error("Something went wrong. Please try again.");
+      console.error('Error submitting contact form:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (isSubmitted) {
+    return (
+      <PageLayout>
+        <div className="max-w-2xl mx-auto py-12 px-4">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-bold">Thank You!</h1>
+            <p className="text-lg text-muted-foreground">
+              We've received your message and will get back to you shortly.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Redirecting to our courses page in a few seconds...
+            </p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
   return (
     <PageLayout>
-      <Hero
-        title="Contact Us"
-        subtitle="Have questions? We'd love to hear from you"
-        showButton={false}
-      />
-      <div className="container max-w-2xl mx-auto px-4 py-12">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <PersonalInfoFields form={form} />
-            <LocationFields form={form} />
-            <InquiryFields form={form} />
+      <div className="max-w-2xl mx-auto py-12 px-4">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold">Contact Us</h1>
+            <p className="text-muted-foreground mt-2">
+              Have a question or want to learn more? We're here to help!
+            </p>
+          </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "Send Message"}
-            </Button>
-          </form>
-        </Form>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <PersonalInfoFields form={form} />
+              <LocationFields form={form} />
+              <InquiryFields form={form} />
+
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
+            </form>
+          </Form>
+        </div>
       </div>
     </PageLayout>
   );

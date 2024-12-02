@@ -1,149 +1,163 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
-
-interface ContactRequest {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  city?: string;
-  country?: string;
-  purpose: string;
-  message: string;
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const handler = async (req: Request): Promise<Response> => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+interface ContactFormData {
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string
+  city?: string
+  country?: string
+  contactPurpose: string
+  message: string
+}
+
+serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const supabase = createClient(supabaseUrl!, supabaseKey!);
-    const contactData: ContactRequest = await req.json();
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
 
-    // Store in database
-    const { error: dbError } = await supabase
-      .from("general_inquiries")
-      .insert({
-        first_name: contactData.firstName,
-        last_name: contactData.lastName,
-        email: contactData.email,
-        phone: contactData.phone,
-        city: contactData.city,
-        country: contactData.country,
-        contact_purpose: contactData.purpose,
-        message: contactData.message,
-      });
+    const formData: ContactFormData = await req.json()
+    console.log('Received contact form submission:', formData)
 
-    if (dbError) {
-      console.error("Database error:", dbError);
-      throw new Error("Failed to store inquiry");
+    // Insert into general_inquiries table
+    const { error: insertError } = await supabaseClient
+      .from('general_inquiries')
+      .insert([
+        {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          city: formData.city,
+          country: formData.country,
+          contact_purpose: formData.contactPurpose,
+          message: formData.message,
+        },
+      ])
+
+    if (insertError) {
+      console.error('Error inserting inquiry:', insertError)
+      throw insertError
     }
 
-    // Get site URL from database
-    const { data: siteSettings, error: urlError } = await supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', 'website_url')
-      .single();
+    // Create a notification
+    const { error: notificationError } = await supabaseClient
+      .from('notifications')
+      .insert([
+        {
+          title: 'New Contact Form Submission',
+          message: `New inquiry from ${formData.firstName} ${formData.lastName}`,
+          icon: 'mail',
+          start_date: new Date().toISOString(),
+          expire_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+        },
+      ])
 
-    if (urlError) {
-      console.error('Failed to fetch site settings:', urlError);
-      throw new Error('Failed to fetch site settings');
+    if (notificationError) {
+      console.error('Error creating notification:', notificationError)
+      // Don't throw here, continue with email sending
     }
 
-    const websiteUrl = siteSettings?.value || 'https://cryptocourse.bit2big.com';
-
-    // Get email templates
-    const { data: templates, error: templateError } = await supabase
+    // Fetch email templates
+    const { data: templates, error: templateError } = await supabaseClient
       .from('email_templates')
       .select('*')
-      .in('type', ['contact_confirmation', 'contact_notification_admin']);
+      .in('type', ['contact_form_confirmation', 'general_inquiry_notification'])
 
     if (templateError) {
-      console.error('Failed to fetch email templates:', templateError);
-      throw new Error('Failed to fetch email templates');
+      console.error('Error fetching email templates:', templateError)
+      throw templateError
     }
 
-    const userTemplate = templates.find(t => t.type === 'contact_confirmation');
-    const adminTemplate = templates.find(t => t.type === 'contact_notification_admin');
+    const confirmationTemplate = templates.find(t => t.type === 'contact_form_confirmation')
+    const notificationTemplate = templates.find(t => t.type === 'general_inquiry_notification')
 
-    if (!userTemplate || !adminTemplate) {
-      throw new Error('Email templates not found');
+    if (!confirmationTemplate || !notificationTemplate) {
+      throw new Error('Email templates not found')
     }
 
-    // Replace variables in templates
-    const userHtml = userTemplate.html_content.replace(/{{websiteUrl}}/g, websiteUrl);
-    
-    const adminHtml = adminTemplate.html_content
-      .replace(/{{firstName}}/g, contactData.firstName)
-      .replace(/{{lastName}}/g, contactData.lastName)
-      .replace(/{{email}}/g, contactData.email)
-      .replace(/{{phone}}/g, contactData.phone || 'Not provided')
-      .replace(/{{city}}/g, contactData.city || 'Not provided')
-      .replace(/{{country}}/g, contactData.country || 'Not provided')
-      .replace(/{{purpose}}/g, contactData.purpose)
-      .replace(/{{message}}/g, contactData.message);
+    // Replace variables in confirmation email
+    let confirmationHtml = confirmationTemplate.html_content
+      .replace('{{firstName}}', formData.firstName)
+      .replace(/{{courseUrl}}/g, 'https://yourwebsite.com')
 
-    // Send confirmation to user
-    const userEmailRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
+    // Replace variables in notification email
+    let notificationHtml = notificationTemplate.html_content
+      .replace('{{firstName}}', formData.firstName)
+      .replace('{{lastName}}', formData.lastName)
+      .replace('{{email}}', formData.email)
+      .replace('{{phone}}', formData.phone || 'Not provided')
+      .replace('{{purpose}}', formData.contactPurpose)
+      .replace('{{message}}', formData.message)
+
+    // Send confirmation email to user
+    const confirmationResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        'Authorization': `Bearer ${Deno.env.get('RESEND_API_KEY')}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: "Bit2Big <contact@bit2big.com>",
-        to: [contactData.email],
-        subject: userTemplate.subject,
-        html: userHtml,
+        from: 'Crypto Trading <noreply@yourwebsite.com>',
+        to: formData.email,
+        subject: confirmationTemplate.subject,
+        html: confirmationHtml,
       }),
-    });
+    })
 
-    // Send notification to admin
-    const adminEmailRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "Bit2Big Contact Form <contact@bit2big.com>",
-        to: ["admin@bit2big.com"],
-        subject: adminTemplate.subject,
-        html: adminHtml,
-        reply_to: contactData.email,
-      }),
-    });
-
-    if (!userEmailRes.ok || !adminEmailRes.ok) {
-      throw new Error("Failed to send email");
+    if (!confirmationResponse.ok) {
+      console.error('Error sending confirmation email:', await confirmationResponse.text())
+      throw new Error('Failed to send confirmation email')
     }
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (error) {
-    console.error("Error in contact-form function:", error);
+    // Send notification email to admin
+    const notificationResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${Deno.env.get('RESEND_API_KEY')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Crypto Trading <noreply@yourwebsite.com>',
+        to: 'admin@yourwebsite.com', // Replace with actual admin email
+        subject: notificationTemplate.subject,
+        html: notificationHtml,
+      }),
+    })
+
+    if (!notificationResponse.ok) {
+      console.error('Error sending notification email:', await notificationResponse.text())
+      // Don't throw here, the user's email was sent successfully
+    }
+
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ message: 'Contact form submitted successfully' }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    )
+  } catch (error) {
+    console.error('Error processing contact form:', error)
+    return new Response(
+      JSON.stringify({ error: 'Failed to process contact form' }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       }
-    );
+    )
   }
-};
-
-serve(handler);
+})
