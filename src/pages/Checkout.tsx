@@ -12,40 +12,13 @@ import LocationFields from "@/components/contact/LocationFields";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-// Enhanced validation schema
-const checkoutFormSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, "First name is required")
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "First name can only contain letters, spaces, hyphens, and apostrophes"),
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Last name can only contain letters, spaces, hyphens, and apostrophes"),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .refine((email) => {
-      // Validate email domain
-      const domain = email.split('@')[1];
-      return !['tempmail.com', 'throwaway.com'].includes(domain);
-    }, "Please use a valid email domain")
-    .transform(str => str.toLowerCase().trim()),
-  phone: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
-  city: z
-    .string()
-    .min(1, "City is required")
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "City name can only contain letters, spaces, hyphens, and apostrophes"),
-  country: z.string().min(1, "Country is required"),
-  agreement: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the payment terms",
-  }),
-});
-
+// Move form schema to a separate file
+import { checkoutFormSchema } from "@/lib/validations/checkout";
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
+
+// Move summary section to a separate component
+import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
+import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 
 const Checkout = () => {
   const location = useLocation();
@@ -53,6 +26,10 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
+  
+  // Log the state for debugging
+  console.log("Checkout state:", location.state);
+  
   const { courseTitle, packageType, price, paymentType } = location.state || {};
   const urlReferralCode = searchParams.get("ref");
 
@@ -71,7 +48,9 @@ const Checkout = () => {
   });
 
   useEffect(() => {
+    // Validate required parameters
     if (!courseTitle || !packageType || !price || !paymentType) {
+      console.error("Missing required parameters:", { courseTitle, packageType, price, paymentType });
       toast.error("Please select a course package to proceed to checkout.");
       navigate("/courses");
       return;
@@ -82,6 +61,15 @@ const Checkout = () => {
       try {
         const { data: ipResponse } = await fetch('https://api.ipify.org?format=json')
           .then(res => res.json());
+
+        console.log("Validating price with parameters:", {
+          courseTitle,
+          packageType,
+          price,
+          paymentType,
+          referralCode: urlReferralCode,
+          ipAddress: ipResponse.ip,
+        });
 
         const { data, error } = await supabase.functions.invoke("validate-checkout", {
           body: {
@@ -101,6 +89,7 @@ const Checkout = () => {
           return;
         }
 
+        console.log("Price validation successful:", data);
         setValidatedPrice(data.validatedPrice);
       } catch (error) {
         console.error("Price validation error:", error);
@@ -120,6 +109,15 @@ const Checkout = () => {
 
     setIsSubmitting(true);
     try {
+      console.log("Submitting application with data:", {
+        ...data,
+        courseTitle,
+        packageType,
+        price: validatedPrice,
+        paymentType,
+        referralCode: urlReferralCode,
+      });
+
       const { error: dbError } = await supabase
         .from("course_applications")
         .insert([{
@@ -179,81 +177,22 @@ const Checkout = () => {
     return null;
   }
 
-  const originalPrice = validatedPrice / 0.9;
-  const savings = urlReferralCode ? originalPrice - validatedPrice : 0;
-
   return (
     <PageLayout>
       <div className="container max-w-2xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-8">Complete Your Application</h1>
-        
-        <div className="bg-accent/10 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold mb-4">Course Summary</h2>
-          <div className="space-y-2">
-            <p><span className="font-medium">Selected Course:</span> {courseTitle}</p>
-            <p><span className="font-medium">Package:</span> {packageType}</p>
-            <p><span className="font-medium">Payment Type:</span> {paymentType === 'annual' ? 'One-time Payment' : 'Monthly Payments'}</p>
-            {urlReferralCode ? (
-              <>
-                <p>
-                  <span className="font-medium">Original Price:</span>{" "}
-                  <span className="line-through">CHF {originalPrice.toLocaleString()}</span>
-                </p>
-                <p>
-                  <span className="font-medium">Discounted Price:</span>{" "}
-                  <span className="text-primary">CHF {validatedPrice.toLocaleString()}</span>
-                </p>
-                <p className="text-primary">
-                  You save CHF {savings.toLocaleString()} with your referral discount!
-                </p>
-              </>
-            ) : (
-              <p><span className="font-medium">Price:</span> CHF {validatedPrice.toLocaleString()}</p>
-            )}
-            <p className="text-primary font-medium mt-4">
-              Please complete payment within 7 days to secure your spot.
-            </p>
-          </div>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <PersonalInfoFields form={form} />
-            <LocationFields form={form} />
-
-            <FormField
-              control={form.control}
-              name="agreement"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <label
-                      htmlFor="agreement"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      I understand that payment must be completed within 7 days to secure my spot.
-                    </label>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={!form.formState.isValid || isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Confirm and Get Payment Instructions"}
-            </Button>
-          </form>
-        </Form>
+        <CheckoutSummary
+          courseTitle={courseTitle}
+          packageType={packageType}
+          paymentType={paymentType}
+          validatedPrice={validatedPrice}
+          referralCode={urlReferralCode}
+        />
+        <CheckoutForm
+          form={form}
+          onSubmit={onSubmit}
+          isSubmitting={isSubmitting}
+        />
       </div>
     </PageLayout>
   );
