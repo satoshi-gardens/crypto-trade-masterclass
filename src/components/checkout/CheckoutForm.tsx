@@ -25,6 +25,8 @@ export const CheckoutForm = ({ form, onSubmit, isSubmitting }: CheckoutFormProps
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
                 <Checkbox
+                  id="agreement"
+                  name="agreement"
                   checked={field.value}
                   onCheckedChange={field.onChange}
                 />

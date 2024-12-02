@@ -25,7 +25,12 @@ const PersonalInfoFields = ({ form }: PersonalInfoFieldsProps) => {
             <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your first name" {...field} />
+                <Input 
+                  id="firstName"
+                  name="firstName"
+                  placeholder="Enter your first name" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -39,7 +44,12 @@ const PersonalInfoFields = ({ form }: PersonalInfoFieldsProps) => {
             <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your last name" {...field} />
+                <Input 
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Enter your last name" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,7 +65,13 @@ const PersonalInfoFields = ({ form }: PersonalInfoFieldsProps) => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your email address" {...field} />
+                <Input 
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email address" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,7 +85,13 @@ const PersonalInfoFields = ({ form }: PersonalInfoFieldsProps) => {
             <FormItem>
               <FormLabel>Phone (Optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your phone number" {...field} />
+                <Input 
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="Enter your phone number" 
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
