@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -41,6 +40,7 @@ serve(async (req) => {
     });
 
     // Send confirmation email to user
+    console.log("Sending confirmation email to user:", formData.email);
     const userEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -78,7 +78,10 @@ serve(async (req) => {
       throw new Error(`Failed to send confirmation email: ${error}`);
     }
 
+    console.log("User confirmation email sent successfully");
+
     // Send notification to admin
+    console.log("Sending notification email to admin");
     const adminEmailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -114,7 +117,8 @@ serve(async (req) => {
       throw new Error(`Failed to send admin notification: ${error}`);
     }
 
-    console.log("Contact form emails sent successfully");
+    console.log("Admin notification email sent successfully");
+
     return new Response(
       JSON.stringify({ success: true, message: "Contact form processed successfully" }),
       {

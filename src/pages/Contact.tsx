@@ -35,6 +35,8 @@ const Contact = () => {
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
     try {
+      console.log("Submitting contact form:", data);
+
       // Insert into general_inquiries table
       const { error: dbError } = await supabase
         .from("general_inquiries")
@@ -51,14 +53,27 @@ const Contact = () => {
           },
         ]);
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw dbError;
+      }
+
+      console.log("Successfully saved to database, sending emails...");
 
       // Send emails using the edge function
-      const { data: emailResponse, error: emailError } = await supabase.functions.invoke("send-contact-email", {
-        body: data,
-      });
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke(
+        "send-contact-email",
+        {
+          body: data,
+        }
+      );
 
-      if (emailError) throw emailError;
+      if (emailError) {
+        console.error("Email error:", emailError);
+        throw emailError;
+      }
+
+      console.log("Emails sent successfully, creating notification...");
 
       // Create a notification
       const { error: notificationError } = await supabase
