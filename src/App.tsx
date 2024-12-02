@@ -15,6 +15,7 @@ import LoopMethod from "@/pages/LoopMethod";
 import Feedback from "@/pages/Feedback";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Checkout from "@/pages/Checkout";
 import "./App.css";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/feedback" element={<Feedback />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Toaster />
     </Router>
