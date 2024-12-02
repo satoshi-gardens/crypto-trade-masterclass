@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import PageLayout from "@/components/PageLayout";
 import InquiryFields from "@/components/contact/InquiryFields";
@@ -15,7 +15,6 @@ import { contactFormSchema, type ContactFormValues } from "@/lib/validations/con
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const form = useForm<ContactFormValues>({
@@ -61,7 +60,7 @@ const Contact = () => {
       console.log("Successfully saved to database, sending emails...");
 
       // Send emails using the edge function
-      const { data: emailResponse, error: emailError } = await supabase.functions.invoke(
+      const { error: emailError } = await supabase.functions.invoke(
         "send-contact-email",
         {
           body: data,
@@ -93,11 +92,7 @@ const Contact = () => {
         // Don't throw here as it's not critical
       }
 
-      toast({
-        title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you soon.",
-      });
-
+      toast.success("Message Sent! Thank you for contacting us.");
       setIsSubmitted(true);
       
       // Redirect to courses page after 5 seconds
@@ -106,11 +101,9 @@ const Contact = () => {
       }, 5000);
     } catch (error) {
       console.error("Error submitting contact form:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-      });
+      toast.error(
+        "Failed to send message. Please try again or contact support directly."
+      );
     } finally {
       setIsSubmitting(false);
     }

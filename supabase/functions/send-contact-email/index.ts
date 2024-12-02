@@ -48,7 +48,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big <noreply@bit2big.com>",
+        from: "KY Connect <noreply@bit2big.com>",
         to: [formData.email],
         subject: "We've Received Your Message",
         html: `
@@ -66,7 +66,7 @@ serve(async (req) => {
             <p>While you wait, why not explore our courses?</p>
             <p><a href="https://bit2big.com/courses" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">View Our Courses</a></p>
             
-            <p>Best regards,<br>The Bit2Big Team</p>
+            <p>Best regards,<br>The KY Connect Team</p>
           </div>
         `,
       }),
@@ -89,7 +89,7 @@ serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big Contact Form <noreply@bit2big.com>",
+        from: "KY Connect Contact Form <noreply@bit2big.com>",
         to: ["admin@bit2big.com"],
         reply_to: formData.email,
         subject: `New Contact Form Submission from ${formData.firstName} ${formData.lastName}`,
