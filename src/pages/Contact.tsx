@@ -54,11 +54,29 @@ const Contact = () => {
       if (dbError) throw dbError;
 
       // Send emails using the edge function
-      const emailResponse = await supabase.functions.invoke("send-contact-email", {
+      const { data: emailResponse, error: emailError } = await supabase.functions.invoke("send-contact-email", {
         body: data,
       });
 
-      if (emailResponse.error) throw emailResponse.error;
+      if (emailError) throw emailError;
+
+      // Create a notification
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert([
+          {
+            title: "New Contact Form Submission",
+            message: `New inquiry from ${data.firstName} ${data.lastName}`,
+            icon: "mail",
+            start_date: new Date().toISOString(),
+            expire_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+          },
+        ]);
+
+      if (notificationError) {
+        console.error("Error creating notification:", notificationError);
+        // Don't throw here as it's not critical
+      }
 
       toast({
         title: "Message Sent!",
