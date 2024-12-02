@@ -1,72 +1,58 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import PageLayout from "@/components/PageLayout";
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import type { FeedbackFormValues } from "@/components/feedback/FeedbackForm";
-import { sendFeedbackEmails } from "@/lib/email/emailService";
+import { sendFeedbackEmail } from "@/lib/email/emailService";
 import { supabase } from "@/integrations/supabase/client";
 
 const Feedback = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (data: FeedbackFormValues) => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
-      const { success, error } = await sendFeedbackEmails({
-        email: data.email,
+      // Send feedback emails
+      const emailResult = await sendFeedbackEmail({
         name: `${data.firstName} ${data.lastName}`,
-        feedback: data.message,
-        rating: data.area,
-        experience: data.country,
+        email: data.email,
+        area: data.area,
+        message: data.message,
       });
 
-      if (!success) throw new Error(error);
+      if (!emailResult.success) {
+        throw new Error(emailResult.error || "Failed to send feedback");
+      }
 
-      // Create a notification
-      await supabase.from("notifications").insert({
-        title: "New Feedback Received",
-        message: "Thank you for your valuable feedback! We'll review it shortly.",
-        icon: "message-square",
-        start_date: new Date().toISOString(),
-        expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
-      });
-
-      toast.success("Thank you for your feedback!");
-      
-      // Redirect after 5 seconds
-      setTimeout(() => {
-        navigate("/courses");
-      }, 5000);
-
-    } catch (error) {
+      toast.success("Feedback submitted successfully!");
+      navigate("/thank-you-feedback");
+    } catch (error: any) {
       console.error("Error submitting feedback:", error);
-      toast.error(
-        "Failed to submit feedback. Please try again or contact support."
-      );
+      toast.error(error.message || "Failed to submit feedback");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <PageLayout>
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-4">Share Your Feedback</h1>
-            <p className="text-gray-600">
-              We value your input! Help us improve by sharing your thoughts,
-              suggestions, or concerns.
-            </p>
-          </div>
+    <>
+      <Helmet>
+        <title>Feedback - Bit2Big Crypto Course</title>
+      </Helmet>
 
-          <FeedbackForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+      <div className="container max-w-3xl py-8 md:py-12">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight">Share Your Feedback</h1>
+          <p className="mt-2 text-muted-foreground">
+            We value your input and are committed to continuously improving our services.
+          </p>
         </div>
+
+        <FeedbackForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
       </div>
-    </PageLayout>
+    </>
   );
 };
 
