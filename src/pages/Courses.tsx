@@ -36,7 +36,6 @@ const Courses = () => {
       <ChallengesSection />
       <SolutionsSection />
       <CourseModules />
-      <ModuleCarousel />
 
       {/* Pricing Section */}
       <section id="packages" className="py-20 bg-white">
@@ -99,6 +98,7 @@ const Courses = () => {
       </section>
 
       <TrustSignals />
+      <ModuleCarousel />
     </PageLayout>
   );
 };
