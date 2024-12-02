@@ -20,54 +20,60 @@ export const submitApplication = async ({
   paymentType,
   referralCode,
 }: SubmissionData) => {
-  const applicationData = {
-    first_name: formData.firstName.trim(),
-    last_name: formData.lastName.trim(),
-    email: formData.email.trim().toLowerCase(),
-    phone: formData.phone.trim(),
-    city: formData.city.trim(),
-    country: formData.country,
-    selected_course: courseTitle,
-    package: packageType,
-    price,
-    payment_type: paymentType.toLowerCase(),
-    payment_understanding: formData.agreement,
-    referral_code: referralCode || null,
-  };
+  try {
+    // First, insert the application data
+    const applicationData = {
+      first_name: formData.firstName.trim(),
+      last_name: formData.lastName.trim(),
+      email: formData.email.trim().toLowerCase(),
+      phone: formData.phone?.trim(),
+      city: formData.city?.trim(),
+      country: formData.country,
+      selected_course: courseTitle,
+      package: packageType,
+      price,
+      payment_type: paymentType.toLowerCase(),
+      payment_understanding: formData.agreement,
+      referral_code: referralCode || null,
+    };
 
-  const { data, error: dbError } = await supabase
-    .from("course_applications")
-    .insert([applicationData])
-    .select()
-    .single();
+    const { data: application, error: dbError } = await supabase
+      .from("course_applications")
+      .insert([applicationData])
+      .select()
+      .single();
 
-  if (dbError) throw dbError;
+    if (dbError) throw dbError;
 
-  // Get email template and send confirmation
-  const template = await getEmailTemplate("application_confirmation", {
-    firstName: formData.firstName,
-    courseTitle,
-    packageType,
-    price,
-    paymentType,
-  });
+    // Get email template and send confirmation
+    const template = await getEmailTemplate("application_confirmation", {
+      firstName: formData.firstName,
+      courseTitle,
+      packageType,
+      price: price.toLocaleString(),
+      paymentType: paymentType === 'annual' ? 'One-time Payment' : 'Monthly Payments'
+    });
 
-  if (!template) {
-    console.error("Failed to fetch email template");
-    throw new Error("Failed to send confirmation email");
+    if (!template) {
+      console.error("Failed to fetch email template");
+      throw new Error("Failed to send confirmation email");
+    }
+
+    const emailResult = await sendEmail({
+      to: [formData.email],
+      subject: template.subject,
+      html: template.html,
+      from: "Bit2Big Course Applications <courses@bit2big.com>",
+    });
+
+    if (!emailResult.success) {
+      console.error("Error sending email:", emailResult.error);
+      throw new Error("Failed to send confirmation email");
+    }
+
+    return application;
+  } catch (error: any) {
+    console.error("Error submitting application:", error);
+    throw error;
   }
-
-  const emailResult = await sendEmail({
-    to: [formData.email],
-    subject: template.subject,
-    html: template.html,
-    from: "Bit2Big Course Applications <courses@bit2big.com>",
-  });
-
-  if (!emailResult.success) {
-    console.error("Error sending email:", emailResult.error);
-    throw new Error("Failed to send confirmation email");
-  }
-
-  return data;
 };
