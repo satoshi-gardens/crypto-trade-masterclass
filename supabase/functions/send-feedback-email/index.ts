@@ -32,15 +32,21 @@ const handler = async (req: Request): Promise<Response> => {
           <style>
             .container { max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
             .header { background-color: #1a1f2c; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-            .content { background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; }
+            .content { background-color: #ffffff; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
             .cta-button { display: inline-block; background-color: #8b5cf6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-            .feature-box { background-color: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 6px; }
+            .feature-box { background-color: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 6px; border-left: 4px solid #8b5cf6; }
             .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+            .highlight { color: #8b5cf6; font-weight: bold; }
+            .testimonial { font-style: italic; color: #666; margin: 15px 0; padding: 10px; border-left: 2px solid #8b5cf6; }
+            .benefits-list { padding-left: 20px; }
+            .benefits-list li { margin: 8px 0; }
+            .discount-banner { background-color: #fef3c7; color: #92400e; padding: 10px; border-radius: 4px; text-align: center; margin: 15px 0; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
+              <img src="${WEBSITE_URL}/logo.png" alt="Bit2Big Logo" style="max-width: 150px; margin-bottom: 15px;">
               <h1 style="margin: 0; font-size: 24px;">Thank You for Your Feedback!</h1>
             </div>
             <div class="content">
@@ -50,31 +56,47 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="feature-box">
                 <h2 style="color: #1a1f2c; margin-top: 0;">Transform Your Trading Journey</h2>
                 <p>Take your crypto trading to the next level with our comprehensive courses:</p>
-                <ul style="padding-left: 20px;">
-                  <li>Learn proven trading strategies</li>
-                  <li>Access real-time market analysis</li>
-                  <li>Join our community of successful traders</li>
+                <ul class="benefits-list">
+                  <li>Master proven trading strategies used by professionals</li>
+                  <li>Access real-time market analysis and insights</li>
+                  <li>Join our exclusive community of successful traders</li>
                   <li>Get personalized mentoring support</li>
+                  <li>Learn risk management techniques that protect your capital</li>
                 </ul>
-                <a href="${WEBSITE_URL}/courses" class="cta-button">Explore Our Courses</a>
+              </div>
+
+              <div class="testimonial">
+                "The course completely transformed my understanding of cryptocurrency trading. The strategies I learned helped me achieve consistent results." - John D., Professional Trader
+              </div>
+
+              <div class="discount-banner">
+                <h3 style="margin: 0;">🎉 Special Offer Just for You!</h3>
+                <p style="margin: 10px 0;">Get <span class="highlight">15% off</span> any course package when you enroll within the next 48 hours.</p>
+                <p style="margin: 0; font-weight: bold;">Use code: <span style="background: #8b5cf6; color: white; padding: 2px 8px; border-radius: 4px;">FEEDBACK15</span></p>
               </div>
 
               <div class="feature-box">
-                <h3 style="color: #1a1f2c; margin-top: 0;">Limited Time Offer!</h3>
-                <p>🎉 Get 10% off any course package when you enroll within the next 48 hours.</p>
-                <p>Use code: <strong>FEEDBACK10</strong></p>
+                <h3 style="color: #1a1f2c; margin-top: 0;">Why Choose Bit2Big?</h3>
+                <ul class="benefits-list">
+                  <li>Industry-leading instructors with proven track records</li>
+                  <li>Comprehensive curriculum covering both technical and fundamental analysis</li>
+                  <li>Flexible learning schedule to fit your lifestyle</li>
+                  <li>Lifetime access to course materials and updates</li>
+                </ul>
+                <a href="${WEBSITE_URL}/courses" class="cta-button" style="color: white;">Explore Our Courses</a>
               </div>
 
-              <p>Stay connected with us:</p>
-              <ul style="padding-left: 20px;">
-                <li>Follow us on Twitter: @Crypto4Profits</li>
-                <li>Join our Telegram community</li>
-                <li>Subscribe to our newsletter for trading insights</li>
+              <p>Stay connected with our trading community:</p>
+              <ul class="benefits-list">
+                <li>Follow us on Twitter: <a href="https://twitter.com/Bit2Big" style="color: #8b5cf6;">@Bit2Big</a></li>
+                <li>Join our Telegram community for daily insights</li>
+                <li>Subscribe to our newsletter for exclusive trading tips</li>
               </ul>
 
               <div class="footer">
                 <p>© ${new Date().getFullYear()} Bit2Big Crypto Course. All rights reserved.</p>
                 <p>You received this email because you submitted feedback on our platform.</p>
+                <p>Our address: Crypto Valley, Zug, Switzerland</p>
               </div>
             </div>
           </div>
