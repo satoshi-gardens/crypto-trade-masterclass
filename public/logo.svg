@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="200" stroke="#FFD700" stroke-width="24" stroke-dasharray="60 30"/>
-  <path d="M256 150L356 300H156L256 150Z" fill="#FFD700"/>
-  <g>
-    <circle cx="256" cy="256" r="8" fill="#FFD700"/>
-    <circle cx="256" cy="156" r="8" fill="#FFD700"/>
-    <circle cx="356" cy="256" r="8" fill="#FFD700"/>
-    <circle cx="156" cy="256" r="8" fill="#FFD700"/>
-  </g>
-  <g>
-    <rect x="220" y="280" width="12" height="40" fill="#FFD700"/>
-    <rect x="244" y="260" width="12" height="60" fill="#FFD700"/>
-    <rect x="268" y="290" width="12" height="30" fill="#FFD700"/>
-    <rect x="292" y="270" width="12" height="50" fill="#FFD700"/>
-  </g>
+  <path d="M256 50C142.2 50 50 142.2 50 256s92.2 206 206 206 206-92.2 206-206S369.8 50 256 50zm0 372c-91.7 0-166-74.3-166-166S164.3 90 256 90s166 74.3 166 166-74.3 166-166 166z" fill="#1E1B4B"/>
+  <path d="M320 256c0 35.3-28.7 64-64 64s-64-28.7-64-64 28.7-64 64-64 64 28.7 64 64zm40-100c0 22.1-17.9 40-40 40s-40-17.9-40-40 17.9-40 40-40 40 17.9 40 40z" fill="#1E1B4B"/>
 </svg>
