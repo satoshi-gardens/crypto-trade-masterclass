@@ -57,8 +57,15 @@ const Checkout = () => {
     // Validate price on component mount
     const validatePrice = async () => {
       try {
-        const { data: ipResponse } = await fetch('https://api.ipify.org?format=json')
-          .then(res => res.json());
+        let ipAddress;
+        try {
+          const { data: ipResponse } = await fetch('https://api.ipify.org?format=json')
+            .then(res => res.json());
+          ipAddress = ipResponse?.ip;
+        } catch (error) {
+          console.error("Error fetching IP:", error);
+          ipAddress = '0.0.0.0'; // Fallback IP
+        }
 
         console.log("Validating price with parameters:", {
           courseTitle,
@@ -66,7 +73,7 @@ const Checkout = () => {
           price,
           paymentType,
           referralCode: urlReferralCode,
-          ipAddress: ipResponse.ip,
+          ipAddress,
         });
 
         const { data, error } = await supabase.functions.invoke("validate-checkout", {
@@ -76,7 +83,7 @@ const Checkout = () => {
             price,
             paymentType,
             referralCode: urlReferralCode,
-            ipAddress: ipResponse.ip,
+            ipAddress,
           },
         });
 
