@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { checkoutFormSchema } from "@/lib/validations/checkout";
 import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+import CheckoutHeader from "@/components/checkout/CheckoutHeader";
 
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
@@ -18,8 +19,6 @@ const Checkout = () => {
   const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validatedPrice, setValidatedPrice] = useState<number | null>(null);
-  
-  console.log("Checkout state:", location.state);
   
   const { courseTitle, packageType, price, paymentType } = location?.state || {};
   const urlReferralCode = searchParams.get("ref");
@@ -39,7 +38,6 @@ const Checkout = () => {
   });
 
   useEffect(() => {
-    // Validate required parameters
     if (!location.state) {
       console.error("No state provided to checkout page");
       toast.error("Please select a course package to proceed to checkout.");
@@ -54,7 +52,6 @@ const Checkout = () => {
       return;
     }
 
-    // Validate price on component mount
     const validatePrice = async () => {
       try {
         let ipAddress;
@@ -64,17 +61,8 @@ const Checkout = () => {
           ipAddress = ipResponse?.ip;
         } catch (error) {
           console.error("Error fetching IP:", error);
-          ipAddress = '0.0.0.0'; // Fallback IP
+          ipAddress = '0.0.0.0';
         }
-
-        console.log("Validating price with parameters:", {
-          courseTitle,
-          packageType,
-          price,
-          paymentType,
-          referralCode: urlReferralCode,
-          ipAddress,
-        });
 
         const { data, error } = await supabase.functions.invoke("validate-checkout", {
           body: {
@@ -94,7 +82,6 @@ const Checkout = () => {
           return;
         }
 
-        console.log("Price validation successful:", data);
         setValidatedPrice(data.validatedPrice);
       } catch (error) {
         console.error("Price validation error:", error);
@@ -144,6 +131,7 @@ const Checkout = () => {
 
       if (dbError) throw dbError;
 
+      // Send confirmation email
       const { error: emailError } = await supabase.functions.invoke("send-application-email", {
         body: {
           firstName: data.firstName,
@@ -160,7 +148,11 @@ const Checkout = () => {
         },
       });
 
-      if (emailError) throw emailError;
+      if (emailError) {
+        console.error("Error sending email:", emailError);
+        // Continue with success flow but log the error
+        toast.error("Application submitted but there was an issue sending the confirmation email. Our team will contact you shortly.");
+      }
 
       toast.success("Application submitted successfully!");
       navigate("/thank-you", {
@@ -178,7 +170,6 @@ const Checkout = () => {
     }
   };
 
-  // Only render if we have all required data
   if (!location.state || !courseTitle || !packageType || !price || !paymentType || validatedPrice === null) {
     return null;
   }
@@ -186,7 +177,7 @@ const Checkout = () => {
   return (
     <PageLayout>
       <div className="container max-w-2xl mx-auto px-6 py-12">
-        <h1 className="text-3xl font-bold mb-8">Complete Your Application</h1>
+        <CheckoutHeader />
         <CheckoutSummary
           courseTitle={courseTitle}
           packageType={packageType}

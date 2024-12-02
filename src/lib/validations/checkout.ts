@@ -21,7 +21,7 @@ export const checkoutFormSchema = z.object({
   phone: z
     .string()
     .min(1, "Phone number is required")
-    .regex(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
+    .regex(/^\d+$/, "Please enter only numbers"),
   city: z
     .string()
     .min(1, "City is required")
