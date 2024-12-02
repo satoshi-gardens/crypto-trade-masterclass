@@ -23,7 +23,7 @@ const Home = () => {
     "description": "Professional cryptocurrency trading course in Switzerland. Learn advanced trading strategies, technical analysis, and risk management.",
     "provider": {
       "@type": "Organization",
-      "name": "KY Connect",
+      "name": "KIPYA | bit2Big",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Zürich",

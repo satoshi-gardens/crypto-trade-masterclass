@@ -14,8 +14,8 @@ const Navigation = () => {
       <nav className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3">
-            <img src="/logo.svg" alt="KY Connect Logo" className="w-10 h-10 transition-transform hover:scale-105" />
-            <span className="font-bold text-xl">KY Connect</span>
+            <img src="/logo.svg" alt="bit2Big Logo" className="w-10 h-10 transition-transform hover:scale-105" />
+            <span className="font-bold text-xl">bit2Big</span>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">

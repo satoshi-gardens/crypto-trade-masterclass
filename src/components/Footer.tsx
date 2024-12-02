@@ -48,7 +48,7 @@ const Footer = () => {
               Empowering Profitable Trading
             </p>
             <p className="text-gray-600">
-              © {currentYear} KY Connect. All rights reserved.
+              &copy; {currentYear} KIPYA Connect. All rights reserved.
             </p>
           </div>
 
