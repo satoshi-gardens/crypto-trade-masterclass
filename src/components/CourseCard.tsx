@@ -39,6 +39,7 @@ const CourseCard = ({
         courseTitle: title,
         packageType,
         price,
+        paymentType: "monthly", // Default to monthly for course cards
       },
     });
   };
