@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { ContactFormValues } from "@/lib/validations/contact";
-import { COUNTRIES } from "@/lib/constants";
+import { countries } from "@/lib/constants";
 
 interface LocationFieldsProps {
   form: UseFormReturn<ContactFormValues>;
@@ -62,7 +62,7 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {COUNTRIES.map((country) => (
+                  {countries.map((country) => (
                     <SelectItem key={country.code} value={country.name}>
                       {country.name}
                     </SelectItem>
