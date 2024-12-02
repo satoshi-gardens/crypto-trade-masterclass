@@ -50,7 +50,52 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to store inquiry");
     }
 
-    // Send confirmation email to user
+    // Get site URL from database
+    const { data: siteSettings, error: urlError } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'website_url')
+      .single();
+
+    if (urlError) {
+      console.error('Failed to fetch site settings:', urlError);
+      throw new Error('Failed to fetch site settings');
+    }
+
+    const websiteUrl = siteSettings?.value || 'https://cryptocourse.bit2big.com';
+
+    // Get email templates
+    const { data: templates, error: templateError } = await supabase
+      .from('email_templates')
+      .select('*')
+      .in('type', ['contact_confirmation', 'contact_notification_admin']);
+
+    if (templateError) {
+      console.error('Failed to fetch email templates:', templateError);
+      throw new Error('Failed to fetch email templates');
+    }
+
+    const userTemplate = templates.find(t => t.type === 'contact_confirmation');
+    const adminTemplate = templates.find(t => t.type === 'contact_notification_admin');
+
+    if (!userTemplate || !adminTemplate) {
+      throw new Error('Email templates not found');
+    }
+
+    // Replace variables in templates
+    const userHtml = userTemplate.html_content.replace(/{{websiteUrl}}/g, websiteUrl);
+    
+    const adminHtml = adminTemplate.html_content
+      .replace(/{{firstName}}/g, contactData.firstName)
+      .replace(/{{lastName}}/g, contactData.lastName)
+      .replace(/{{email}}/g, contactData.email)
+      .replace(/{{phone}}/g, contactData.phone || 'Not provided')
+      .replace(/{{city}}/g, contactData.city || 'Not provided')
+      .replace(/{{country}}/g, contactData.country || 'Not provided')
+      .replace(/{{purpose}}/g, contactData.purpose)
+      .replace(/{{message}}/g, contactData.message);
+
+    // Send confirmation to user
     const userEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -58,19 +103,14 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
+        from: "Bit2Big <contact@bit2big.com>",
         to: [contactData.email],
-        subject: "We received your inquiry",
-        html: `
-          <h2>Thank you for contacting us!</h2>
-          <p>We have received your inquiry and will get back to you shortly.</p>
-          <p>Your message:</p>
-          <p>${contactData.message}</p>
-        `,
+        subject: userTemplate.subject,
+        html: userHtml,
       }),
     });
 
-    // Send detailed notification email to admin
+    // Send notification to admin
     const adminEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -78,29 +118,10 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
-        to: ["mail@bit2big.com"],
-        subject: `New Contact Form Submission - ${contactData.purpose}`,
-        html: `
-          <h2>New Contact Form Submission</h2>
-          <h3>Contact Information</h3>
-          <ul>
-            <li><strong>Name:</strong> ${contactData.firstName} ${contactData.lastName}</li>
-            <li><strong>Email:</strong> ${contactData.email}</li>
-            <li><strong>Phone:</strong> ${contactData.phone || 'Not provided'}</li>
-            <li><strong>Location:</strong> ${contactData.city || 'Not provided'}, ${contactData.country || 'Not provided'}</li>
-          </ul>
-          
-          <h3>Inquiry Details</h3>
-          <ul>
-            <li><strong>Purpose:</strong> ${contactData.purpose}</li>
-          </ul>
-          
-          <h3>Message</h3>
-          <p>${contactData.message}</p>
-          
-          <p><em>To reply, simply respond to this email.</em></p>
-        `,
+        from: "Bit2Big Contact Form <contact@bit2big.com>",
+        to: ["admin@bit2big.com"],
+        subject: adminTemplate.subject,
+        html: adminHtml,
         reply_to: contactData.email,
       }),
     });
