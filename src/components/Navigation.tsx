@@ -26,16 +26,13 @@ const Navigation = () => {
               Courses
             </Link>
             <Link to="/tools" className="text-gray-600 hover:text-primary">
-              Tools
+              Tools and Resources
             </Link>
             <Link to="/loop-method" className="text-gray-600 hover:text-primary">
               LOOP Method
             </Link>
             <Link to="/about" className="text-gray-600 hover:text-primary">
               About
-            </Link>
-            <Link to="/contact" className="text-gray-600 hover:text-primary">
-              Contact
             </Link>
             <Link to="/referral" className="text-gray-600 hover:text-primary">
               Referral Program
@@ -72,7 +69,7 @@ const Navigation = () => {
                   className="text-gray-600 hover:text-primary"
                   onClick={handleSheetClose}
                 >
-                  Tools
+                  Tools and Resources
                 </Link>
                 <Link
                   to="/loop-method"
@@ -87,13 +84,6 @@ const Navigation = () => {
                   onClick={handleSheetClose}
                 >
                   About
-                </Link>
-                <Link
-                  to="/contact"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  Contact
                 </Link>
                 <Link
                   to="/referral"
