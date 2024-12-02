@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
@@ -25,6 +25,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/courses" element={<Courses />} />
         <Route path="/tools" element={<Tools />} />
+        <Route path="/resources" element={<Navigate to="/tools" replace />} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/thank-you-feedback" element={<ThankYouFeedback />} />
