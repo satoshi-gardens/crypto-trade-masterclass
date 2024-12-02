@@ -31,6 +31,22 @@ const handler = async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl!, supabaseKey!);
     const contactData: ContactRequest = await req.json();
 
+    // Fetch site settings
+    const { data: settings, error: settingsError } = await supabase
+      .from('site_settings')
+      .select('key, value')
+      .in('key', ['website_url', 'company_name', 'support_email']);
+
+    if (settingsError) {
+      console.error("Error fetching site settings:", settingsError);
+      throw new Error("Failed to fetch site settings");
+    }
+
+    const siteSettings = settings.reduce((acc, { key, value }) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+
     // Store in database
     const { error: dbError } = await supabase
       .from("general_inquiries")
@@ -50,6 +66,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to store inquiry");
     }
 
+    const websiteUrl = siteSettings.website_url || 'https://cryptocourse.bit2big.com';
+    const companyName = siteSettings.company_name || 'Bit2Big';
+    const supportEmail = siteSettings.support_email || 'support@bit2big.com';
+
     // Send confirmation email to user with improved template
     const userEmailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -58,9 +78,9 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
+        from: `${companyName} <${supportEmail}>`,
         to: [contactData.email],
-        subject: "Thank you for contacting Bit2Big",
+        subject: `Thank you for contacting ${companyName}`,
         html: `
           <!DOCTYPE html>
           <html>
@@ -71,7 +91,7 @@ const handler = async (req: Request): Promise<Response> => {
             </head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
               <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; margin-bottom: 20px;">
-                <img src="https://bit2big.com/logo.png" alt="Bit2Big Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <img src="${websiteUrl}/logo.png" alt="${companyName} Logo" style="max-width: 150px; margin-bottom: 20px;">
                 <h1 style="color: #2c3e50; margin-bottom: 20px;">Thank You for Reaching Out!</h1>
                 <p style="margin-bottom: 15px;">Dear ${contactData.firstName},</p>
                 <p style="margin-bottom: 15px;">We have received your inquiry and want to thank you for taking the time to contact us. Our team will review your message and get back to you as soon as possible.</p>
@@ -84,16 +104,16 @@ const handler = async (req: Request): Promise<Response> => {
 
                 <p style="margin-bottom: 15px;">While you wait for our response, you might want to:</p>
                 <ul style="margin-bottom: 20px; padding-left: 20px;">
-                  <li>Visit our <a href="https://bit2big.com/courses" style="color: #3498db; text-decoration: none;">courses page</a></li>
-                  <li>Check out our <a href="https://bit2big.com/resources" style="color: #3498db; text-decoration: none;">learning resources</a></li>
+                  <li>Visit our <a href="${websiteUrl}/courses" style="color: #3498db; text-decoration: none;">courses page</a></li>
+                  <li>Check out our <a href="${websiteUrl}/resources" style="color: #3498db; text-decoration: none;">learning resources</a></li>
                   <li>Follow us on social media for updates</li>
                 </ul>
 
-                <p style="margin-bottom: 15px;">If you have any urgent concerns, please don't hesitate to reach out to us directly at support@bit2big.com.</p>
+                <p style="margin-bottom: 15px;">If you have any urgent concerns, please don't hesitate to reach out to us directly at ${supportEmail}.</p>
                 
                 <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0;">
                 
-                <p style="font-size: 12px; color: #666; margin-top: 20px;">This is an automated message. Please do not reply directly to this email.</p>
+                <p style="font-size: 12px; color: #666; margin-top: 20px;">This is an automated message from ${companyName}. Please do not reply directly to this email.</p>
               </div>
             </body>
           </html>
@@ -109,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com",
+        from: `${companyName} Contact Form <${supportEmail}>`,
         to: ["mail@bit2big.com"],
         subject: `New Contact Form Submission - ${contactData.purpose}`,
         html: `
