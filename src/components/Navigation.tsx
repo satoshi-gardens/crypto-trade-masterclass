@@ -33,9 +33,6 @@ const Navigation = () => {
             <Link to="/about" className="text-gray-600 hover:text-primary">
               About
             </Link>
-            <Link to="/referral" className="text-gray-600 hover:text-primary">
-              Referral Program
-            </Link>
           </div>
 
           <Sheet>
@@ -83,13 +80,6 @@ const Navigation = () => {
                   onClick={handleSheetClose}
                 >
                   About
-                </Link>
-                <Link
-                  to="/referral"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  Referral Program
                 </Link>
               </div>
             </SheetContent>
