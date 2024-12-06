@@ -1,4 +1,4 @@
-import { Coins, Gift, Users, Trophy } from "lucide-react";
+import { Coins, Gift, Users2, GiftIcon } from "lucide-react";
 
 interface BenefitsListProps {
   commissionPercentage: number;
@@ -7,38 +7,28 @@ interface BenefitsListProps {
 const BenefitsList = ({ commissionPercentage }: BenefitsListProps) => {
   return (
     <div className="space-y-6">
-      <div className="flex items-start space-x-3">
-        <Coins className="h-6 w-6 text-primary" />
+      <div className="flex items-start gap-4">
+        <div className="bg-purple-100 p-2 rounded-lg">
+          <Gift className="w-6 h-6 text-purple-600" />
+        </div>
         <div>
-          <h4 className="font-semibold">Earn Commission</h4>
-          <p className="text-sm text-gray-600">
-            Receive up to {commissionPercentage}% commission for each successful referral
+          <h3 className="font-semibold">10% Welcome Discount</h3>
+          <p className="text-gray-600 text-sm">
+            Special discount on their first course enrollment
           </p>
         </div>
       </div>
-      <div className="flex items-start space-x-3">
-        <Gift className="h-6 w-6 text-primary" />
-        <div>
-          <h4 className="font-semibold">Reward Tokens</h4>
-          <p className="text-sm text-gray-600">Get 100 tokens for every 5 successful referrals</p>
+
+      <div className="flex items-start gap-4">
+        <div className="bg-purple-100 p-2 rounded-lg">
+          <GiftIcon className="w-6 h-6 text-purple-600" />
         </div>
-      </div>
-      <div className="flex items-start space-x-3">
-        <Users className="h-6 w-6 text-primary" />
         <div>
-          <h4 className="font-semibold">Help Others Succeed</h4>
-          <p className="text-sm text-gray-600">
-            Your referrals get a {commissionPercentage}% discount on their first course
+          <h3 className="font-semibold">Bonus Module Access</h3>
+          <p className="text-gray-600 text-sm">
+            Choose one additional specialized module: AI in Trading, Advanced DeFi Protocols, or Risk Management
           </p>
-        </div>
-      </div>
-      <div className="flex items-start space-x-3">
-        <Trophy className="h-6 w-6 text-primary" />
-        <div>
-          <h4 className="font-semibold">Exclusive Access</h4>
-          <p className="text-sm text-gray-600">
-            Unlock additional courses and special benefits as you refer more people
-          </p>
+          <p className="text-sm text-purple-600 mt-1">Value: CHF 500</p>
         </div>
       </div>
     </div>
