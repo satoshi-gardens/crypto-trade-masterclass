@@ -129,7 +129,6 @@ const ReferralIndex = () => {
 
           {!email ? (
             <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-semibold mb-4">Share Your Referral Link</h3>
               <ReferralRegistration onEmailSet={setEmail} />
             </div>
           ) : (
