@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Percent, Trophy, Users2, Gift } from "lucide-react";
+import { Percent, Signal, Users2, Gift } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import PageLayout from "@/components/PageLayout";
 import ReferralRegistration from "@/components/referral/ReferralRegistration";
@@ -68,12 +68,12 @@ const ReferralIndex = () => {
 
                   <div className="flex items-start gap-4">
                     <div className="bg-purple-100 p-2 rounded-lg">
-                      <Trophy className="w-6 h-6 text-purple-600" />
+                      <Signal className="w-6 h-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">VIP Course Access</h3>
+                      <h3 className="font-semibold">Premium Trading Signals</h3>
                       <p className="text-gray-600 text-sm">
-                        Get exclusive access to advanced modules after 3 successful referrals
+                        Get access to our premium trading signals channel for 3 months after your referral joins
                       </p>
                     </div>
                   </div>
