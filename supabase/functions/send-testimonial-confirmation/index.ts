@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,9 +23,22 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { to, name, verificationToken }: EmailRequest = await req.json();
 
-    const verificationUrl = `${req.headers.get("origin")}/verify-testimonial?token=${verificationToken}`;
+    // Fetch website URL from site_settings
+    const { data: siteSettings, error: settingsError } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "website_url")
+      .single();
+
+    if (settingsError) {
+      throw new Error(`Failed to fetch site settings: ${settingsError.message}`);
+    }
+
+    const websiteUrl = siteSettings.value;
+    const verificationUrl = `${websiteUrl}/verify-testimonial?token=${verificationToken}`;
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -31,7 +47,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "ct4p@bit2big.com", // Update this with your verified domain
+        from: "ct4p@bit2big.com",
         to: [to],
         subject: "Verify your testimonial",
         html: `
