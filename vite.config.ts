@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-*'],
+          // Remove the wildcard pattern and specify individual packages if needed
         }
       }
     },
