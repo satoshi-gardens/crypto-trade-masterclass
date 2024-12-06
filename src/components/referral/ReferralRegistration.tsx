@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSearchParams } from "react-router-dom";
 import ReferralForm from "./ReferralForm";
-import BenefitsList from "./BenefitsList";
 
 interface ReferralRegistrationProps {
   onEmailSet: (email: string) => void;
@@ -129,30 +128,19 @@ const ReferralRegistration = ({ onEmailSet }: ReferralRegistrationProps) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Join Our Referral Program</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ReferralForm 
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              referralCode={referralCode}
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Program Benefits</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <BenefitsList commissionPercentage={commissionPercentage} />
-          </CardContent>
-        </Card>
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>Join Our Referral Program</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ReferralForm 
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            referralCode={referralCode}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 };
