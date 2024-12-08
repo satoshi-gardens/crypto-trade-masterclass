@@ -2,26 +2,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import PersonalInfoFields from "./PersonalInfoFields";
-import { useQuery } from "@tanstack/react-query";
+import { Form } from "@/components/ui/form";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import PersonalInfoFields from "./PersonalInfoFields";
+import FeedbackFields from "./FeedbackFields";
 
 const feedbackSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -43,129 +29,56 @@ interface FeedbackFormProps {
 }
 
 const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
+  const navigate = useNavigate();
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
   });
 
-  const { data: countries, isLoading: isLoadingCountries } = useQuery({
-    queryKey: ['countries'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('countries')
-        .select('*')
-        .eq('is_active', true)
-        .order('priority', { ascending: true })
-        .order('name', { ascending: true });
-      
-      if (error) throw error;
-      return data;
-    },
-  });
+  const handleSubmit = async (data: FeedbackFormValues) => {
+    try {
+      // Store feedback in the database
+      const { error: dbError } = await supabase
+        .from("feedback")
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          country: data.country,
+          area: data.area,
+          message: data.message,
+        });
 
-  const groupedCountries = countries?.reduce((acc, country) => {
-    const region = country.region || 'Other';
-    if (!acc[region]) {
-      acc[region] = [];
+      if (dbError) throw dbError;
+
+      // Send confirmation email with marketing content
+      const { error: emailError } = await supabase.functions.invoke(
+        "send-feedback-email",
+        {
+          body: {
+            name: data.firstName,
+            email: data.email,
+            area: data.area,
+            message: data.message,
+          },
+        }
+      );
+
+      if (emailError) throw emailError;
+
+      toast.success("Thank you for your feedback!");
+      navigate("/thank-you-feedback");
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      toast.error("Failed to submit feedback. Please try again.");
     }
-    acc[region].push(country);
-    return acc;
-  }, {} as Record<string, typeof countries>);
-
-  const sortedRegions = Object.keys(groupedCountries || {}).sort((a, b) => {
-    if (a === 'Switzerland') return -1;
-    if (b === 'Switzerland') return 1;
-    return a.localeCompare(b);
-  });
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <PersonalInfoFields form={form} />
-
-        <FormField
-          control={form.control}
-          name="country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Country</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your country" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {isLoadingCountries ? (
-                    <SelectItem value="loading" disabled>
-                      Loading countries...
-                    </SelectItem>
-                  ) : (
-                    sortedRegions.map((region) => (
-                      <div key={region}>
-                        <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
-                          {region}
-                        </div>
-                        {groupedCountries?.[region]?.map((country) => (
-                          <SelectItem key={country.code} value={country.code}>
-                            {country.name}
-                          </SelectItem>
-                        ))}
-                      </div>
-                    ))
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="area"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Feedback Area</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select feedback area" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="general">General Feedback</SelectItem>
-                  <SelectItem value="courses">Course Content</SelectItem>
-                  <SelectItem value="platform">Platform Experience</SelectItem>
-                  <SelectItem value="technical">Technical Issues</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Your Feedback</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Share your thoughts..."
-                  className="min-h-[150px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Your feedback helps us improve our services
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <FeedbackFields form={form} />
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Feedback"}
         </Button>

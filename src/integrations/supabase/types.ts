@@ -220,6 +220,45 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          area: string
+          country: string
+          created_at: string | null
+          email: string
+          first_name: string
+          id: number
+          last_name: string
+          message: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area: string
+          country: string
+          created_at?: string | null
+          email: string
+          first_name: string
+          id?: number
+          last_name: string
+          message: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area?: string
+          country?: string
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          id?: number
+          last_name?: string
+          message?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       fraud_flags: {
         Row: {
           created_at: string | null
