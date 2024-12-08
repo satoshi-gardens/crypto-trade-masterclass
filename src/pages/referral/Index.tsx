@@ -73,7 +73,7 @@ const ReferralIndex = () => {
                     <div>
                       <h3 className="font-semibold">Premium Trading Signals</h3>
                       <p className="text-gray-600 text-sm">
-                        Get access to our premium trading signals channel for 3 months after your referral joins
+                        Get 1-month access to our premium trading signals channel when your referral joins
                       </p>
                     </div>
                   </div>
@@ -83,9 +83,9 @@ const ReferralIndex = () => {
                       <Users2 className="w-6 h-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">Community Recognition</h3>
+                      <h3 className="font-semibold">Elite Referrer Status</h3>
                       <p className="text-gray-600 text-sm">
-                        Get featured as a valuable community member
+                        Become a featured community member after multiple successful referrals and join our top referrers leaderboard
                       </p>
                     </div>
                   </div>
@@ -136,7 +136,7 @@ const ReferralIndex = () => {
           )}
 
           <p className="text-sm text-gray-500 text-center">
-            Terms and conditions apply. Commissions are paid out monthly. VIP access is granted after verification of successful referrals.
+            Terms and conditions apply. Commissions are paid out monthly. Elite status is granted after verification of multiple successful referrals.
           </p>
         </div>
       </div>
