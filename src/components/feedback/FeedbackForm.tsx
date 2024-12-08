@@ -69,7 +69,7 @@ const FeedbackForm = () => {
         "send-feedback-email",
         {
           body: {
-            name: data.firstName,
+            name: `${data.firstName} ${data.lastName}`,
             email: data.email,
             area: data.area,
             message: data.message,
@@ -100,7 +100,7 @@ const FeedbackForm = () => {
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting feedback:", error);
       toast.error("Failed to submit feedback. Please try again.");
     } finally {
