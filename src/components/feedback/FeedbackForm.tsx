@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import PersonalInfoFields from "./PersonalInfoFields";
 import FeedbackFields from "./FeedbackFields";
+import { useState } from "react";
 
 const feedbackSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -23,19 +24,28 @@ const feedbackSchema = z.object({
 
 export type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
-interface FeedbackFormProps {
-  onSubmit: (data: FeedbackFormValues) => Promise<void>;
-  isSubmitting: boolean;
-}
-
-const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
+const FeedbackForm = () => {
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      country: "",
+      area: "general",
+      message: "",
+    },
   });
 
   const handleSubmit = async (data: FeedbackFormValues) => {
+    setIsSubmitting(true);
     try {
+      console.log("Submitting feedback:", data);
+
       // Store feedback in the database
       const { error: dbError } = await supabase
         .from("feedback")
@@ -49,9 +59,12 @@ const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
           message: data.message,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw dbError;
+      }
 
-      // Send confirmation email with marketing content
+      // Send confirmation email
       const { error: emailError } = await supabase.functions.invoke(
         "send-feedback-email",
         {
@@ -64,13 +77,34 @@ const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
         }
       );
 
-      if (emailError) throw emailError;
+      if (emailError) {
+        console.error("Email error:", emailError);
+        throw emailError;
+      }
+
+      // Create a notification
+      const { error: notificationError } = await supabase
+        .from("notifications")
+        .insert({
+          title: "Feedback Submitted",
+          message: "Thank you for your feedback! We'll review it shortly.",
+          icon: "message-square",
+          start_date: new Date().toISOString(),
+          expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+        });
+
+      if (notificationError) {
+        console.error("Notification error:", notificationError);
+        // Don't throw here as it's not critical
+      }
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
     } catch (error) {
       console.error("Error submitting feedback:", error);
       toast.error("Failed to submit feedback. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
