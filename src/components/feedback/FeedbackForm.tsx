@@ -50,15 +50,17 @@ const FeedbackForm = () => {
       console.log("Attempting to store feedback in database...");
       const { error: dbError, data: insertedData } = await supabase
         .from("feedback")
-        .insert({
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          country: data.country,
-          area: data.area,
-          message: data.message,
-        })
+        .insert([
+          {
+            first_name: data.firstName,
+            last_name: data.lastName,
+            email: data.email,
+            phone: data.phone,
+            country: data.country,
+            area: data.area,
+            message: data.message,
+          },
+        ])
         .select()
         .single();
 
@@ -71,7 +73,7 @@ const FeedbackForm = () => {
 
       // Send confirmation email
       console.log("Attempting to send confirmation email...");
-      const { error: emailError, data: emailData } = await supabase.functions.invoke(
+      const { error: emailError } = await supabase.functions.invoke(
         "send-feedback-email",
         {
           body: {
@@ -88,7 +90,7 @@ const FeedbackForm = () => {
         throw new Error(`Failed to send confirmation email: ${emailError.message}`);
       }
 
-      console.log("Confirmation email sent successfully:", emailData);
+      console.log("Confirmation email sent successfully");
 
       // Create a notification
       console.log("Creating notification...");
