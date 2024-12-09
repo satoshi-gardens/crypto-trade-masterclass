@@ -48,28 +48,24 @@ const FeedbackForm = () => {
     try {
       // Store feedback in the database
       console.log("Attempting to store feedback in database...");
-      const { error: dbError, data: insertedData } = await supabase
+      const { error: dbError } = await supabase
         .from("feedback")
-        .insert([
-          {
-            first_name: data.firstName,
-            last_name: data.lastName,
-            email: data.email,
-            phone: data.phone,
-            country: data.country,
-            area: data.area,
-            message: data.message,
-          },
-        ])
-        .select()
-        .single();
+        .insert({
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          phone: data.phone || null,
+          country: data.country,
+          area: data.area,
+          message: data.message,
+        });
 
       if (dbError) {
         console.error("Database error:", dbError);
         throw new Error(`Failed to store feedback: ${dbError.message}`);
       }
 
-      console.log("Feedback stored successfully:", insertedData);
+      console.log("Feedback stored successfully");
 
       // Send confirmation email
       console.log("Attempting to send confirmation email...");
@@ -87,10 +83,11 @@ const FeedbackForm = () => {
 
       if (emailError) {
         console.error("Email error:", emailError);
-        throw new Error(`Failed to send confirmation email: ${emailError.message}`);
+        // Don't throw here, just log the error and continue
+        console.warn("Failed to send confirmation email, but feedback was stored");
+      } else {
+        console.log("Confirmation email sent successfully");
       }
-
-      console.log("Confirmation email sent successfully");
 
       // Create a notification
       console.log("Creating notification...");
