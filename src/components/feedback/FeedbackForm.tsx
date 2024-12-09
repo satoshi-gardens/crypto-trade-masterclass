@@ -43,13 +43,9 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (data: FeedbackFormValues) => {
     if (isSubmitting) return;
-    
     setIsSubmitting(true);
-    console.log("Starting feedback submission with data:", data);
     
     try {
-      // Store feedback in the database
-      console.log("Attempting to store feedback in database...");
       const { error: dbError } = await supabase
         .from("feedback")
         .insert({
@@ -62,61 +58,33 @@ const FeedbackForm = () => {
           message: data.message,
         });
 
-      if (dbError) {
-        console.error("Database error:", dbError);
-        throw new Error(`Failed to store feedback: ${dbError.message}`);
-      }
-
-      console.log("Feedback stored successfully");
+      if (dbError) throw dbError;
 
       try {
-        // Send confirmation email
-        console.log("Attempting to send confirmation email...");
-        const { error: emailError } = await supabase.functions.invoke(
-          "send-feedback-email",
-          {
-            body: {
-              name: `${data.firstName} ${data.lastName}`,
-              email: data.email,
-              area: data.area,
-              message: data.message,
-            },
-          }
-        );
-
-        if (emailError) {
-          console.error("Email error:", emailError);
-          console.warn("Failed to send confirmation email, but feedback was stored");
-        } else {
-          console.log("Confirmation email sent successfully");
-        }
+        await supabase.functions.invoke("send-feedback-email", {
+          body: {
+            name: `${data.firstName} ${data.lastName}`,
+            email: data.email,
+            area: data.area,
+            message: data.message,
+          },
+        });
       } catch (emailError) {
-        console.error("Error sending email:", emailError);
-        // Don't throw here, just log the error
+        console.error("Email sending failed:", emailError);
       }
 
-      // Create a notification
       try {
-        console.log("Creating notification...");
-        const { error: notificationError } = await supabase
+        await supabase
           .from("notifications")
           .insert({
             title: "Feedback Submitted",
             message: "Thank you for your feedback! We'll review it shortly.",
             icon: "message-square",
             start_date: new Date().toISOString(),
-            expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
+            expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
           });
-
-        if (notificationError) {
-          console.error("Notification error:", notificationError);
-          // Don't throw here as it's not critical
-        } else {
-          console.log("Notification created successfully");
-        }
       } catch (notificationError) {
-        console.error("Error creating notification:", notificationError);
-        // Don't throw here as it's not critical
+        console.error("Notification creation failed:", notificationError);
       }
 
       toast.success("Thank you for your feedback!");
