@@ -42,12 +42,13 @@ const FeedbackForm = () => {
   });
 
   const handleSubmit = async (data: FeedbackFormValues) => {
+    console.log("Starting feedback submission with data:", data);
     setIsSubmitting(true);
+    
     try {
-      console.log("Submitting feedback:", data);
-
       // Store feedback in the database
-      const { error: dbError } = await supabase
+      console.log("Attempting to store feedback in database...");
+      const { error: dbError, data: insertedData } = await supabase
         .from("feedback")
         .insert({
           first_name: data.firstName,
@@ -57,15 +58,20 @@ const FeedbackForm = () => {
           country: data.country,
           area: data.area,
           message: data.message,
-        });
+        })
+        .select()
+        .single();
 
       if (dbError) {
         console.error("Database error:", dbError);
-        throw dbError;
+        throw new Error(`Failed to store feedback: ${dbError.message}`);
       }
 
+      console.log("Feedback stored successfully:", insertedData);
+
       // Send confirmation email
-      const { error: emailError } = await supabase.functions.invoke(
+      console.log("Attempting to send confirmation email...");
+      const { error: emailError, data: emailData } = await supabase.functions.invoke(
         "send-feedback-email",
         {
           body: {
@@ -79,10 +85,13 @@ const FeedbackForm = () => {
 
       if (emailError) {
         console.error("Email error:", emailError);
-        throw emailError;
+        throw new Error(`Failed to send confirmation email: ${emailError.message}`);
       }
 
+      console.log("Confirmation email sent successfully:", emailData);
+
       // Create a notification
+      console.log("Creating notification...");
       const { error: notificationError } = await supabase
         .from("notifications")
         .insert({
@@ -96,13 +105,15 @@ const FeedbackForm = () => {
       if (notificationError) {
         console.error("Notification error:", notificationError);
         // Don't throw here as it's not critical
+      } else {
+        console.log("Notification created successfully");
       }
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
     } catch (error: any) {
       console.error("Error submitting feedback:", error);
-      toast.error("Failed to submit feedback. Please try again.");
+      toast.error(error.message || "Failed to submit feedback. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
