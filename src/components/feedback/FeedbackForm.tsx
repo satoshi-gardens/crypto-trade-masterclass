@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import PersonalInfoFields from "./PersonalInfoFields";
 import FeedbackFields from "./FeedbackFields";
-import { useState } from "react";
 
 const feedbackSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -24,35 +23,27 @@ const feedbackSchema = z.object({
 
 export type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
-const FeedbackForm = () => {
+interface FeedbackFormProps {
+  onSubmit: (data: FeedbackFormValues) => Promise<void>;
+  isSubmitting: boolean;
+}
+
+const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      country: "",
-      area: "general",
-      message: "",
-    },
   });
 
   const handleSubmit = async (data: FeedbackFormValues) => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    
     try {
+      // Store feedback in the database
       const { error: dbError } = await supabase
         .from("feedback")
         .insert({
           first_name: data.firstName,
           last_name: data.lastName,
           email: data.email,
-          phone: data.phone || null,
+          phone: data.phone,
           country: data.country,
           area: data.area,
           message: data.message,
@@ -60,40 +51,26 @@ const FeedbackForm = () => {
 
       if (dbError) throw dbError;
 
-      try {
-        await supabase.functions.invoke("send-feedback-email", {
+      // Send confirmation email with marketing content
+      const { error: emailError } = await supabase.functions.invoke(
+        "send-feedback-email",
+        {
           body: {
-            name: `${data.firstName} ${data.lastName}`,
+            name: data.firstName,
             email: data.email,
             area: data.area,
             message: data.message,
           },
-        });
-      } catch (emailError) {
-        console.error("Email sending failed:", emailError);
-      }
+        }
+      );
 
-      try {
-        await supabase
-          .from("notifications")
-          .insert({
-            title: "Feedback Submitted",
-            message: "Thank you for your feedback! We'll review it shortly.",
-            icon: "message-square",
-            start_date: new Date().toISOString(),
-            expire_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-          });
-      } catch (notificationError) {
-        console.error("Notification creation failed:", notificationError);
-      }
+      if (emailError) throw emailError;
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting feedback:", error);
-      toast.error(error.message || "Failed to submit feedback. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+      toast.error("Failed to submit feedback. Please try again.");
     }
   };
 
