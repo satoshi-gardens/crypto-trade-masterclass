@@ -3,6 +3,7 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCountries } from "@/hooks/useCountries";
+import { useEffect } from "react";
 
 interface CountrySelectProps {
   form: UseFormReturn<any>;
@@ -11,6 +12,13 @@ interface CountrySelectProps {
 
 export const CountrySelect = ({ form, label = true }: CountrySelectProps) => {
   const { groupedCountries, sortedRegions, isLoading } = useCountries();
+
+  // Set Switzerland as default when countries are loaded
+  useEffect(() => {
+    if (!isLoading && !form.getValues("country") && groupedCountries?.["Switzerland"]?.[0]) {
+      form.setValue("country", groupedCountries["Switzerland"][0].code);
+    }
+  }, [isLoading, groupedCountries, form]);
 
   return (
     <FormField
