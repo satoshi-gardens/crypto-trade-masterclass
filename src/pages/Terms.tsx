@@ -7,6 +7,13 @@ const Terms = () => {
     { label: "Terms of Service", href: "/terms" }
   ];
 
+  const handleStartJourney = () => {
+    const packagesSection = document.getElementById('packages');
+    if (packagesSection) {
+      packagesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <PageLayout>
       <Breadcrumb items={breadcrumbItems} />
@@ -14,6 +21,9 @@ const Terms = () => {
         title="Terms of Service"
         subtitle="Our commitment to you and what we expect in return"
         backgroundClass="bg-[#F8F8F8]"
+        buttonText="Start Your Journey"
+        onButtonClick={handleStartJourney}
+        showButton={true}
       />
       <div className="container mx-auto px-6 py-12">
         <div className="prose max-w-none">
@@ -42,10 +52,13 @@ const Terms = () => {
             <ul className="list-disc pl-6 mb-4">
               <li>Subject to availability and offered on a first-come, first-served basis</li>
               <li>Valid only for the specified time period</li>
-              <li>Non-transferable and cannot be combined with other offers unless explicitly stated</li>
+              <li>Non-transferable and cannot be combined with other offers or discounts under any circumstances</li>
               <li>Subject to change or withdrawal without prior notice</li>
               <li>Applicable only to new registrations during the promotional period</li>
             </ul>
+            <p className="mb-4 text-gray-700">
+              <strong>Important Note:</strong> Discounts, including referral discounts and promotional offers, cannot be combined or stacked. Only one discount type can be applied per purchase.
+            </p>
             <p className="mb-4">
               In accordance with Swiss and German consumer protection laws, all prices are displayed including VAT where applicable. The right of withdrawal (Widerrufsrecht) applies as per Art. 40a et seq. OR (Swiss Code of Obligations) and § 312g BGB (German Civil Code).
             </p>

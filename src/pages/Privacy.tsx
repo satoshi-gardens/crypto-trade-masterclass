@@ -7,6 +7,13 @@ const Privacy = () => {
     { label: "Privacy Policy", href: "/privacy" }
   ];
 
+  const handleStartJourney = () => {
+    const packagesSection = document.getElementById('packages');
+    if (packagesSection) {
+      packagesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <PageLayout>
       <Breadcrumb items={breadcrumbItems} />
@@ -14,6 +21,9 @@ const Privacy = () => {
         title="Privacy Policy"
         subtitle="How we protect and handle your data"
         backgroundClass="bg-accent"
+        buttonText="Start Your Journey"
+        onButtonClick={handleStartJourney}
+        showButton={true}
       />
       <div className="container mx-auto px-6 py-12">
         <div className="prose max-w-none">
