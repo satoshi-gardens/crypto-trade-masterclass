@@ -12,14 +12,15 @@ import ValueProposition from "@/components/ValueProposition";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
-  const navigate = useNavigate();
 
   const handleStartJourney = () => {
-    navigate("/courses#packages");
+    const packagesSection = document.getElementById('packages');
+    if (packagesSection) {
+      packagesSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const structuredData = {

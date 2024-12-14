@@ -28,11 +28,26 @@ const Courses = () => {
         duration: 6000,
       });
     }
+
+    // Check if we need to scroll to packages section (from URL hash)
+    if (window.location.hash === '#packages') {
+      const packagesSection = document.getElementById('packages');
+      if (packagesSection) {
+        packagesSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, [referralCode, toast]);
+
+  const handleStartJourney = () => {
+    const packagesSection = document.getElementById('packages');
+    if (packagesSection) {
+      packagesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <PageLayout>
-      <CoursesHero />
+      <CoursesHero onStartJourney={handleStartJourney} />
       <ChallengesSection />
       <SolutionsSection />
       <CourseModules />
