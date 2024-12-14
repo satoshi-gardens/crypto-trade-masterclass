@@ -21,6 +21,8 @@ export const submitApplication = async ({
   referralCode,
 }: SubmissionData) => {
   try {
+    console.log("Starting application submission process...");
+    
     // First, get admin email from site settings
     const { data: siteSettings, error: settingsError } = await supabase
       .from("site_settings")
@@ -33,6 +35,7 @@ export const submitApplication = async ({
       throw new Error("Failed to process application");
     }
 
+    console.log("Admin email fetched successfully:", siteSettings?.value);
     const adminEmail = siteSettings?.value;
 
     // Insert the application data
@@ -51,6 +54,8 @@ export const submitApplication = async ({
       referral_code: referralCode || null,
     };
 
+    console.log("Inserting application data:", applicationData);
+
     const { data: application, error: dbError } = await supabase
       .from("course_applications")
       .insert([applicationData])
@@ -59,7 +64,10 @@ export const submitApplication = async ({
 
     if (dbError) throw dbError;
 
+    console.log("Application data inserted successfully:", application);
+
     // Send confirmation email to user
+    console.log("Fetching user email template...");
     const userTemplate = await getEmailTemplate("application_confirmation", {
       firstName: formData.firstName,
       courseTitle,
@@ -73,6 +81,7 @@ export const submitApplication = async ({
       throw new Error("Failed to send confirmation email");
     }
 
+    console.log("Sending confirmation email to user...");
     const userEmailResult = await sendEmail({
       to: [formData.email],
       subject: userTemplate.subject,
@@ -85,7 +94,10 @@ export const submitApplication = async ({
       throw new Error("Failed to send confirmation email");
     }
 
+    console.log("User confirmation email sent successfully");
+
     // Send notification email to admin
+    console.log("Fetching admin notification template...");
     const adminTemplate = await getEmailTemplate("admin_application_notification", {
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -105,6 +117,7 @@ export const submitApplication = async ({
       // Don't throw here, as user's application was already processed
       toast.error("Admin notification failed, but your application was received");
     } else {
+      console.log("Sending notification email to admin...");
       const adminEmailResult = await sendEmail({
         to: [adminEmail],
         subject: adminTemplate.subject,
@@ -117,6 +130,8 @@ export const submitApplication = async ({
         console.error("Error sending admin email:", adminEmailResult.error);
         // Don't throw here, as user's application was already processed
         toast.error("Admin notification failed, but your application was received");
+      } else {
+        console.log("Admin notification email sent successfully");
       }
     }
 
