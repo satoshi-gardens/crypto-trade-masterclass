@@ -21,7 +21,10 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
         .order('priority', { ascending: true })
         .order('name', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching countries:', error);
+        throw error;
+      }
       return data;
     },
   });
@@ -73,7 +76,7 @@ const LocationFields = ({ form }: LocationFieldsProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="max-h-[300px]">
-                  {sortedRegions.map((region) => (
+                  {sortedRegions?.map((region) => (
                     <div key={region}>
                       <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground bg-muted">
                         {region}
