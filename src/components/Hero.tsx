@@ -9,6 +9,7 @@ interface HeroProps {
   buttonText?: string;
   buttonLink?: string;
   showButton?: boolean;
+  onButtonClick?: () => void;
 }
 
 const Hero = ({ 
@@ -17,7 +18,8 @@ const Hero = ({
   backgroundClass = "bg-gradient-to-b from-[#F8F8F8] to-white",
   buttonText = "Start Your Journey",
   buttonLink = "#packages",
-  showButton = true 
+  showButton = true,
+  onButtonClick
 }: HeroProps) => {
   return (
     <div className={`${backgroundClass} py-24 relative overflow-hidden`}>
@@ -40,13 +42,13 @@ const Hero = ({
           </p>
           {showButton && (
             <Button
-              asChild
               size="lg"
               className="bg-primary hover:bg-primary-hover text-white px-8 py-6 rounded-lg
                         font-bold shadow-lg hover:shadow-xl transition-all duration-300
                         text-lg"
+              onClick={onButtonClick}
             >
-              <a href={buttonLink}>{buttonText}</a>
+              {buttonText}
             </Button>
           )}
         </div>

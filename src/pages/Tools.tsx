@@ -6,9 +6,15 @@ import ToolsDisclaimer from "@/components/tools/ToolsDisclaimer";
 import Hero from "@/components/Hero";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RESOURCES_DATA } from "@/data/resources";
+import { useNavigate } from "react-router-dom";
 
 const Tools = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleStartJourney = () => {
+    navigate("/courses#packages");
+  };
 
   const filteredResources = RESOURCES_DATA.map((category) => ({
     ...category,
@@ -25,6 +31,9 @@ const Tools = () => {
         title="Tools and Resources for Profitable Trading"
         subtitle="Explore our curated collection of guides, videos, and tools designed to help you trade smarter and achieve your financial goals."
         backgroundClass="bg-[#F8F8F8]"
+        buttonText="Start Your Journey"
+        onButtonClick={handleStartJourney}
+        showButton={true}
       />
       
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
