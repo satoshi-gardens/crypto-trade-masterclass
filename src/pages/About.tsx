@@ -8,6 +8,10 @@ import Hero from "@/components/Hero";
 const About = () => {
   const navigate = useNavigate();
 
+  const handleBookSession = () => {
+    navigate("/courses#packages");
+  };
+
   const achievements = [
     "Creator of the LOOP (Live On yOur Profits) Method",
     "Featured speaker at multiple blockchain conferences in Europe",
@@ -75,13 +79,12 @@ const About = () => {
             </Card>
           </div>
           <div className="mt-8 text-center">
-            <Button size="lg" onClick={() => navigate("/contact")}>
+            <Button size="lg" onClick={handleBookSession}>
               Book Your First Session
             </Button>
           </div>
         </section>
 
-        {/* Personal Coach Section */}
         <section className="space-y-8">
           <h2 className="text-3xl font-bold">About Your Personal Coach</h2>
           <div className="grid md:grid-cols-3 gap-8">

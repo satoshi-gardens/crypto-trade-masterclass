@@ -16,9 +16,15 @@ import {
   Server
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoopMethod = () => {
+  const navigate = useNavigate();
+
+  const handleStartJourney = () => {
+    navigate("/courses#packages");
+  };
+
   const incomeStreams = {
     traditional: [
       {
@@ -72,6 +78,8 @@ const LoopMethod = () => {
         title="The LOOP Method: Live on Your Profits"
         subtitle="Discover the proven path to financial independence with Dr. Michael Kiberu's transformative approach to cryptocurrency trading"
         backgroundClass="bg-gradient-to-b from-primary/10 to-background"
+        onButtonClick={handleStartJourney}
+        buttonText="Start Your Journey"
       />
 
       <div className="container mx-auto px-4 py-16">
@@ -173,9 +181,9 @@ const LoopMethod = () => {
             size="lg"
             variant="secondary"
             className="bg-white text-primary hover:bg-white/90"
-            asChild
+            onClick={handleStartJourney}
           >
-            <Link to="/courses#packages">Start Learning Now</Link>
+            Start Learning Now
           </Button>
         </section>
       </div>
