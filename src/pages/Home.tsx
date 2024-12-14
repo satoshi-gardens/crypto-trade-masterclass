@@ -12,9 +12,15 @@ import ValueProposition from "@/components/ValueProposition";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
+  const navigate = useNavigate();
+
+  const handleStartJourney = () => {
+    navigate("/courses#packages");
+  };
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -56,7 +62,8 @@ const Home = () => {
         title="Master Crypto Trading: Transform Your Financial Future Today"
         subtitle="Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability"
         buttonText="Start Your Journey"
-        buttonLink="#packages"
+        onButtonClick={handleStartJourney}
+        showButton={true}
       />
 
       <ValueProposition />
@@ -158,13 +165,11 @@ const Home = () => {
             can transform your financial future.
           </p>
           <Button
-            asChild
             size="lg"
             className="bg-white text-primary hover:bg-white/90"
+            onClick={handleStartJourney}
           >
-            <a href="#packages">
-              Start Your Journey <ArrowRight className="ml-2" />
-            </a>
+            Start Your Journey <ArrowRight className="ml-2" />
           </Button>
         </div>
       </section>
