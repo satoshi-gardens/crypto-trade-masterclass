@@ -1,58 +1,105 @@
 import PageLayout from "@/components/PageLayout";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import Hero from "@/components/Hero";
+import Breadcrumb from "@/components/Breadcrumb";
 
 const Privacy = () => {
-  const navigate = useNavigate();
-
-  const handleStartJourney = () => {
-    navigate("/courses#packages");
-  };
+  const breadcrumbItems = [
+    { label: "Privacy Policy", href: "/privacy" }
+  ];
 
   return (
     <PageLayout>
-      <div className="bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center mb-8">Privacy Policy</h1>
-          <div className="prose max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm">
-            <h2>1. Information We Collect</h2>
-            <p>We collect information that you provide directly to us when using our services.</p>
+      <Breadcrumb items={breadcrumbItems} />
+      <Hero
+        title="Privacy Policy"
+        subtitle="How we protect and handle your data"
+        backgroundClass="bg-accent"
+      />
+      <div className="container mx-auto px-6 py-12">
+        <div className="prose max-w-none">
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">1. GDPR Compliance Statement</h2>
+            <p className="mb-4">
+              We are committed to processing data in accordance with our responsibilities under the GDPR and other applicable data protection laws. This policy explains how we collect, store, and use your personal data.
+            </p>
+          </section>
 
-            <h2>2. How We Use Your Information</h2>
-            <p>We use the collected information to provide and improve our services, communicate with you, and ensure compliance with our terms.</p>
-
-            <h2>3. Information Sharing</h2>
-            <p>We do not sell your personal information. We may share your information in limited circumstances as described below.</p>
-
-            <h2>4. Special Offers and Marketing</h2>
-            <p>We may send you promotional offers and updates about our services. Please note:</p>
-            <ul>
-              <li>Each promotional offer is subject to specific terms and conditions</li>
-              <li>Discounts and promotional offers cannot be combined with other active promotions</li>
-              <li>You can opt-out of marketing communications at any time</li>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">2. Analytics and Tracking</h2>
+            <p className="mb-4">
+              We use Google Analytics to analyze the use of our website. Google Analytics gathers information about website use by means of cookies. The information gathered relating to our website is used to create reports about the use of our website.
+            </p>
+            <p className="mb-4">
+              Google Analytics collects information such as:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Your IP address (anonymized)</li>
+              <li>The pages you visit on our website</li>
+              <li>How long you spend on each page</li>
+              <li>How you got to the site</li>
+              <li>What you click on while you're visiting the site</li>
             </ul>
+            <p className="mb-4">
+              You can opt-out of Google Analytics tracking by using the Google Analytics Opt-out Browser Add-on or by managing your cookie preferences in your browser settings.
+            </p>
+          </section>
 
-            <h2>5. Data Security</h2>
-            <p>We implement appropriate security measures to protect your personal information.</p>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">3. Cookie Policy</h2>
+            <p className="mb-4">
+              Our website uses cookies and similar technologies to enhance your browsing experience. We use:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Essential cookies for website functionality</li>
+              <li>Analytics cookies (including Google Analytics) to understand how visitors use our site</li>
+              <li>Preference cookies to remember your settings</li>
+            </ul>
+            <p>You can control cookie settings through your browser preferences.</p>
+          </section>
 
-            <h2>6. Your Rights</h2>
-            <p>You have the right to access, correct, or delete your personal information.</p>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">4. Information We Collect</h2>
+            <p className="mb-4">
+              We collect information that you provide directly to us, including:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Account information (name, email, password)</li>
+              <li>Payment information (processed securely through our payment providers)</li>
+              <li>Course progress and interaction data</li>
+              <li>Communication preferences</li>
+              <li>Usage data through analytics tools</li>
+            </ul>
+          </section>
 
-            <h2>7. Cookies</h2>
-            <p>We use cookies and similar technologies to enhance your experience on our platform.</p>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">5. Your Data Rights</h2>
+            <p className="mb-4">
+              Under GDPR, you have the following rights:
+            </p>
+            <ul className="list-disc pl-6 mb-4">
+              <li>Right to access your personal data</li>
+              <li>Right to rectification of inaccurate data</li>
+              <li>Right to erasure ("right to be forgotten")</li>
+              <li>Right to restrict processing</li>
+              <li>Right to data portability</li>
+              <li>Right to object to processing</li>
+            </ul>
+          </section>
 
-            <h2>8. Changes to Privacy Policy</h2>
-            <p>We may update this privacy policy from time to time. We will notify you of any significant changes.</p>
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold mb-4">6. Data Retention</h2>
+            <p className="mb-4">
+              We retain your personal data only for as long as necessary to provide you with our services and as described in this privacy policy. We will retain and use your information to the extent necessary to comply with our legal obligations, resolve disputes, and enforce our agreements.
+            </p>
+          </section>
 
-            <div className="mt-8 flex justify-start">
-              <Button 
-                onClick={handleStartJourney}
-                className="bg-primary hover:bg-primary/90"
-              >
-                Start Your Journey
-              </Button>
-            </div>
-          </div>
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">7. Contact Us</h2>
+            <p>
+              For any privacy-related questions or to exercise your data rights, please contact our Data Protection Officer at:
+              privacy@bit2big.com
+            </p>
+          </section>
         </div>
       </div>
     </PageLayout>
