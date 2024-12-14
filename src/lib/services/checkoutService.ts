@@ -21,7 +21,21 @@ export const submitApplication = async ({
   referralCode,
 }: SubmissionData) => {
   try {
-    // First, insert the application data
+    // First, get admin email from site settings
+    const { data: siteSettings, error: settingsError } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "admin_email")
+      .single();
+
+    if (settingsError) {
+      console.error("Error fetching admin email:", settingsError);
+      throw new Error("Failed to process application");
+    }
+
+    const adminEmail = siteSettings?.value;
+
+    // Insert the application data
     const applicationData = {
       first_name: formData.firstName.trim(),
       last_name: formData.lastName.trim(),
@@ -45,8 +59,8 @@ export const submitApplication = async ({
 
     if (dbError) throw dbError;
 
-    // Get email template and send confirmation
-    const template = await getEmailTemplate("application_confirmation", {
+    // Send confirmation email to user
+    const userTemplate = await getEmailTemplate("application_confirmation", {
       firstName: formData.firstName,
       courseTitle,
       packageType,
@@ -54,21 +68,56 @@ export const submitApplication = async ({
       paymentType: paymentType === 'annual' ? 'One-time Payment' : 'Monthly Payments'
     });
 
-    if (!template) {
-      console.error("Failed to fetch email template");
+    if (!userTemplate) {
+      console.error("Failed to fetch user email template");
       throw new Error("Failed to send confirmation email");
     }
 
-    const emailResult = await sendEmail({
+    const userEmailResult = await sendEmail({
       to: [formData.email],
-      subject: template.subject,
-      html: template.html,
+      subject: userTemplate.subject,
+      html: userTemplate.html,
       from: "Bit2Big Course Applications <courses@bit2big.com>",
     });
 
-    if (!emailResult.success) {
-      console.error("Error sending email:", emailResult.error);
+    if (!userEmailResult.success) {
+      console.error("Error sending user email:", userEmailResult.error);
       throw new Error("Failed to send confirmation email");
+    }
+
+    // Send notification email to admin
+    const adminTemplate = await getEmailTemplate("admin_application_notification", {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone || 'Not provided',
+      city: formData.city || 'Not provided',
+      country: formData.country || 'Not provided',
+      courseTitle,
+      packageType,
+      price: price.toLocaleString(),
+      paymentType,
+      referralCode: referralCode || 'None'
+    });
+
+    if (!adminTemplate) {
+      console.error("Failed to fetch admin email template");
+      // Don't throw here, as user's application was already processed
+      toast.error("Admin notification failed, but your application was received");
+    } else {
+      const adminEmailResult = await sendEmail({
+        to: [adminEmail],
+        subject: adminTemplate.subject,
+        html: adminTemplate.html,
+        from: "Bit2Big Course Applications <courses@bit2big.com>",
+        replyTo: formData.email
+      });
+
+      if (!adminEmailResult.success) {
+        console.error("Error sending admin email:", adminEmailResult.error);
+        // Don't throw here, as user's application was already processed
+        toast.error("Admin notification failed, but your application was received");
+      }
     }
 
     return application;
