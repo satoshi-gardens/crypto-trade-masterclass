@@ -5,6 +5,7 @@ export const useCountries = () => {
   const { data: countries, isLoading } = useQuery({
     queryKey: ['countries'],
     queryFn: async () => {
+      console.log('Fetching countries...');
       const { data, error } = await supabase
         .from('countries')
         .select('*')
@@ -16,6 +17,7 @@ export const useCountries = () => {
         console.error('Error fetching countries:', error);
         throw error;
       }
+      console.log('Countries fetched:', data);
       return data;
     },
   });
