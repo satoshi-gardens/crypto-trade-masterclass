@@ -91,9 +91,6 @@ const CourseCard = ({
         >
           Start Your Journey
         </Button>
-        <p className="text-sm text-gray-500 text-center mt-2 w-full">
-          Monthly installments
-        </p>
       </CardFooter>
     </Card>
   );
