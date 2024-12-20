@@ -132,9 +132,6 @@ export const PricingCard = ({
         <Button onClick={handleApply} className="w-full">
           Start Your Journey
         </Button>
-        <p className="text-sm text-gray-500 text-center mt-2">
-          {isAnnual ? "One-time payment" : "Monthly installments"}
-        </p>
       </CardContent>
     </Card>
   );
