@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,6 +16,8 @@ interface NotificationRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log("Received feedback notification request");
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -28,42 +27,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const supabase = createClient(supabaseUrl!, supabaseKey!);
-    const { type, name, email, content }: NotificationRequest = await req.json();
+    const notificationData: NotificationRequest = await req.json();
+    console.log("Processing notification for:", notificationData.type);
 
-    // Get admin email from site settings
-    const { data: settings, error: settingsError } = await supabase
-      .from("site_settings")
-      .select("value")
-      .eq("key", "admin_email")
-      .single();
-
-    if (settingsError) {
-      console.error("Error fetching admin email:", settingsError);
-      throw new Error("Failed to fetch admin email");
-    }
-
-    const adminEmail = settings.value;
-
-    // Get email template
-    const { data: template, error: templateError } = await supabase
-      .from("email_templates")
-      .select("*")
-      .eq("type", "feedback_notification")
-      .single();
-
-    if (templateError) {
-      console.error("Error fetching template:", templateError);
-      throw new Error("Failed to fetch email template");
-    }
-
-    // Process template variables
-    let html = template.html_content
-      .replace(/{{name}}/g, name)
-      .replace(/{{email}}/g, email)
-      .replace(/{{content}}/g, content);
-
-    // Send email using Resend
+    // Send notification email using Resend
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -71,18 +38,23 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big Feedback <notifications@bit2big.com>",
-        to: [adminEmail],
-        subject: `New ${type} Submission`,
-        html: html,
-        reply_to: email,
+        from: "Bit2Big Notifications <onboarding@resend.dev>", // Using Resend's default domain
+        to: ["admin@bit2big.com"],
+        subject: `New ${notificationData.type} Submission`,
+        html: `
+          <h2>New ${notificationData.type} Submission</h2>
+          <p><strong>From:</strong> ${notificationData.name} (${notificationData.email})</p>
+          <p><strong>Content:</strong></p>
+          <blockquote>${notificationData.content}</blockquote>
+        `,
+        reply_to: notificationData.email,
       }),
     });
 
     if (!emailResponse.ok) {
       const error = await emailResponse.text();
       console.error("Resend API error:", error);
-      throw new Error("Failed to send email");
+      throw new Error(`Failed to send email: ${error}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {

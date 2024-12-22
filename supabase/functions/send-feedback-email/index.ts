@@ -2,8 +2,6 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const supabaseUrl = Deno.env.get("SUPABASE_URL");
-const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,6 +17,8 @@ interface FeedbackEmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log("Received feedback email request");
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -28,25 +28,8 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const supabase = createClient(supabaseUrl!, supabaseKey!);
     const feedbackData: FeedbackEmailRequest = await req.json();
-
-    // Get email template
-    const { data: template, error: templateError } = await supabase
-      .from("email_templates")
-      .select("*")
-      .eq("type", "feedback_confirmation")
-      .single();
-
-    if (templateError) {
-      console.error("Error fetching template:", templateError);
-      throw new Error("Failed to fetch email template");
-    }
-
-    // Process template variables
-    let html = template.html_content
-      .replace(/{{name}}/g, feedbackData.name)
-      .replace(/{{area}}/g, feedbackData.area);
+    console.log("Processing feedback email for:", feedbackData.email);
 
     // Send email using Resend
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -56,17 +39,23 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big Feedback <feedback@bit2big.com>",
+        from: "Bit2Big <onboarding@resend.dev>", // Using Resend's default domain
         to: [feedbackData.email],
-        subject: template.subject,
-        html: html,
+        subject: "Thank you for your feedback",
+        html: `
+          <h2>Thank you for your feedback, ${feedbackData.name}!</h2>
+          <p>We have received your feedback regarding ${feedbackData.area} and will review it shortly.</p>
+          <p>Your message:</p>
+          <blockquote>${feedbackData.message}</blockquote>
+          <p>Best regards,<br>The Bit2Big Team</p>
+        `,
       }),
     });
 
     if (!emailResponse.ok) {
       const error = await emailResponse.text();
       console.error("Resend API error:", error);
-      throw new Error("Failed to send email");
+      throw new Error(`Failed to send email: ${error}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
