@@ -105,12 +105,10 @@ const TestimonialForm = () => {
 
       if (emailError) {
         console.error('Email error:', emailError);
-        // Don't throw here, as the testimonial is already saved
-        toast.error("Testimonial saved but confirmation email failed to send.");
-      } else {
-        toast.success("Thank you for your testimonial!");
+        throw new Error('Failed to send confirmation emails');
       }
 
+      toast.success("Thank you for your testimonial!");
       navigate("/thank-you-feedback");
     } catch (error) {
       console.error("Error submitting testimonial:", error);

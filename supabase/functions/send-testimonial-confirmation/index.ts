@@ -12,10 +12,6 @@ interface TestimonialData {
   verificationToken: string;
 }
 
-interface EmailRequest {
-  testimonial: TestimonialData;
-}
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -34,7 +30,16 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email service is not configured");
     }
 
-    const { testimonial }: EmailRequest = await req.json();
+    const requestData = await req.json();
+    console.log("Received testimonial data:", JSON.stringify(requestData));
+
+    const testimonial: TestimonialData = requestData.testimonial;
+    
+    if (!testimonial || !testimonial.email) {
+      console.error("Invalid testimonial data received:", requestData);
+      throw new Error("Invalid testimonial data");
+    }
+
     console.log("Processing testimonial confirmation for:", testimonial.email);
 
     // Send email to admin
