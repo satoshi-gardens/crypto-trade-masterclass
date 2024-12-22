@@ -17,10 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"];
-const ALLOWED_ATTACHMENT_TYPES = ["application/pdf"];
+import { SocialMediaFields } from "./SocialMediaFields";
+import { PhotoUploadField } from "./PhotoUploadField";
 
 const testimonialSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -29,7 +27,9 @@ const testimonialSchema = z.object({
   isStudent: z.boolean(),
   testimonyText: z.string().min(10, "Testimony must be at least 10 characters"),
   photo: z.any().optional(),
-  attachment: z.any().optional(),
+  telegramHandle: z.string().optional(),
+  twitterHandle: z.string().optional(),
+  instagramHandle: z.string().optional(),
 });
 
 type TestimonialFormValues = z.infer<typeof testimonialSchema>;
@@ -41,80 +41,15 @@ const TestimonialForm = () => {
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
       isStudent: false,
+      telegramHandle: "",
+      twitterHandle: "",
+      instagramHandle: "",
     },
   });
-
-  const processImage = async (file: File): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 800;
-        const scale = MAX_WIDTH / img.width;
-        canvas.width = MAX_WIDTH;
-        canvas.height = img.height * scale;
-
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          reject(new Error("Failed to get canvas context"));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error("Failed to convert canvas to blob"));
-            }
-          },
-          "image/jpeg",
-          0.8
-        );
-      };
-      img.onerror = () => reject(new Error("Failed to load image"));
-      img.src = URL.createObjectURL(file);
-    });
-  };
 
   const onSubmit = async (data: TestimonialFormValues) => {
     try {
       setIsSubmitting(true);
-
-      // Validate photo
-      if (data.photo && data.photo[0]) {
-        const photo = data.photo[0];
-        if (!ALLOWED_IMAGE_TYPES.includes(photo.type)) {
-          toast({
-            title: "Invalid file type",
-            description: "Please upload a JPEG or PNG image",
-            variant: "destructive",
-          });
-          return;
-        }
-        if (photo.size > MAX_FILE_SIZE) {
-          toast({
-            title: "File too large",
-            description: "Photo must be less than 2MB",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-
-      // Validate attachment
-      if (data.attachment && data.attachment[0]) {
-        const attachment = data.attachment[0];
-        if (!ALLOWED_ATTACHMENT_TYPES.includes(attachment.type)) {
-          toast({
-            title: "Invalid file type",
-            description: "Please upload a PDF file",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
 
       // Generate verification token
       const verificationToken = crypto.randomUUID();
@@ -122,34 +57,21 @@ const TestimonialForm = () => {
       // Process and upload photo if provided
       let photoUrl = null;
       if (data.photo && data.photo[0]) {
-        const processedImage = await processImage(data.photo[0]);
-        const photoPath = `${crypto.randomUUID()}.jpg`;
-        const { error: uploadError } = await supabase.storage
+        const file = data.photo[0];
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+
+        const { error: uploadError, data: uploadData } = await supabase.storage
           .from("testimonials")
-          .upload(photoPath, processedImage);
+          .upload(fileName, file);
 
         if (uploadError) throw uploadError;
 
-        const { data: photoData } = supabase.storage
+        const { data: { publicUrl } } = supabase.storage
           .from("testimonials")
-          .getPublicUrl(photoPath);
-        photoUrl = photoData.publicUrl;
-      }
+          .getPublicUrl(fileName);
 
-      // Upload attachment if provided
-      let attachmentUrl = null;
-      if (data.attachment && data.attachment[0]) {
-        const attachmentPath = `${crypto.randomUUID()}.pdf`;
-        const { error: uploadError } = await supabase.storage
-          .from("testimonials")
-          .upload(attachmentPath, data.attachment[0]);
-
-        if (uploadError) throw uploadError;
-
-        const { data: attachmentData } = supabase.storage
-          .from("testimonials")
-          .getPublicUrl(attachmentPath);
-        attachmentUrl = attachmentData.publicUrl;
+        photoUrl = publicUrl;
       }
 
       // Save testimonial to database
@@ -159,31 +81,51 @@ const TestimonialForm = () => {
         is_student: data.isStudent,
         testimony_text: data.testimonyText,
         photo_url: photoUrl,
-        attachment_url: attachmentUrl,
         email: data.email,
         verification_token: verificationToken,
+        telegram_handle: data.telegramHandle || null,
+        twitter_handle: data.twitterHandle || null,
+        instagram_handle: data.instagramHandle || null,
       });
 
       if (dbError) throw dbError;
 
-      // Send confirmation email
-      const { error: emailError } = await supabase.functions.invoke(
-        "send-testimonial-confirmation",
+      // Send confirmation email to submitter
+      const { error: submitterEmailError } = await supabase.functions.invoke(
+        "send-testimonial-email",
         {
           body: {
+            type: "submission",
             to: data.email,
-            name: data.displayName,
+            name: data.fullName,
+          },
+        }
+      );
+
+      if (submitterEmailError) throw submitterEmailError;
+
+      // Send admin notification
+      const { error: adminEmailError } = await supabase.functions.invoke(
+        "send-testimonial-email",
+        {
+          body: {
+            type: "admin_review",
+            name: data.fullName,
+            displayName: data.displayName,
+            content: data.testimonyText,
+            telegram: data.telegramHandle,
+            twitter: data.twitterHandle,
+            instagram: data.instagramHandle,
             verificationToken,
           },
         }
       );
 
-      if (emailError) throw emailError;
+      if (adminEmailError) throw adminEmailError;
 
       toast({
-        title: "Testimonial submitted!",
-        description:
-          "Please check your email to verify and publish your testimonial.",
+        title: "Thank you for your testimonial!",
+        description: "Your submission is under review and will be published once approved.",
       });
 
       form.reset();
@@ -202,39 +144,41 @@ const TestimonialForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                This will not be displayed publicly
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>
+                  This will not be displayed publicly
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="displayName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Display Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                This is the name that will be shown publicly
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="displayName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Display Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormDescription>
+                  This is the name that will be shown publicly
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -246,7 +190,7 @@ const TestimonialForm = () => {
                 <Input type="email" {...field} />
               </FormControl>
               <FormDescription>
-                We'll send you a verification link
+                We'll send you a confirmation email
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -283,7 +227,7 @@ const TestimonialForm = () => {
               <FormControl>
                 <Textarea
                   placeholder="Share your experience..."
-                  className="min-h-[100px]"
+                  className="min-h-[150px]"
                   {...field}
                 />
               </FormControl>
@@ -292,47 +236,8 @@ const TestimonialForm = () => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="photo"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Photo (Optional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="image/jpeg,image/png"
-                  onChange={(e) => onChange(e.target.files)}
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Upload a JPEG or PNG image (max 2MB)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="attachment"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Attachment (Optional)</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(e) => onChange(e.target.files)}
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>Upload a PDF file</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <PhotoUploadField form={form} />
+        <SocialMediaFields form={form} />
 
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Submitting..." : "Submit Testimonial"}
