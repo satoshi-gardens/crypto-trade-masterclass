@@ -99,7 +99,9 @@ const handler = async (req: Request): Promise<Response> => {
         from: "Testimonials <testimonials@bit2big.com>",
         to: [emailData.to],
         subject: userTemplate.subject,
-        html: userTemplate.html_content.replace(/{{name}}/g, emailData.name),
+        html: userTemplate.html_content
+          .replace(/{{name}}/g, emailData.name)
+          .replace(/{{verificationToken}}/g, emailData.verificationToken),
       }),
     });
 
