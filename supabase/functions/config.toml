@@ -34,3 +34,7 @@ verify_jwt = false
 [[functions]]
 name = "send-testimonial-email"
 verify_jwt = false
+
+[[functions]]
+name = "send-testimonial-confirmation"
+verify_jwt = false
