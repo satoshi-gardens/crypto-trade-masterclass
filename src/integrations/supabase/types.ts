@@ -691,10 +691,13 @@ export type Database = {
           email: string
           full_name: string
           id: number
+          instagram_handle: string | null
           is_student: boolean
           is_verified: boolean
           photo_url: string | null
+          telegram_handle: string | null
           testimony_text: string
+          twitter_handle: string | null
           updated_at: string | null
           verification_token: string
         }
@@ -705,10 +708,13 @@ export type Database = {
           email: string
           full_name: string
           id?: number
+          instagram_handle?: string | null
           is_student?: boolean
           is_verified?: boolean
           photo_url?: string | null
+          telegram_handle?: string | null
           testimony_text: string
+          twitter_handle?: string | null
           updated_at?: string | null
           verification_token: string
         }
@@ -719,10 +725,13 @@ export type Database = {
           email?: string
           full_name?: string
           id?: number
+          instagram_handle?: string | null
           is_student?: boolean
           is_verified?: boolean
           photo_url?: string | null
+          telegram_handle?: string | null
           testimony_text?: string
+          twitter_handle?: string | null
           updated_at?: string | null
           verification_token?: string
         }
