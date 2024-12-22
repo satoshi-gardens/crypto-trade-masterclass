@@ -1,3 +1,12 @@
+import { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
 interface TestimonialProps {
   name: string;
   role: string;
@@ -6,6 +15,10 @@ interface TestimonialProps {
 }
 
 const TestimonialCard = ({ name, role, content, imageUrl }: TestimonialProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const isLongContent = content.length > 200;
+  const displayContent = isLongContent && !isOpen ? content.slice(0, 200) + "..." : content;
+
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
       <div className="flex items-center space-x-4 mb-6">
@@ -22,7 +35,38 @@ const TestimonialCard = ({ name, role, content, imageUrl }: TestimonialProps) =>
           <p className="text-sm text-gray-600">{role}</p>
         </div>
       </div>
-      <p className="text-gray-700 leading-relaxed italic">{content}</p>
+
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <div className="text-gray-700 leading-relaxed italic">
+          {displayContent}
+        </div>
+        
+        {isLongContent && (
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="w-full mt-4 flex items-center justify-center"
+            >
+              {isOpen ? (
+                <>
+                  Show Less <ChevronUp className="ml-2 h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  Read More <ChevronDown className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </CollapsibleTrigger>
+        )}
+        
+        <CollapsibleContent>
+          <div className="text-gray-700 leading-relaxed italic mt-4">
+            {content.slice(200)}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+
       <div className="mt-6 flex justify-start">
         <div className="flex -space-x-1">
           {[...Array(5)].map((_, i) => (
