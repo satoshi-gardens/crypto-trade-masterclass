@@ -10,12 +10,14 @@ import PersonalInfoFields from "./PersonalInfoFields";
 import FeedbackFields from "./FeedbackFields";
 import { PhotoUploadField } from "@/components/testimonials/PhotoUploadField";
 import { SocialMediaFields } from "@/components/testimonials/SocialMediaFields";
+import { CountrySelect } from "@/components/location/CountrySelect";
 
 const feedbackSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional(),
+  country: z.string({ required_error: "Please select a country" }),
   area: z.enum(["general", "courses", "platform", "technical", "other"], {
     required_error: "Please select a feedback area",
   }),
@@ -67,6 +69,7 @@ const FeedbackForm = () => {
           last_name: data.lastName,
           email: data.email,
           phone: data.phone,
+          country: data.country,
           area: data.area,
           message: data.message,
           photo_url: photoUrl,
@@ -119,6 +122,7 @@ const FeedbackForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <PersonalInfoFields form={form} />
+        <CountrySelect form={form} />
         <FeedbackFields form={form} />
         <PhotoUploadField form={form} />
         <SocialMediaFields form={form} />
