@@ -30,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
     const notificationData: NotificationRequest = await req.json();
     console.log("Processing notification for:", notificationData.type);
 
-    // Send notification email using Resend
+    // Send notification email using Resend with verified domain
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -38,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big Notifications <onboarding@resend.dev>", // Using Resend's default domain
+        from: "Bit2Big Notifications <notifications@bit2big.com>",
         to: ["admin@bit2big.com"],
         subject: `New ${notificationData.type} Submission`,
         html: `
@@ -56,6 +56,9 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Resend API error:", error);
       throw new Error(`Failed to send email: ${error}`);
     }
+
+    const result = await emailResponse.json();
+    console.log("Email sent successfully:", result);
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

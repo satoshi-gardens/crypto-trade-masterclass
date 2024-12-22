@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -31,7 +30,7 @@ const handler = async (req: Request): Promise<Response> => {
     const feedbackData: FeedbackEmailRequest = await req.json();
     console.log("Processing feedback email for:", feedbackData.email);
 
-    // Send email using Resend
+    // Send email using Resend with verified domain
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -39,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Bit2Big <onboarding@resend.dev>", // Using Resend's default domain
+        from: "Bit2Big Feedback <feedback@bit2big.com>",
         to: [feedbackData.email],
         subject: "Thank you for your feedback",
         html: `
@@ -57,6 +56,9 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Resend API error:", error);
       throw new Error(`Failed to send email: ${error}`);
     }
+
+    const result = await emailResponse.json();
+    console.log("Email sent successfully:", result);
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
