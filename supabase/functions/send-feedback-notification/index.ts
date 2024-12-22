@@ -11,12 +11,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface FeedbackRequest {
-  type: "testimonial" | "feedback";
+interface NotificationRequest {
+  type: string;
   name: string;
   email: string;
   content: string;
-  isStudent?: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -25,52 +24,63 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const supabase = createClient(supabaseUrl!, supabaseKey!);
-    const { type, name, email, content, isStudent }: FeedbackRequest = await req.json();
-
-    const subject = type === "testimonial" 
-      ? "New Testimonial Submission"
-      : "New Feedback Received";
-
-    const html = `
-      <h2>${subject}</h2>
-      <p><strong>From:</strong> ${name} (${email})</p>
-      ${isStudent !== undefined ? `<p><strong>Student:</strong> ${isStudent ? "Yes" : "No"}</p>` : ""}
-      <p><strong>Content:</strong></p>
-      <p>${content}</p>
-    `;
-
-    // Get site URL from database
-    const { data: siteSettings, error: dbError } = await supabase
-      .from('site_settings')
-      .select('value')
-      .eq('key', 'website_url')
-      .single();
-
-    if (dbError) {
-      console.error('Failed to fetch site settings:', dbError);
-      throw new Error('Failed to fetch site settings');
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const websiteUrl = siteSettings?.value || 'https://cryptocourse.bit2big.com';
+    const supabase = createClient(supabaseUrl!, supabaseKey!);
+    const { type, name, email, content }: NotificationRequest = await req.json();
 
-    const res = await fetch("https://api.resend.com/emails", {
+    // Get admin email from site settings
+    const { data: settings, error: settingsError } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "admin_email")
+      .single();
+
+    if (settingsError) {
+      console.error("Error fetching admin email:", settingsError);
+      throw new Error("Failed to fetch admin email");
+    }
+
+    const adminEmail = settings.value;
+
+    // Get email template
+    const { data: template, error: templateError } = await supabase
+      .from("email_templates")
+      .select("*")
+      .eq("type", "feedback_notification")
+      .single();
+
+    if (templateError) {
+      console.error("Error fetching template:", templateError);
+      throw new Error("Failed to fetch email template");
+    }
+
+    // Process template variables
+    let html = template.html_content
+      .replace(/{{name}}/g, name)
+      .replace(/{{email}}/g, email)
+      .replace(/{{content}}/g, content);
+
+    // Send email using Resend
+    const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: `${websiteUrl} <notifications@${new URL(websiteUrl).hostname}>`,
-        to: ["trading4profits@bit2big.com"],
-        subject,
-        html,
+        from: "Bit2Big Feedback <notifications@bit2big.com>",
+        to: [adminEmail],
+        subject: `New ${type} Submission`,
+        html: html,
         reply_to: email,
       }),
     });
 
-    if (!res.ok) {
-      const error = await res.text();
+    if (!emailResponse.ok) {
+      const error = await emailResponse.text();
       console.error("Resend API error:", error);
       throw new Error("Failed to send email");
     }

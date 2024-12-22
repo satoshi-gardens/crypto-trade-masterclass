@@ -24,6 +24,10 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+
     const supabase = createClient(supabaseUrl!, supabaseKey!);
     const feedbackData: FeedbackEmailRequest = await req.json();
 
@@ -39,27 +43,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to fetch email template");
     }
 
-    // Get website URL from site settings
-    const { data: siteSettings, error: settingsError } = await supabase
-      .from("site_settings")
-      .select("value")
-      .eq("key", "website_url")
-      .single();
-
-    if (settingsError) {
-      console.error("Error fetching site settings:", settingsError);
-      throw new Error("Failed to fetch site settings");
-    }
-
     // Process template variables
-    const currentYear = new Date().getFullYear();
-    const websiteUrl = siteSettings.value;
-    
     let html = template.html_content
       .replace(/{{name}}/g, feedbackData.name)
-      .replace(/{{area}}/g, feedbackData.area)
-      .replace(/{{websiteUrl}}/g, websiteUrl)
-      .replace(/{{currentYear}}/g, currentYear.toString());
+      .replace(/{{area}}/g, feedbackData.area);
 
     // Send email using Resend
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -82,13 +69,9 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to send email");
     }
 
-    return new Response(
-      JSON.stringify({ success: true }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error("Error in send-feedback-email function:", error);
     return new Response(
