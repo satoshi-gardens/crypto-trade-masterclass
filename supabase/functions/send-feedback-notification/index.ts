@@ -13,18 +13,20 @@ interface NotificationRequest {
   name: string;
   email: string;
   content: string;
+  isStudent: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  console.log("Received feedback notification request");
-  
+  console.log("Received request:", req.method);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     if (!RESEND_API_KEY) {
-      throw new Error("RESEND_API_KEY is not configured");
+      console.error("RESEND_API_KEY is not configured");
+      throw new Error("Email service is not configured");
     }
 
     const notificationData: NotificationRequest = await req.json();
@@ -42,18 +44,19 @@ const handler = async (req: Request): Promise<Response> => {
         to: ["admin@bit2big.com"],
         subject: `New ${notificationData.type} Submission`,
         html: `
-          <h2>New ${notificationData.type} Submission</h2>
-          <p><strong>From:</strong> ${notificationData.name} (${notificationData.email})</p>
-          <p><strong>Content:</strong></p>
-          <blockquote>${notificationData.content}</blockquote>
+          <h1>New ${notificationData.type} Submission</h1>
+          <p><strong>Name:</strong> ${notificationData.name}</p>
+          <p><strong>Email:</strong> ${notificationData.email}</p>
+          <p><strong>Is Student:</strong> ${notificationData.isStudent ? 'Yes' : 'No'}</p>
+          <h2>Content:</h2>
+          <p>${notificationData.content}</p>
         `,
-        reply_to: notificationData.email,
       }),
     });
 
     if (!emailResponse.ok) {
       const error = await emailResponse.text();
-      console.error("Resend API error:", error);
+      console.error("Failed to send email:", error);
       throw new Error(`Failed to send email: ${error}`);
     }
 
@@ -63,13 +66,16 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in send-feedback-notification function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message || "An unexpected error occurred",
+        details: error.toString()
+      }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
   }
