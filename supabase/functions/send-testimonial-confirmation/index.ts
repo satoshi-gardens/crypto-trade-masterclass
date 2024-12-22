@@ -3,12 +3,9 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const ADMIN_EMAIL = "admin@bit2big.com";
 
-interface TestimonialData {
-  fullName: string;
-  displayName: string;
-  email: string;
-  isStudent: boolean;
-  testimonyText: string;
+interface EmailData {
+  to: string;
+  name: string;
   verificationToken: string;
 }
 
@@ -30,17 +27,15 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email service is not configured");
     }
 
-    const requestData = await req.json();
-    console.log("Received testimonial data:", JSON.stringify(requestData));
+    const emailData: EmailData = await req.json();
+    console.log("Received email data:", JSON.stringify(emailData));
 
-    const testimonial: TestimonialData = requestData.testimonial;
-    
-    if (!testimonial || !testimonial.email) {
-      console.error("Invalid testimonial data received:", requestData);
-      throw new Error("Invalid testimonial data");
+    if (!emailData || !emailData.to || !emailData.name || !emailData.verificationToken) {
+      console.error("Invalid email data received:", emailData);
+      throw new Error("Invalid email data");
     }
 
-    console.log("Processing testimonial confirmation for:", testimonial.email);
+    console.log("Processing testimonial confirmation for:", emailData.to);
 
     // Send email to admin
     const adminEmailResponse = await fetch("https://api.resend.com/emails", {
@@ -58,16 +53,12 @@ const handler = async (req: Request): Promise<Response> => {
             <h1 style="color: #333;">New Testimonial Submission</h1>
             <h2 style="color: #666;">Testimonial Details:</h2>
             <ul style="list-style: none; padding: 0;">
-              <li><strong>Full Name:</strong> ${testimonial.fullName}</li>
-              <li><strong>Display Name:</strong> ${testimonial.displayName}</li>
-              <li><strong>Email:</strong> ${testimonial.email}</li>
-              <li><strong>Is Student:</strong> ${testimonial.isStudent ? 'Yes' : 'No'}</li>
+              <li><strong>Name:</strong> ${emailData.name}</li>
+              <li><strong>Email:</strong> ${emailData.to}</li>
             </ul>
-            <h3 style="color: #666;">Testimony:</h3>
-            <p style="background: #f5f5f5; padding: 15px; border-radius: 5px;">${testimonial.testimonyText}</p>
             <p style="margin-top: 20px;">Click the link below to verify this testimonial:</p>
             <p style="text-align: center;">
-              <a href="https://bit2big.com/verify-testimonial?token=${testimonial.verificationToken}" 
+              <a href="https://bit2big.com/verify-testimonial?token=${emailData.verificationToken}" 
                  style="background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
                 Verify Testimonial
               </a>
@@ -92,12 +83,12 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Testimonials <testimonials@bit2big.com>",
-        to: [testimonial.email],
+        to: [emailData.to],
         subject: "Thank You for Your Testimonial",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h1 style="color: #333;">Thank You for Your Testimonial</h1>
-            <p>Dear ${testimonial.fullName},</p>
+            <p>Dear ${emailData.name},</p>
             <p>Thank you for sharing your experience with us. Your testimonial has been received and is currently under review.</p>
             <p>We'll notify you once your testimonial has been approved and published on our website.</p>
             <p>Best regards,<br>The Bit2Big Team</p>

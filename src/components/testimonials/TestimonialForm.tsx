@@ -62,7 +62,7 @@ const TestimonialForm = () => {
       }
 
       // Generate verification token
-      const verificationToken = Math.random().toString(36).substring(2, 15);
+      const verificationToken = crypto.randomUUID();
 
       // Store testimonial in the database
       const { error: dbError } = await supabase
@@ -91,14 +91,9 @@ const TestimonialForm = () => {
         "send-testimonial-confirmation",
         {
           body: {
-            testimonial: {
-              fullName: data.fullName,
-              displayName: data.displayName,
-              email: data.email,
-              isStudent: data.isStudent,
-              testimonyText: data.testimonyText,
-              verificationToken,
-            },
+            to: data.email,
+            name: data.displayName,
+            verificationToken,
           },
         }
       );
