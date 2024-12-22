@@ -53,7 +53,7 @@ const FeedbackForm = () => {
         const filePath = `${fileName}`;
 
         const { error: uploadError, data: uploadData } = await supabase.storage
-          .from('testimonials')
+          .from('feedback')
           .upload(filePath, file);
 
         if (uploadError) {
@@ -63,7 +63,7 @@ const FeedbackForm = () => {
 
         if (uploadData) {
           const { data: { publicUrl } } = supabase.storage
-            .from('testimonials')
+            .from('feedback')
             .getPublicUrl(filePath);
           photoUrl = publicUrl;
         }
