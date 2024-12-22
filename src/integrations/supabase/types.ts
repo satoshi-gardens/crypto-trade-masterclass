@@ -228,9 +228,13 @@ export type Database = {
           email: string
           first_name: string
           id: number
+          instagram_handle: string | null
           last_name: string
           message: string
           phone: string | null
+          photo_url: string | null
+          telegram_handle: string | null
+          twitter_handle: string | null
           updated_at: string | null
         }
         Insert: {
@@ -240,9 +244,13 @@ export type Database = {
           email: string
           first_name: string
           id?: number
+          instagram_handle?: string | null
           last_name: string
           message: string
           phone?: string | null
+          photo_url?: string | null
+          telegram_handle?: string | null
+          twitter_handle?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -252,9 +260,13 @@ export type Database = {
           email?: string
           first_name?: string
           id?: number
+          instagram_handle?: string | null
           last_name?: string
           message?: string
           phone?: string | null
+          photo_url?: string | null
+          telegram_handle?: string | null
+          twitter_handle?: string | null
           updated_at?: string | null
         }
         Relationships: []
