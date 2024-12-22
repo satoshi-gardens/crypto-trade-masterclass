@@ -34,6 +34,11 @@ const FeedbackForm = () => {
   const navigate = useNavigate();
   const form = useForm<FeedbackFormValues>({
     resolver: zodResolver(feedbackSchema),
+    defaultValues: {
+      telegramHandle: "",
+      twitterHandle: "",
+      instagramHandle: "",
+    },
   });
 
   const handleSubmit = async (data: FeedbackFormValues) => {
@@ -51,7 +56,10 @@ const FeedbackForm = () => {
           .from('testimonials')
           .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw new Error('Failed to upload photo');
+        }
 
         if (uploadData) {
           const { data: { publicUrl } } = supabase.storage
@@ -73,12 +81,15 @@ const FeedbackForm = () => {
           area: data.area,
           message: data.message,
           photo_url: photoUrl,
-          telegram_handle: data.telegramHandle,
-          twitter_handle: data.twitterHandle,
-          instagram_handle: data.instagramHandle,
+          telegram_handle: data.telegramHandle || null,
+          twitter_handle: data.twitterHandle || null,
+          instagram_handle: data.instagramHandle || null,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to save feedback');
+      }
 
       // Send confirmation email to submitter
       const { error: submitterEmailError } = await supabase.functions.invoke(
@@ -93,7 +104,10 @@ const FeedbackForm = () => {
         }
       );
 
-      if (submitterEmailError) throw submitterEmailError;
+      if (submitterEmailError) {
+        console.error('Submitter email error:', submitterEmailError);
+        throw new Error('Failed to send confirmation email');
+      }
 
       // Send notification email to admin
       const { error: adminEmailError } = await supabase.functions.invoke(
@@ -108,13 +122,16 @@ const FeedbackForm = () => {
         }
       );
 
-      if (adminEmailError) throw adminEmailError;
+      if (adminEmailError) {
+        console.error('Admin email error:', adminEmailError);
+        throw new Error('Failed to send admin notification');
+      }
 
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      toast.error("Failed to submit feedback. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to submit feedback. Please try again.");
     }
   };
 
