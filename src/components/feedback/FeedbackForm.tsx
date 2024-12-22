@@ -66,6 +66,9 @@ const FeedbackForm = ({ onSubmit, isSubmitting }: FeedbackFormProps) => {
 
       if (emailError) throw emailError;
 
+      // Call the onSubmit prop after successful submission
+      await onSubmit(data);
+
       toast.success("Thank you for your feedback!");
       navigate("/thank-you-feedback");
     } catch (error) {
