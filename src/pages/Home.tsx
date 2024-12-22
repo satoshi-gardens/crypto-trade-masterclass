@@ -10,11 +10,13 @@ import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
 import ValueProposition from "@/components/ValueProposition";
 import { Helmet } from "react-helmet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
+import { supabase } from "@/integrations/supabase/client";
 
 const Home = () => {
   const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
+  const [testimonials, setTestimonials] = useState<any[]>([]);
 
   const handleStartJourney = () => {
     const packagesSection = document.getElementById('packages');
@@ -22,6 +24,26 @@ const Home = () => {
       packagesSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .eq('is_verified', true)
+        .order('created_at', { ascending: false })
+        .limit(2);
+
+      if (error) {
+        console.error('Error fetching testimonials:', error);
+        return;
+      }
+
+      setTestimonials(data || []);
+    };
+
+    fetchTestimonials();
+  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -139,18 +161,15 @@ const Home = () => {
             What Our Students Say
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
-            <TestimonialCard
-              name="Michael S."
-              role="Full-time Trader"
-              content="This course transformed my trading journey. The LOOP method provided me with a clear framework for success."
-              imageUrl="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
-            />
-            <TestimonialCard
-              name="Sarah K."
-              role="Investment Analyst"
-              content="The structured approach and expert guidance helped me build a solid foundation in crypto trading."
-              imageUrl="https://images.unsplash.com/photo-1498050108023-c5249f4df085"
-            />
+            {testimonials.map((testimonial) => (
+              <TestimonialCard
+                key={testimonial.id}
+                name={testimonial.display_name}
+                role={testimonial.is_student ? "Student" : "Trading Professional"}
+                content={testimonial.testimony_text}
+                imageUrl={testimonial.photo_url || "https://images.unsplash.com/photo-1649972904349-6e44c42644a7"}
+              />
+            ))}
           </div>
         </div>
       </section>
