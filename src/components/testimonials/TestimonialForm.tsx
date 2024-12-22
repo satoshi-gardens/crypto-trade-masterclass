@@ -48,7 +48,10 @@ const TestimonialForm = () => {
           .from('testimonials')
           .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw new Error('Failed to upload photo');
+        }
 
         if (uploadData) {
           const { data: { publicUrl } } = supabase.storage
@@ -78,7 +81,10 @@ const TestimonialForm = () => {
           is_verified: false,
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Database error:', dbError);
+        throw new Error('Failed to save testimonial');
+      }
 
       // Send confirmation email to submitter
       const { error: submitterEmailError } = await supabase.functions.invoke(
@@ -91,7 +97,10 @@ const TestimonialForm = () => {
         }
       );
 
-      if (submitterEmailError) throw submitterEmailError;
+      if (submitterEmailError) {
+        console.error('Submitter email error:', submitterEmailError);
+        throw new Error('Failed to send confirmation email');
+      }
 
       // Send notification email to admin
       const { error: adminEmailError } = await supabase.functions.invoke(
@@ -110,13 +119,16 @@ const TestimonialForm = () => {
         }
       );
 
-      if (adminEmailError) throw adminEmailError;
+      if (adminEmailError) {
+        console.error('Admin email error:', adminEmailError);
+        throw new Error('Failed to send admin notification');
+      }
 
       toast.success("Thank you for your testimonial!");
       navigate("/thank-you-feedback");
     } catch (error) {
       console.error("Error submitting testimonial:", error);
-      toast.error("Failed to submit testimonial. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to submit testimonial. Please try again.");
     }
   };
 
