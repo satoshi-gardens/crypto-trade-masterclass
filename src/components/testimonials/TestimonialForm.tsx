@@ -86,24 +86,8 @@ const TestimonialForm = () => {
         throw new Error('Failed to save testimonial');
       }
 
-      // Send confirmation email to submitter
-      const { error: submitterEmailError } = await supabase.functions.invoke(
-        "send-testimonial-email",
-        {
-          body: {
-            name: data.fullName,
-            email: data.email,
-          },
-        }
-      );
-
-      if (submitterEmailError) {
-        console.error('Submitter email error:', submitterEmailError);
-        throw new Error('Failed to send confirmation email');
-      }
-
-      // Send notification email to admin
-      const { error: adminEmailError } = await supabase.functions.invoke(
+      // Send confirmation emails
+      const { error: emailError } = await supabase.functions.invoke(
         "send-testimonial-confirmation",
         {
           body: {
@@ -119,12 +103,14 @@ const TestimonialForm = () => {
         }
       );
 
-      if (adminEmailError) {
-        console.error('Admin email error:', adminEmailError);
-        throw new Error('Failed to send admin notification');
+      if (emailError) {
+        console.error('Email error:', emailError);
+        // Don't throw here, as the testimonial is already saved
+        toast.error("Testimonial saved but confirmation email failed to send.");
+      } else {
+        toast.success("Thank you for your testimonial!");
       }
 
-      toast.success("Thank you for your testimonial!");
       navigate("/thank-you-feedback");
     } catch (error) {
       console.error("Error submitting testimonial:", error);
@@ -138,7 +124,7 @@ const TestimonialForm = () => {
         <PersonalInfoFields form={form} />
         <PhotoUploadField form={form} />
         <SocialMediaFields form={form} />
-        <Button type="submit">
+        <Button type="submit" className="w-full">
           Submit Testimonial
         </Button>
       </form>

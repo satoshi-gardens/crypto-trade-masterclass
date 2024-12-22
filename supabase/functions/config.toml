@@ -1,26 +1,11 @@
 project_id = "pvtamcqdadggkdazehbc"
 
-[global.env]
-SUPABASE_URL = "env"
-SUPABASE_ANON_KEY = "env"
-SUPABASE_SERVICE_ROLE_KEY = "env"
-SUPABASE_DB_URL = "env"
-RESEND_API_KEY = "env"
-
 [[functions]]
-name = "send-email"
+name = "send-application-email"
 verify_jwt = false
 
 [[functions]]
-name = "send-referral-verification"
-verify_jwt = false
-
-[[functions]]
-name = "send-referral-notifications"
-verify_jwt = false
-
-[[functions]]
-name = "referral-notifications-cron"
+name = "send-contact-email"
 verify_jwt = false
 
 [[functions]]
@@ -32,9 +17,21 @@ name = "send-feedback-notification"
 verify_jwt = false
 
 [[functions]]
+name = "send-referral-notifications"
+verify_jwt = false
+
+[[functions]]
+name = "send-referral-verification"
+verify_jwt = false
+
+[[functions]]
 name = "send-testimonial-email"
 verify_jwt = false
 
 [[functions]]
 name = "send-testimonial-confirmation"
+verify_jwt = false
+
+[[functions]]
+name = "validate-checkout"
 verify_jwt = false
