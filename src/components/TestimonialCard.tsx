@@ -17,7 +17,7 @@ interface TestimonialProps {
 const TestimonialCard = ({ name, role, content, imageUrl }: TestimonialProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const isLongContent = content.length > 200;
-  const displayContent = isLongContent && !isOpen ? content.slice(0, 200) + "..." : content;
+  const displayContent = isLongContent ? content.slice(0, 200) + "..." : content;
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl">
@@ -38,7 +38,7 @@ const TestimonialCard = ({ name, role, content, imageUrl }: TestimonialProps) =>
 
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="text-gray-700 leading-relaxed italic">
-          {displayContent}
+          {isOpen ? content : displayContent}
         </div>
         
         {isLongContent && (
@@ -59,12 +59,6 @@ const TestimonialCard = ({ name, role, content, imageUrl }: TestimonialProps) =>
             </Button>
           </CollapsibleTrigger>
         )}
-        
-        <CollapsibleContent>
-          <div className="text-gray-700 leading-relaxed italic mt-4">
-            {content.slice(200)}
-          </div>
-        </CollapsibleContent>
       </Collapsible>
 
       <div className="mt-6 flex justify-start">
