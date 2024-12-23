@@ -40,6 +40,16 @@ const Hero = ({
       </div>
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0">
+          {/* Featured Quote */}
+          <div className="mb-12 max-w-2xl mx-auto">
+            <blockquote className="text-[28px] md:text-[42px] font-bold leading-tight text-[#1A1A1A] mb-4">
+              "I was never interested in trading—until I joined this course. Now I'm a part-time trader!"
+            </blockquote>
+            <cite className="text-mobile-body md:text-lg text-[#333333] font-medium not-italic">
+              —Soots, Entrepreneur & Ex-Banker
+            </cite>
+          </div>
+
           <h1 className="text-mobile-h1 md:text-h1 bg-gradient-to-b from-[#1A1A1A] to-[#333333] bg-clip-text text-transparent mb-6" 
               itemScope itemType="https://schema.org/Course">
             <span itemProp="name">{title}</span>
