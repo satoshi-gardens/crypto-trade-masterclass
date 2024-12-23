@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Menu, Home, BookOpen, User, LoopCircle, Tools } from "lucide-react";
+import { Menu, Home, BookOpen, User, CircleDot, Wrench } from "lucide-react";
 
 const Navigation = () => {
   const handleSheetClose = () => {
@@ -13,8 +13,8 @@ const Navigation = () => {
     { path: "/", label: "Home", icon: <Home className="w-4 h-4 mr-2" /> },
     { path: "/courses", label: "Courses", icon: <BookOpen className="w-4 h-4 mr-2" /> },
     { path: "/about", label: "About", icon: <User className="w-4 h-4 mr-2" /> },
-    { path: "/loop-method", label: "LOOP", icon: <LoopCircle className="w-4 h-4 mr-2" /> },
-    { path: "/tools", label: "Tools and Resources", icon: <Tools className="w-4 h-4 mr-2" /> },
+    { path: "/loop-method", label: "LOOP", icon: <CircleDot className="w-4 h-4 mr-2" /> },
+    { path: "/tools", label: "Tools and Resources", icon: <Wrench className="w-4 h-4 mr-2" /> },
   ];
 
   return (
