@@ -2,6 +2,7 @@ import { Clock, BookOpen, HeadphonesIcon, Signal } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CourseTimeline } from "./CourseTimeline";
 import { CourseFAQ } from "./CourseFAQ";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const StructureItem = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
@@ -54,13 +55,23 @@ export const CourseStructure = () => {
         <CourseTimeline />
 
         <div className="mt-12 text-center">
-          <blockquote className="text-xl italic text-gray-600 max-w-2xl mx-auto">
+          <blockquote className="text-xl italic text-gray-600 max-w-2xl mx-auto mb-8">
             "The flexible structure allowed me to maintain my executive role while mastering crypto trading. 
             The focused sessions and practical exercises made every minute count."
             <footer className="text-sm mt-4 text-gray-500">
               — David R., Chief Investment Officer
             </footer>
           </blockquote>
+
+          <Button
+            asChild
+            size="lg"
+            className="bg-primary hover:bg-primary-hover text-white px-8 py-6 rounded-lg
+                      font-bold shadow-lg hover:shadow-xl transition-all duration-300
+                      text-lg"
+          >
+            <Link to="/courses">Join the Course</Link>
+          </Button>
         </div>
 
         <CourseFAQ />
@@ -68,9 +79,15 @@ export const CourseStructure = () => {
         <div className="text-center mt-12">
           <p className="text-2xl font-bold mb-4">Don't wait—seize this opportunity to transform your trading journey.</p>
           <p className="text-lg text-gray-600 mb-8">Book your course now and secure your December discount before spaces fill up!</p>
-          <Link to="/courses" className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-            Apply Now
-          </Link>
+          <Button
+            asChild
+            size="lg"
+            className="bg-primary hover:bg-primary-hover text-white px-8 py-6 rounded-lg
+                      font-bold shadow-lg hover:shadow-xl transition-all duration-300
+                      text-lg"
+          >
+            <Link to="/courses">Join the Course</Link>
+          </Button>
         </div>
       </div>
     </section>

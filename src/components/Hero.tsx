@@ -16,7 +16,7 @@ const Hero = ({
   title = "Become a Crypto Expert & Profit in Any Market",
   subtitle = "Gain real-world trading strategies and insider tips in our all-in-one course.",
   backgroundClass = "bg-gradient-to-b from-[#F9F9F9] to-white",
-  buttonText = "Start Your Journey",
+  buttonText = "Join the Course",
   buttonLink = "#packages",
   showButton = true,
   onButtonClick
