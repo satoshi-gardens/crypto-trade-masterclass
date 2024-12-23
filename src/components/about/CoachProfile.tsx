@@ -1,14 +1,51 @@
-import { CheckCircle2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Achievement {
-  text: string;
+  title: string;
+  content: string[];
 }
 
 const achievements: Achievement[] = [
-  { text: "Creator of the LOOP (Live On yOur Profits) Method" },
-  { text: "Featured speaker at multiple blockchain conferences in Europe" },
-  { text: "Profiled in Spiegel Germany" },
-  { text: "TEDx Speaker on the future of finance and cryptocurrency" },
+  {
+    title: "Founder & CEO of Bit2Big",
+    content: [
+      "Leading blockchain consulting firm revolutionizing land registration",
+      "Implementing solutions in healthcare, agriculture, and finance",
+      "Training over 2,000 learners annually through conferences and workshops"
+    ]
+  },
+  {
+    title: "Notable Speaking Engagements",
+    content: [
+      "Presidential roundtable at Minerals Africa Development Institution (MADI)",
+      "BLOCKCHANCE Europe keynote speaker",
+      "Regular TEDx speaker on blockchain and digital innovation"
+    ]
+  },
+  {
+    title: "Leadership & Recognition",
+    content: [
+      "Vice Chairman of the Blockchain Association of Uganda",
+      "Featured in Spiegel and Guardian for blockchain advocacy",
+      "CTO at Minerals Africa Development Institution"
+    ]
+  }
+];
+
+const socialLinks = [
+  {
+    title: "LinkedIn Profile",
+    url: "https://ch.linkedin.com/in/michaelkiberu"
+  },
+  {
+    title: "TEDx Talk",
+    url: "https://www.youtube.com/watch?v=6MhUdXPdRb8"
+  },
+  {
+    title: "Spiegel Feature",
+    url: "https://www.spiegel.de/wirtschaft/soziales/blockchain-wie-die-neue-technologie-die-wirtschaft-in-afrika-umkrempelt-a-b4800ede-9f40-4925-8a9f-d946c8d2d1e5"
+  }
 ];
 
 const CoachProfile = () => {
@@ -18,46 +55,75 @@ const CoachProfile = () => {
         <img
           src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
           alt="Dr. Michael Kiberu"
-          className="rounded-lg w-full object-cover aspect-square"
+          className="rounded-lg w-full object-cover aspect-square shadow-lg"
         />
+        <div className="mt-6 space-y-3">
+          {socialLinks.map((link, index) => (
+            <Button
+              key={index}
+              variant="outline"
+              className="w-full flex items-center justify-between"
+              onClick={() => window.open(link.url, "_blank")}
+            >
+              {link.title}
+              <ExternalLink className="h-4 w-4" />
+            </Button>
+          ))}
+        </div>
       </div>
-      <div className="md:col-span-2 space-y-6">
-        <h3 className="text-2xl font-semibold">Dr. Michael Kiberu</h3>
-        <p className="text-muted-foreground">
-          Dr. Michael Kiberu is a seasoned cryptocurrency trader and educator with over a decade
-          of experience in the financial markets. His journey in the crypto space began in
-          the early days of Bitcoin, and he has since become a respected voice in the
-          industry.
-        </p>
-        
-        <div className="space-y-4">
-          <h4 className="text-xl font-semibold">Key Achievements</h4>
-          <ul className="space-y-3">
+      
+      <div className="md:col-span-2 space-y-8">
+        <div>
+          <h2 className="text-3xl font-bold mb-4">Dr. Michael Kiberu N.</h2>
+          <p className="text-lg text-muted-foreground">
+            A leading advocate for blockchain technology and cryptocurrencies in Africa, 
+            Dr. Kiberu leverages digital innovation to address fundamental challenges 
+            in sectors such as land registration, healthcare, finance, and more. With 
+            expertise spanning AI, cybersecurity, and fintech, he champions homegrown 
+            solutions that empower young African talent and foster inclusive economic 
+            development.
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          <h3 className="text-2xl font-semibold">Key Achievements & Roles</h3>
+          <div className="grid gap-6">
             {achievements.map((achievement, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
-                <span>{achievement.text}</span>
-              </li>
+              <div key={index} className="space-y-3">
+                <h4 className="text-xl font-semibold text-primary">
+                  {achievement.title}
+                </h4>
+                <ul className="space-y-2">
+                  {achievement.content.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="block w-2 h-2 mt-2 rounded-full bg-primary flex-shrink-0" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-xl font-semibold">Our Story</h4>
+          <h3 className="text-2xl font-semibold">Personal Commitment</h3>
           <p className="text-muted-foreground">
-            Bit2Big was born from a simple observation: while blockchain technology and cryptocurrencies 
-            were revolutionizing finance, most people lacked the knowledge to participate confidently. 
-            We set out to change that by creating a comprehensive education platform that makes digital 
-            assets accessible to everyone.
+            As a father of five, Dr. Kiberu blends entrepreneurial vigor with genuine 
+            empathy for everyday needs—striving to create real-world solutions that 
+            uplift communities. His vision is clear: Africa must not miss the fourth 
+            technological wave reshaping the global economy.
           </p>
         </div>
 
         <div className="space-y-4">
-          <h4 className="text-xl font-semibold">Teaching Philosophy</h4>
+          <h3 className="text-2xl font-semibold">Educational Impact</h3>
           <p className="text-muted-foreground">
-            Our approach combines theoretical understanding with practical application. We believe in 
-            empowering our students with both knowledge and hands-on experience, ensuring they can 
-            navigate the crypto markets with confidence and success.
+            Through Bit2Big's comprehensive educational programs, Dr. Kiberu and his 
+            team train thousands of learners annually. His approach emphasizes practical, 
+            hands-on experience and focuses on developing solutions tailored to African 
+            challenges. As he often states, "if we don't take the youth on this journey, 
+            we're losing out."
           </p>
         </div>
       </div>
