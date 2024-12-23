@@ -1,13 +1,21 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, Home, BookOpen, User, LoopCircle, Tools } from "lucide-react";
 
 const Navigation = () => {
   const handleSheetClose = () => {
     const button = document.querySelector('button[type="button"]') as HTMLButtonElement;
     if (button) button.click();
   };
+
+  const navigationItems = [
+    { path: "/", label: "Home", icon: <Home className="w-4 h-4 mr-2" /> },
+    { path: "/courses", label: "Courses", icon: <BookOpen className="w-4 h-4 mr-2" /> },
+    { path: "/about", label: "About", icon: <User className="w-4 h-4 mr-2" /> },
+    { path: "/loop-method", label: "LOOP", icon: <LoopCircle className="w-4 h-4 mr-2" /> },
+    { path: "/tools", label: "Tools and Resources", icon: <Tools className="w-4 h-4 mr-2" /> },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
@@ -18,21 +26,16 @@ const Navigation = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-600 hover:text-primary">
-              Home
-            </Link>
-            <Link to="/courses" className="text-gray-600 hover:text-primary">
-              Courses
-            </Link>
-            <Link to="/tools" className="text-gray-600 hover:text-primary">
-              Tools and Resources
-            </Link>
-            <Link to="/loop-method" className="text-gray-600 hover:text-primary">
-              LOOP Method
-            </Link>
-            <Link to="/about" className="text-gray-600 hover:text-primary">
-              About
-            </Link>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="flex items-center text-gray-600 hover:text-primary transition-colors"
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           <Sheet>
@@ -46,41 +49,17 @@ const Navigation = () => {
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col space-y-4 mt-4">
-                <Link
-                  to="/"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/courses"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  Courses
-                </Link>
-                <Link
-                  to="/tools"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  Tools and Resources
-                </Link>
-                <Link
-                  to="/loop-method"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  LOOP Method
-                </Link>
-                <Link
-                  to="/about"
-                  className="text-gray-600 hover:text-primary"
-                  onClick={handleSheetClose}
-                >
-                  About
-                </Link>
+                {navigationItems.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="flex items-center text-gray-600 hover:text-primary transition-colors"
+                    onClick={handleSheetClose}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                ))}
               </div>
             </SheetContent>
           </Sheet>
