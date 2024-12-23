@@ -53,9 +53,9 @@ const CoachProfile = () => {
     <div className="grid md:grid-cols-3 gap-8">
       <div className="md:col-span-1">
         <img
-          src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"
-          alt="Dr. Michael Kiberu"
-          className="rounded-lg w-full object-cover aspect-square shadow-lg"
+          src="/lovable-uploads/b787c942-a5bd-43a5-839b-d3c2a76e8c87.png"
+          alt="Dr. Michael Kiberu Nagenda - A professional headshot showing him wearing a light grey suit and white shirt, with a warm, engaging smile that reflects his approachable leadership style. The image is set against a textured golden background."
+          className="rounded-lg w-full object-cover shadow-lg"
         />
         <div className="mt-6 space-y-3">
           {socialLinks.map((link, index) => (
