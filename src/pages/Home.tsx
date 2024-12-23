@@ -91,6 +91,8 @@ const Home = () => {
 
       <ValueProposition />
 
+      <CourseStructure />
+
       {/* Pricing Section */}
       <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-6">
