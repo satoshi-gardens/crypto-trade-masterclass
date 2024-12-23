@@ -37,49 +37,53 @@ const Hero = ({
         />
       </div>
       <div className="container relative z-10">
-        <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0">
+        <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0 space-y-12 md:space-y-16">
           {/* Small Testimonial Bar */}
-          <div className="mb-8 max-w-2xl mx-auto">
-            <blockquote className="text-base md:text-lg italic text-[#333333] mb-1">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg py-4 px-6 max-w-2xl mx-auto">
+            <blockquote className="text-sm md:text-base italic text-[#333333] mb-1 font-normal">
               "I was never interested in trading—until I joined this course. Now I'm a part-time trader!"
             </blockquote>
-            <cite className="text-sm md:text-base text-[#666666] font-medium not-italic">
+            <cite className="text-xs md:text-sm text-[#666666] font-medium not-italic">
               —Soots, Entrepreneur & Ex-Banker
             </cite>
           </div>
 
-          <h1 className="text-mobile-h1 md:text-h1 bg-gradient-to-b from-[#1A1A1A] to-[#333333] bg-clip-text text-transparent mb-6" 
-              itemScope itemType="https://schema.org/Course">
-            <span itemProp="name">{title}</span>
-          </h1>
-          <p className="text-mobile-h3 md:text-h3 font-normal text-[#333333] mb-8 max-w-2xl mx-auto" 
-             itemProp="description">
-            {subtitle}
-          </p>
+          <div className="space-y-8">
+            <h1 className="text-[32px] md:text-[42px] leading-tight font-bold bg-gradient-to-b from-[#1A1A1A] to-[#333333] bg-clip-text text-transparent" 
+                itemScope itemType="https://schema.org/Course">
+              <span itemProp="name">{title}</span>
+            </h1>
+            <p className="text-lg md:text-2xl font-normal text-[#333333] max-w-2xl mx-auto" 
+               itemProp="description">
+              {subtitle}
+            </p>
+          </div>
           
           {/* Benefits List */}
-          <div className="mb-10 text-left max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-lg p-4 md:p-6 shadow-sm">
-            <ul className="space-y-3">
+          <div className="text-left max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-lg p-6 md:p-8 shadow-sm">
+            <ul className="space-y-4">
               {benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-[#333333] text-mobile-body md:text-lg">{benefit}</span>
+                  <Check className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
+                  <span className="text-base md:text-lg text-[#333333]">{benefit}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           {showButton && (
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary-hover text-white px-8 
-                        min-h-[44px] md:min-h-[48px] rounded-lg
-                        font-bold shadow-lg hover:shadow-xl transition-all duration-300
-                        text-lg w-full md:w-auto"
-              onClick={onButtonClick}
-            >
-              {buttonText}
-            </Button>
+            <div className="pt-4">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary-hover text-white px-8 
+                          min-h-[44px] md:min-h-[48px] rounded-lg
+                          font-bold shadow-lg hover:shadow-xl transition-all duration-300
+                          text-lg w-full md:w-auto"
+                onClick={onButtonClick}
+              >
+                {buttonText}
+              </Button>
+            </div>
           )}
         </div>
       </div>
