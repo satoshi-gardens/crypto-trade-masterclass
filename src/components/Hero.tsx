@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 
 interface HeroProps {
   title: string;
@@ -15,28 +14,28 @@ interface HeroProps {
 const Hero = ({ 
   title, 
   subtitle, 
-  backgroundClass = "bg-gradient-to-b from-[#F8F8F8] to-white",
+  backgroundClass = "bg-gradient-to-b from-[#F9F9F9] to-white",
   buttonText = "Start Your Journey",
   buttonLink = "#packages",
   showButton = true,
   onButtonClick
 }: HeroProps) => {
   return (
-    <div className={`${backgroundClass} py-24 relative overflow-hidden`}>
+    <div className={`${backgroundClass} min-h-[600px] flex items-center relative overflow-hidden`}>
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1640340434855-6084b1f4901c"
           alt="Crypto trading chart showing profitable upward trend"
-          className="w-full h-full object-cover opacity-10"
+          className="w-full h-full object-cover opacity-5"
         />
       </div>
-      <div className="container px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fade-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary-hover bg-clip-text text-transparent" 
+          <h1 className="text-h1 bg-gradient-to-b from-[#1A1A1A] to-[#333333] bg-clip-text text-transparent" 
               itemScope itemType="https://schema.org/Course">
             <span itemProp="name">{title}</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#4A4A4A] leading-relaxed mb-10 max-w-2xl mx-auto" 
+          <p className="text-h3 font-normal text-[#333333] mb-10 max-w-2xl mx-auto" 
              itemProp="description">
             {subtitle}
           </p>

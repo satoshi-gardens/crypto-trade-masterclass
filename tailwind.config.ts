@@ -22,16 +22,16 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "#FFFFFF",
+        foreground: "#1A1A1A",
         primary: {
-          DEFAULT: "#6A4CFF",
-          hover: "#8C72FF",
+          DEFAULT: "#FF7A00",
+          hover: "#E66E00",
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#7E69AB",
-          hover: "#9585BD",
+          DEFAULT: "#1A1A1A",
+          hover: "#333333",
           foreground: "#FFFFFF",
         },
         destructive: {
@@ -39,12 +39,12 @@ export default {
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#F9F9F9",
+          foreground: "#333333",
         },
         accent: {
-          DEFAULT: "#F6F6F7",
-          foreground: "#1A1F2C",
+          DEFAULT: "#F9F9F9",
+          foreground: "#1A1A1A",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -55,30 +55,17 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      keyframes: {
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" }
-        },
-        "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" }
-        },
-        "slide-in": {
-          "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(0)" }
-        }
-      },
-      animation: {
-        "fade-up": "fade-up 0.5s ease-out",
-        "fade-in": "fade-in 0.5s ease-out",
-        "slide-in": "slide-in 0.3s ease-out"
-      },
-      backdropBlur: {
-        xs: '2px',
+      spacing: {
+        section: "60px",
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ["Montserrat", "sans-serif"],
+      },
+      fontSize: {
+        h1: ["48px", { lineHeight: "1.2", fontWeight: "700" }],
+        h2: ["32px", { lineHeight: "1.3", fontWeight: "600" }],
+        h3: ["28px", { lineHeight: "1.4", fontWeight: "600" }],
+        body: ["18px", { lineHeight: "1.6", fontWeight: "400" }],
       },
     },
   },
