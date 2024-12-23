@@ -18,9 +18,10 @@ export const CTAButton = ({
     <Button
       asChild
       size="lg"
-      className={`bg-primary hover:bg-primary-hover text-white px-8 py-6 rounded-lg
+      className={`bg-primary hover:bg-primary-hover text-white px-8 
+                min-h-[44px] md:min-h-[48px] rounded-lg
                 font-bold shadow-lg hover:shadow-xl transition-all duration-300
-                text-lg ${className}`}
+                text-lg w-full md:w-auto ${className}`}
       onClick={onClick}
     >
       <Link to={to}>{text}</Link>

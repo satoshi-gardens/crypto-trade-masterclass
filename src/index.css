@@ -48,19 +48,19 @@
   }
 
   h1 {
-    @apply text-h1 text-[#1A1A1A] mb-6;
+    @apply text-h1 md:text-h1 text-mobile-h1 text-[#1A1A1A] mb-6;
   }
 
   h2 {
-    @apply text-h2 text-[#1A1A1A] mb-4;
+    @apply text-h2 md:text-h2 text-mobile-h2 text-[#1A1A1A] mb-4;
   }
 
   h3 {
-    @apply text-h3 text-[#1A1A1A] mb-3;
+    @apply text-h3 md:text-h3 text-mobile-h3 text-[#1A1A1A] mb-3;
   }
 
   p {
-    @apply text-body text-[#333333] mb-4;
+    @apply text-body md:text-body text-mobile-body text-[#333333] mb-4;
   }
 
   section {
@@ -69,6 +69,29 @@
 
   .container {
     @apply px-4 md:px-6 lg:px-8 mx-auto max-w-7xl;
+  }
+
+  /* Ensure buttons are easy to tap on mobile */
+  button, 
+  a[role="button"],
+  .button {
+    @apply min-h-[44px] px-4 py-2;
+  }
+
+  /* Improve spacing on mobile */
+  @media (max-width: 768px) {
+    section {
+      @apply py-8;
+    }
+
+    .container {
+      @apply px-4;
+    }
+
+    /* Improve touch targets spacing */
+    .grid {
+      @apply gap-4;
+    }
   }
 }
 

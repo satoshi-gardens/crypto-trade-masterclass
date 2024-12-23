@@ -66,6 +66,11 @@ export default {
         h2: ["32px", { lineHeight: "1.3", fontWeight: "600" }],
         h3: ["28px", { lineHeight: "1.4", fontWeight: "600" }],
         body: ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+        // Add mobile-specific font sizes
+        "mobile-h1": ["24px", { lineHeight: "1.2", fontWeight: "700" }],
+        "mobile-h2": ["20px", { lineHeight: "1.3", fontWeight: "600" }],
+        "mobile-h3": ["18px", { lineHeight: "1.4", fontWeight: "600" }],
+        "mobile-body": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
       },
     },
   },
