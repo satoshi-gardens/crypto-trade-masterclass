@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
-import CourseModule from "./CourseModule";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ModuleSearch } from "./modules/ModuleSearch";
+import { ModuleGrid } from "./modules/ModuleGrid";
+import { ModuleHeader } from "./modules/ModuleHeader";
 import { CourseFilters } from "./CourseFilters";
 import { CoursePagination } from "./CoursePagination";
 import { allModules } from "@/data/courseModules";
@@ -41,29 +41,16 @@ const CourseModules = () => {
   return (
     <section className="py-12 bg-gray-50">
       <div className="container mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">Course Modules</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Comprehensive learning modules designed to take you from basics to advanced trading
-          </p>
-        </div>
+        <ModuleHeader />
 
         <div className="space-y-6">
-          <div className="max-w-md mx-auto mb-6 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              type="text"
-              id="module-search"
-              name="module-search"
-              placeholder="Search modules..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="pl-10"
-            />
-          </div>
+          <ModuleSearch 
+            searchQuery={searchQuery}
+            onSearchChange={(query) => {
+              setSearchQuery(query);
+              setCurrentPage(1);
+            }}
+          />
 
           <CourseFilters
             selectedComplexity={selectedComplexity}
@@ -78,17 +65,7 @@ const CourseModules = () => {
             }}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paginatedModules.map((module) => (
-              <CourseModule key={module.id} {...module} />
-            ))}
-          </div>
-
-          {filteredModules.length === 0 && (
-            <div className="text-center py-12 bg-white rounded-lg">
-              <p className="text-xl text-gray-600">No modules found matching your criteria</p>
-            </div>
-          )}
+          <ModuleGrid modules={paginatedModules} />
 
           {filteredModules.length > ITEMS_PER_PAGE && (
             <CoursePagination
