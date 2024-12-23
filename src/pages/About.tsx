@@ -47,7 +47,7 @@ const About = () => {
           transition={{ duration: 0.6 }}
           className="py-16 lg:py-24"
         >
-          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-4xl font-bold mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             About Your Personal Coach
           </h2>
           <CoachProfile />
@@ -61,7 +61,7 @@ const About = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="py-16 lg:py-24"
         >
-          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h2 className="text-4xl font-bold mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             About Our Personal Course
           </h2>
           <CourseFeatures />
