@@ -4,18 +4,18 @@ import { Award, ChartBarIncreasing, ChartLine } from "lucide-react";
 const benefits = [
   {
     icon: <ChartLine className="w-12 h-12 text-primary mb-4" />,
-    title: "Master Trading Strategies",
-    description: "Learn proven cryptocurrency trading techniques and risk management."
+    title: "Expert Trading Strategies",
+    description: "Learn risk management and proven cryptocurrency trading techniques from experienced professionals."
   },
   {
     icon: <Award className="w-12 h-12 text-primary mb-4" />,
-    title: "Expert Guidance",
-    description: "Get mentored by experienced Swiss crypto trading professionals."
+    title: "Swiss Quality Education",
+    description: "Get mentored by experienced Swiss crypto trading professionals with a track record of success."
   },
   {
     icon: <ChartBarIncreasing className="w-12 h-12 text-primary mb-4" />,
-    title: "Market Analysis",
-    description: "Access exclusive insights and advanced technical analysis tools."
+    title: "Advanced Market Analysis",
+    description: "Master technical analysis and gain access to exclusive market insights and professional trading tools."
   }
 ];
 
