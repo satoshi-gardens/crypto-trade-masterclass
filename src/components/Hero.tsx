@@ -13,8 +13,8 @@ interface HeroProps {
 }
 
 const Hero = ({ 
-  title = "Become a Crypto Expert & Profit in Any Market",
-  subtitle = "Gain real-world trading strategies and insider tips in our all-in-one course.",
+  title = "Master Crypto Trading: Transform Your Financial Future Today",
+  subtitle = "Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability",
   backgroundClass = "bg-gradient-to-b from-[#F9F9F9] to-white",
   buttonText = "Join the Course",
   buttonLink = "#packages",
@@ -24,9 +24,7 @@ const Hero = ({
   const benefits = [
     "Learn how to minimize risk and maximize returns",
     "Analyze crypto markets like a pro with proven techniques",
-    "Identify high-potential altcoins before the crowd",
-    "Stay ahead of market cycles and corrections",
-    "Build a stable, diverse crypto portfolio"
+    "Identify high-potential altcoins before the crowd"
   ];
 
   return (
@@ -40,12 +38,12 @@ const Hero = ({
       </div>
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0">
-          {/* Featured Quote */}
-          <div className="mb-12 max-w-2xl mx-auto">
-            <blockquote className="text-[28px] md:text-[42px] font-bold leading-tight text-[#1A1A1A] mb-4">
+          {/* Small Testimonial Bar */}
+          <div className="mb-8 max-w-2xl mx-auto">
+            <blockquote className="text-base md:text-lg italic text-[#333333] mb-1">
               "I was never interested in trading—until I joined this course. Now I'm a part-time trader!"
             </blockquote>
-            <cite className="text-mobile-body md:text-lg text-[#333333] font-medium not-italic">
+            <cite className="text-sm md:text-base text-[#666666] font-medium not-italic">
               —Soots, Entrepreneur & Ex-Banker
             </cite>
           </div>
