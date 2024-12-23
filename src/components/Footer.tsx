@@ -76,19 +76,19 @@ const Footer = () => {
             </nav>
 
             <div className="flex space-x-4 pt-2">
-              <a href="https://twitter.com/Crypto4Profits" target="_blank" rel="noopener noreferrer" 
+              <a href="https://twitter.com/bit2big" target="_blank" rel="noopener noreferrer" 
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://www.linkedin.com/in/michaelkiberu/" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.linkedin.com/company/bit2big/" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="https://instagram.com/crypto4profits" target="_blank" rel="noopener noreferrer"
+              <a href="https://instagram.com/bit2big" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://facebook.com/crypto4profits" target="_blank" rel="noopener noreferrer"
+              <a href="https://facebook.com/bit2big" target="_blank" rel="noopener noreferrer"
                  className="text-gray-600 hover:text-primary transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>

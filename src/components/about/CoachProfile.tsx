@@ -32,15 +32,19 @@ const achievements = [
 const socialLinks = [
   {
     title: "LinkedIn Profile",
-    url: "https://ch.linkedin.com/in/michaelkiberu"
+    url: "https://www.linkedin.com/in/michaelkiberu/?originalSubdomain=ch"
   },
   {
-    title: "TEDx Talk",
-    url: "https://www.youtube.com/watch?v=6MhUdXPdRb8"
+    title: "MADI Event Announcement",
+    url: "https://www.linkedin.com/posts/michaelkiberu_minerals-usafricaleaderssummit22-madi-activity-7009129731296010240-Glfc/"
   },
   {
-    title: "Spiegel Feature",
-    url: "https://www.spiegel.de/wirtschaft/soziales/blockchain-wie-die-neue-technologie-die-wirtschaft-in-afrika-umkrempelt-a-b4800ede-9f40-4925-8a9f-d946c8d2d1e5"
+    title: "Guardian Article",
+    url: "https://guardian.ng/business-services/nigeria-sits-at-outskirts-of-blockchain-technology/"
+  },
+  {
+    title: "Blockchance Tweet",
+    url: "https://x.com/Blockchance_/status/1158004914712403972"
   }
 ];
 
