@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet";
+import { CTAButton } from "@/components/ui/cta-button";
 import { ArrowRight } from "lucide-react";
-import TestimonialCard from "@/components/TestimonialCard";
 import PageLayout from "@/components/PageLayout";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { CountdownTimer } from "@/components/pricing/CountdownTimer";
@@ -9,67 +9,45 @@ import { PricingCard } from "@/components/pricing/PricingCard";
 import { CourseStructure } from "@/components/course/CourseStructure";
 import Hero from "@/components/Hero";
 import ValueProposition from "@/components/ValueProposition";
-import { Helmet } from "react-helmet";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
-import { supabase } from "@/integrations/supabase/client";
+import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "Cryptocurrency Trading Masterclass",
+  "description": "Professional cryptocurrency trading course in Switzerland. Learn advanced trading strategies, technical analysis, and risk management.",
+  "provider": {
+    "@type": "Organization",
+    "name": "KY Connect",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Zürich",
+      "addressRegion": "ZH",
+      "postalCode": "8005",
+      "streetAddress": "Turbinenstrasse 31",
+      "addressCountry": "CH"
+    }
+  },
+  "courseLanguage": ["de", "en"],
+  "locationCreated": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Zürich",
+      "addressCountry": "Switzerland"
+    }
+  }
+};
 
 const Home = () => {
   const [paymentType, setPaymentType] = useState<"monthly" | "annual">("monthly");
-  const [testimonials, setTestimonials] = useState<any[]>([]);
 
   const handleStartJourney = () => {
     const packagesSection = document.getElementById('packages');
     if (packagesSection) {
       packagesSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      const { data, error } = await supabase
-        .from('testimonials')
-        .select('*')
-        .eq('is_verified', true)
-        .order('created_at', { ascending: false })
-        .limit(2);
-
-      if (error) {
-        console.error('Error fetching testimonials:', error);
-        return;
-      }
-
-      setTestimonials(data || []);
-    };
-
-    fetchTestimonials();
-  }, []);
-
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    "name": "Cryptocurrency Trading Masterclass",
-    "description": "Professional cryptocurrency trading course in Switzerland. Learn advanced trading strategies, technical analysis, and risk management.",
-    "provider": {
-      "@type": "Organization",
-      "name": "KIPYA | bit2Big",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Zürich",
-        "addressRegion": "ZH",
-        "postalCode": "8005",
-        "streetAddress": "Turbinenstrasse 31",
-        "addressCountry": "CH"
-      }
-    },
-    "courseLanguage": ["de", "en"],
-    "locationCreated": {
-      "@type": "Place",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Zürich",
-        "addressCountry": "Switzerland"
-      }
     }
   };
 
@@ -84,14 +62,11 @@ const Home = () => {
       <Hero
         title="Master Crypto Trading: Transform Your Financial Future Today"
         subtitle="Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability"
-        buttonText="Start Your Journey"
+        buttonText="Join the Course"
         onButtonClick={handleStartJourney}
-        showButton={true}
       />
 
       <ValueProposition />
-
-      <CourseStructure />
 
       {/* Pricing Section */}
       <section id="packages" className="py-20 bg-white">
@@ -155,26 +130,7 @@ const Home = () => {
 
       <TrustSignals />
       <CourseStructure />
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            What Our Students Say
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial) => (
-              <TestimonialCard
-                key={testimonial.id}
-                name={testimonial.display_name}
-                role={testimonial.is_student ? "Student" : "Trading Professional"}
-                content={testimonial.testimony_text}
-                imageUrl={testimonial.photo_url || "https://images.unsplash.com/photo-1649972904349-6e44c42644a7"}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* CTA Section */}
       <section className="py-20 bg-primary text-white">
@@ -186,13 +142,10 @@ const Home = () => {
             Join our community of successful traders and learn the strategies that
             can transform your financial future.
           </p>
-          <Button
-            size="lg"
+          <CTAButton
+            text="Start Your Journey"
             className="bg-white text-primary hover:bg-white/90"
-            onClick={handleStartJourney}
-          >
-            Start Your Journey <ArrowRight className="ml-2" />
-          </Button>
+          />
         </div>
       </section>
     </PageLayout>
