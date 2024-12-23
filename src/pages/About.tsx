@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import AboutHero from "@/components/about/AboutHero";
 import CoachProfile from "@/components/about/CoachProfile";
 import CourseFeatures from "@/components/about/CourseFeatures";
+import { motion } from "framer-motion";
 
 const About = () => {
   return (
@@ -39,16 +40,32 @@ const About = () => {
 
       <AboutHero />
 
-      <div className="container mx-auto px-4 py-12 space-y-16">
-        <section className="space-y-8">
-          <h2 className="text-3xl font-bold">About Your Personal Coach</h2>
+      <div className="container mx-auto px-4">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="py-16 lg:py-24"
+        >
+          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            About Your Personal Coach
+          </h2>
           <CoachProfile />
-        </section>
+        </motion.section>
 
-        <section>
-          <h2 className="text-3xl font-bold mb-8">About Our Personal Course</h2>
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent my-8" />
+
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="py-16 lg:py-24"
+        >
+          <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            About Our Personal Course
+          </h2>
           <CourseFeatures />
-        </section>
+        </motion.section>
       </div>
     </PageLayout>
   );
