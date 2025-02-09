@@ -12,7 +12,7 @@ export const CountdownTimer = () => {
   useEffect(() => {
     const calculateTimeLeft = () => {
       const startDate = new Date('2024-11-15T00:00:00');
-      const endDate = new Date('2025-02-29T23:59:59');
+      const endDate = new Date('2025-02-28T23:59:59');
       const now = new Date();
 
       // Only start countdown if we're within the date range
