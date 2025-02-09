@@ -1,7 +1,9 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import TradingScene from "./3d/TradingScene";
+import ResourceScene from "./3d/ResourceScene";
 
 interface HeroProps {
   title?: string;
