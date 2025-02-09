@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import TradingScene from "./3d/TradingScene";
 
 interface HeroProps {
   title?: string;
@@ -10,6 +11,7 @@ interface HeroProps {
   buttonLink?: string;
   showButton?: boolean;
   onButtonClick?: () => void;
+  scene?: "trading" | "resources";
 }
 
 const Hero = ({ 
@@ -19,7 +21,8 @@ const Hero = ({
   buttonText = "Join the Course",
   buttonLink = "#packages",
   showButton = true,
-  onButtonClick
+  onButtonClick,
+  scene = "trading"
 }: HeroProps) => {
   const benefits = [
     "Learn how to minimize risk and maximize returns",
@@ -36,9 +39,10 @@ const Hero = ({
           className="w-full h-full object-cover opacity-5"
         />
       </div>
+      {scene === "trading" && <TradingScene />}
+      {scene === "resources" && <ResourceScene />}
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0 space-y-12 md:space-y-16">
-          {/* Small Testimonial Bar */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg py-4 px-6 max-w-2xl mx-auto">
             <blockquote className="text-sm md:text-base italic text-[#333333] mb-1 font-normal">
               "I was never interested in trading—until I joined this course. Now I'm a part-time trader!"
@@ -59,7 +63,6 @@ const Hero = ({
             </p>
           </div>
           
-          {/* Benefits List */}
           <div className="text-left max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-lg p-6 md:p-8 shadow-sm">
             <ul className="space-y-4">
               {benefits.map((benefit, index) => (

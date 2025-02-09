@@ -34,6 +34,7 @@ const Tools = () => {
         buttonText="Start Your Journey"
         onButtonClick={handleStartJourney}
         showButton={true}
+        scene="resources"
       />
       
       <div className="container mx-auto px-4 sm:px-6 py-12 max-w-7xl">
