@@ -17,19 +17,19 @@ interface HeroProps {
 }
 
 const Hero = ({ 
-  title = "Professionelle Krypto-Handelsausbildung in der Schweiz | Dr. Michael Kiberu",
-  subtitle = "Lernen Sie von einem führenden Schweizer Krypto-Experten: Erweitern Sie Ihr Wissen in Blockchain, Trading und Investitionsstrategien mit maßgeschneiderten Kursen",
+  title = "Master Crypto Trading: Transform Your Financial Future Today",
+  subtitle = "Join Switzerland's premier trading program and learn to navigate the crypto market with confidence and profitability",
   backgroundClass = "bg-gradient-to-b from-[#F9F9F9] to-white",
-  buttonText = "Jetzt Kurs beginnen",
+  buttonText = "Join the Course",
   buttonLink = "#packages",
   showButton = true,
   onButtonClick,
   scene = "trading"
 }: HeroProps) => {
   const benefits = [
-    "Risikomanagement: Minimieren Sie Verluste und maximieren Sie Renditen",
-    "Marktanalyse: Kryptomärkte wie ein Profi mit bewährten Techniken verstehen",
-    "Altcoin-Selektion: Identifizieren Sie vielversprechende Coins vor der Masse"
+    "Learn how to minimize risk and maximize returns",
+    "Analyze crypto markets like a pro with proven techniques",
+    "Identify high-potential altcoins before the crowd"
   ];
 
   return (
@@ -37,7 +37,7 @@ const Hero = ({
       <div className="absolute inset-0 z-0">
         <img 
           src="https://images.unsplash.com/photo-1640340434855-6084b1f4901c"
-          alt="Krypto-Trading-Chart mit profitablem Aufwärtstrend"
+          alt="Crypto trading chart showing profitable upward trend"
           className="w-full h-full object-cover opacity-5"
         />
       </div>
@@ -47,10 +47,10 @@ const Hero = ({
         <div className="max-w-3xl mx-auto text-center animate-fade-up px-4 md:px-0 space-y-12 md:space-y-16">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg py-4 px-6 max-w-2xl mx-auto">
             <blockquote className="text-sm md:text-base italic text-[#333333] mb-1 font-normal">
-              "Der Kryptokurs mit Dr. Kiberu hat meine finanzielle Zukunft verändert. Jetzt handle ich selbstbewusst und profitabel."
+              "I was never interested in trading—until I joined this course. Now I'm a part-time trader!"
             </blockquote>
             <cite className="text-xs md:text-sm text-[#666666] font-medium not-italic">
-              —Stefan M., Unternehmer aus Zürich
+              —Soots, Entrepreneur & Ex-Banker
             </cite>
           </div>
 
@@ -66,7 +66,6 @@ const Hero = ({
           </div>
           
           <div className="text-left max-w-2xl mx-auto bg-white/80 backdrop-blur-sm rounded-lg p-6 md:p-8 shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Was Sie lernen werden:</h2>
             <ul className="space-y-4">
               {benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start gap-3">
