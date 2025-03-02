@@ -74,6 +74,27 @@ const Footer = () => {
                 <Users size={16} />
                 <span>Referrals</span>
               </Link>
+              <a href="https://discord.gg/uKTdJauUvU" target="_blank" rel="noopener noreferrer" 
+                 className="flex items-center space-x-2 text-sm text-gray-600 hover:text-primary transition-colors">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="w-4 h-4"
+                >
+                  <circle cx="9" cy="12" r="1"/>
+                  <circle cx="15" cy="12" r="1"/>
+                  <path d="M7.5 7.5c3.5-1 5.5-1 9 0"/>
+                  <path d="M7 16.5c3.5 1 6.5 1 10 0"/>
+                  <path d="M15.5 17c0 1 1.5 3 2 3 1.5 0 2.833-1.667 3.5-3 .667-1.667.5-5.833-1.5-11.5-1.457-1.015-3-1.34-4.5-1.5l-1 2.5"/>
+                  <path d="M8.5 17c0 1-1.356 3-1.832 3-1.429 0-2.698-1.667-3.333-3-.635-1.667-.476-5.833 1.428-11.5C6.151 4.485 7.545 4.16 9 4l1 2.5"/>
+                </svg>
+                <span>Join Discord</span>
+              </a>
             </nav>
 
             <div className="flex space-x-4 pt-2">
@@ -109,7 +130,7 @@ const Footer = () => {
                   strokeLinejoin="round" 
                   className="w-5 h-5"
                 >
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/>
+                  <path d="M21.73 4.1a2 2 0 0 0-1.6-.72 3.09 3.09 0 0 0-1.42.44L3.16 13.37a1.5 1.5 0 0 0-.77 1.56 2 2 0 0 0 1.33 1.45l3.46 1.08a1 1 0 0 0 .87-.14l7.9-5.9a.5.5 0 0 1 .65.05.49.49 0 0 1 .05.65l-6.42 6.74a1 1 0 0 0-.24.87L11 22.63a2 2 0 0 0 1.89 1.37 2 2 0 0 0 1.48-.64l3.12-3.37a83.97 83.97 0 0 0 4.84-5.62 5 5 0 0 0 1.35-4.1 2 2 0 0 0-1.95-6.17Z" />
                 </svg>
               </a>
               <a href="https://twitter.com/bit2big" target="_blank" rel="noopener noreferrer" 
