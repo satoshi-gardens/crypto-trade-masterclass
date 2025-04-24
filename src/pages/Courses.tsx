@@ -8,7 +8,6 @@ import SolutionsSection from "@/components/courses/SolutionsSection";
 import CourseModules from "@/components/course/CourseModules";
 import ModuleCarousel from "@/components/ModuleCarousel";
 import { PricingHeader } from "@/components/pricing/PricingHeader";
-import { CountdownTimer } from "@/components/pricing/CountdownTimer";
 import { TrustSignals } from "@/components/pricing/TrustSignals";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PaymentToggle } from "@/components/pricing/PaymentToggle";
@@ -56,7 +55,6 @@ const Courses = () => {
       <section id="packages" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <PricingHeader />
-          <CountdownTimer />
           <PaymentToggle paymentType={paymentType} onToggle={setPaymentType} />
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
